@@ -1,4 +1,4 @@
-# My Project Title
+# Human Activity Recognition (HAR) using wearable sensor technology based on Symbolic Aggregate Approximation (SAX) and Machine Vision.
 
 This is a template for CA400 projects.  Please read these instructions carefully.
 
