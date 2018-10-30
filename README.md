@@ -3,7 +3,7 @@
 ### Student: Shane Creedon
 #### Student ID: 15337356
 #### Year Of Study: 4th Year
-#### Project Supervision Progress (Requires Authorisation): https://projects.computing.dcu.ie/project.html?module=ca400&year=2019
+###### Project Supervision Progress (Requires Authorisation): https://projects.computing.dcu.ie/project.html?module=ca400&year=2019
 
 #### What is the purpose of the project?
 The aim of this project is to build an application capable of detecting human activity. We hope to be able to recognise  
