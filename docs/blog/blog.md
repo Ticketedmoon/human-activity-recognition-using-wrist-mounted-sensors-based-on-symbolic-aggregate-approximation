@@ -1,72 +1,30 @@
-# Blog: MY-PROJECT-TITLE
+# Blog: Describing the engineering process of my 4th year project for DCU. The project involves Human Activity Recognition (HAR)  
+  using Symbolic Aggregate Approximation (SAX) and Machine Vision.
 
-**MY-NAME**
+**Shane Creedon**  
+**Student ID: 15337356**  
+**4th year Computer Applications and Software Engineering student in DCU**  
 
-## My First Blog Entry
+## Blog Post #1 | Proposal Submission and Upcoming Goals
 
-This is my first blog entry.
+The basis for the project is recognising human activity using wearable sensor technology based on 
+Symbolic Aggregate Approximation (SAX) and Machine Vision.
+
+After discussing the idea with Tomas in great detail, we both agreed to work together on this project as part of my 4th year project.
+With the idea in mind, I constructed the proposal documented due for both Tomas and my presentation supervisors.
+The proposal specified all the nitty-gritty details of the project and I hope gave clear insight into what we are trying to achieve.
+
+I sent the document to Tomas for review and discussion the idea with the project presentation supervisors (Darragh & Mark)
+who all thankfully approved the idea and allowed me to move forward.
+
+My next primary goal is to set up Continuous Integration (CI) practices for my projects GitLab either using the GitLab
+built-in CI tools or use something like Jenkins / Teamcity.
+
+Week 9 requires the completion of my functional specification which needs to be ~25 pages in length describing the project
+in great detail using both easy to understand language and UML diagrams depicting the technical structure.   
+
+Currently it is week 7, I will aim to get these above two steps complete within the next week.
 
 The blog is written in [markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 Markdown is a simple text-based mark-up language.
 
-## My Second Blog Entry
-
-This week, I learned how to include
-[images](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#images)
-in my blog.
-
-![cat](https://gitlab.computing.dcu.ie/sblott/2018-ca400-XXXX/raw/master/docs/blog/images/cat.jpg)
-
-Here are the instructions:
-
-- Add the image to your repo (probably using the `images` sub-directory here).
-  The cat example above is in `./images/cat.jpg`.
-
-- Commit that and push it to your repo.
-
-- On Gitlab, navigate to your new image and click *Raw*.  You get the raw URL of your image.  Copy that URL.
-
-- Add your image to this document using the following format:
-
-    <pre>![alternative text](URL)</pre>
-
-See the example [here](https://gitlab.computing.dcu.ie/sblott/2018-ca400-XXXX/raw/master/docs/blog/blog.md).
-
-You can also mention other users (like me: @sblott).
-
-## Including Code
-
-Raw text:
-```
-Mary had a little lamb,
-it's fleece was white as snow.
-```
-
-Syntax highlighting is also possible; for example...
-
-Python:
-```python
-i = 0
-while i < len(s):
-   # So something.
-   i = i + 1
-```
-
-Java:
-```java
-for (i=0; i<s.length(); i+=1) {
-   // Do something.
-}
-```
-
-Coffeescript:
-```coffeescript
-i = 0
-while i < s.length
-   # So something.
-   i = i + 1
-```
-
-## Instructions
-
-Once you've understood this sample, replace it with your own blog.
