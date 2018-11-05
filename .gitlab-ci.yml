@@ -1,5 +1,5 @@
-py36_nose:
-    image: python:3.6
-    script:
-        - apt-get update -q -y
-        - pip install -r src/requirements.txt
+# py36_nose:
+#    image: python:3.6
+#    script:
+#        - apt-get update -q -y
+#        - pip install -r src/requirements.txt
