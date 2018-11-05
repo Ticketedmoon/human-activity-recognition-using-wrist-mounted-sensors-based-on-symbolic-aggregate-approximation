@@ -1,11 +1,11 @@
-# Blog: Describing the engineering process of my 4th year project for DCU. The project involves Human Activity Recognition (HAR)  
-  using Symbolic Aggregate Approximation (SAX) and Machine Vision.
+# Blog: Describing the engineering process of my 4th year project for DCU.
+## The project involves recognising human activity using SAX and machine learning techniques.
 
 **Shane Creedon**  
 **Student ID: 15337356**  
 **4th year Computer Applications and Software Engineering student in DCU**  
 
-## Blog Post #1 | Proposal Submission and Upcoming Goals
+## Blog Post #1 | Proposal Submission and Upcoming Goals | 04/11/2018
 
 The basis for the project is recognising human activity using wearable sensor technology based on 
 Symbolic Aggregate Approximation (SAX) and Machine Vision.
