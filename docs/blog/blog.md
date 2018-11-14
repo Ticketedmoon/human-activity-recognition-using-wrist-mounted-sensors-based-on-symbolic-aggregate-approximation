@@ -25,6 +25,10 @@ in great detail using both easy to understand language and UML diagrams depictin
 
 Currently it is week 7, I will aim to get these above two steps complete within the next week.
 
+## Blog Post #2 | Development of the functional specification | 14/11/2018
+
+XXX
+
 The blog is written in [markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 Markdown is a simple text-based mark-up language.
 
