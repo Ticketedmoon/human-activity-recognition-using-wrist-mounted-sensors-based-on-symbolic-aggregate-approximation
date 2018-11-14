@@ -1,4 +1,4 @@
-py36_nose:
+python-job-install-requirements:
     image: python:3.6
     script:
         - pip install -r src/requirements.txt
