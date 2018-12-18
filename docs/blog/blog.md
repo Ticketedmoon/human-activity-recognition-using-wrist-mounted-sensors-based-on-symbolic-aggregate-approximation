@@ -54,7 +54,6 @@ idea in great detail. Within the specification, I discuss:
 
 - Section 7 is a list of references I made use of when developing the project idea.
 
-- 
 The blog is written in [markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 Markdown is a simple text-based mark-up language.
 
