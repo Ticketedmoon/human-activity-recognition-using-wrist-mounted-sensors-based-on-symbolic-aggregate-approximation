@@ -8,3 +8,6 @@
 
 # Ignore everything in the build directory.
 build/
+
+# Ignore python virtual environments
+venv/
