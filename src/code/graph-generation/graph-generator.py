@@ -26,12 +26,12 @@ ax.plot(x, y1, x, y2, x, y3, x, y4)
 ax.grid(linestyle='--')
 
 start, end = ax.get_ylim()
-ax.yaxis.set_ticks(np.arange(start, end, 50))
+ax.yaxis.set_ticks(np.arange(start, end, 75))
 
 start, end = ax.get_xlim()
 ax.xaxis.set_ticks(np.arange(start, end, 1000))
 
 plt.ylabel('mV')
-plt.xlabel('Time (Microseconds)')
+plt.xlabel('Time (Milliseconds)')
 
 plt.show()
