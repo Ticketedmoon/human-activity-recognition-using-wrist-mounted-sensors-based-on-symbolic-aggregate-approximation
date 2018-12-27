@@ -1,1 +1,2 @@
-All of your source code (and other program resources) should be placed in this sub-directory.
+When installing all the necessary requirements for the project,  
+please use `pip -r install requirements.txt`
