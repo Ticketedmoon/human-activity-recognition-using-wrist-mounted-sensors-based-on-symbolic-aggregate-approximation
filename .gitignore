@@ -11,3 +11,9 @@ build/
 
 # Ignore python virtual environments
 venv/
+
+# Ignore Dist/ folders
+dist/
+
+# Ignore __pycache__/
+__pycache__/
