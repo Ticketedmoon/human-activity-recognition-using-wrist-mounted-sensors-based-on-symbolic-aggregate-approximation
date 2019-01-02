@@ -5,6 +5,7 @@
 # Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
+import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -46,7 +47,7 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab_2, "")
         self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
         self.progressBar.setGeometry(QtCore.QRect(470, 310, 118, 16))
-        self.progressBar.setProperty("value", 24)
+        self.progressBar.setProperty("value", 80)
         self.progressBar.setObjectName("progressBar")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -68,7 +69,6 @@ class Ui_MainWindow(object):
 
 
 if __name__ == "__main__":
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
