@@ -17,3 +17,6 @@ dist/
 
 # Ignore __pycache__/
 __pycache__/
+
+# Ignore .idea/ folders from IDEA products
+.idea/
