@@ -19,4 +19,4 @@ Use `pyqt5` designer to build a healthy user interface in the form of
 a `.ui` file. From these .ui files, we can use pyuic to decipher  the them  
 and generates our GUI as a .py runnable application format.  
 To do this, run the following command while in 
-the **python3.7/scripts** directory: `pyuic5 -s {'.ui file path'} -o {'output .py path'}`
+the **python3.7/scripts** directory: `pyuic5 {'.ui file path'} -o {'output .py path'}`
