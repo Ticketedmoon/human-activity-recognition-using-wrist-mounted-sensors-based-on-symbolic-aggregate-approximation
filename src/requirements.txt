@@ -8,3 +8,4 @@ python-dateutil==2.7.5
 pytz==2018.7
 scipy==1.2.0
 six==1.12.0
+saxpy==1.0.1.dev167
