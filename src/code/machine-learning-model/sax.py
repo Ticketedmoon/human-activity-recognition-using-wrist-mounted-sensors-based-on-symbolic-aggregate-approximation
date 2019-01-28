@@ -11,8 +11,8 @@ class Sax:
     run_csv_path = "../../resources/exercise-datasets/Run01.csv"
 
     def __init__(self):
-        self.walk_data = pd.read_csv(self.walk_csv_path, index_col=0, parse_dates=True, skiprows=[0])
-        self.run_data = pd.read_csv(self.run_csv_path, index_col=0, parse_dates=True, skiprows=[0])
+        self.walk_data = pd.read_csv(self.walk_csv_path, index_col=0, parse_dates=True, skiprows=[0, 1])
+        self.run_data = pd.read_csv(self.run_csv_path, index_col=0, parse_dates=True, skiprows=[0, 1])
 
     def convert_to_single_dim(self):
         walk_stats = pd.Series(self.walk_data.values.squeeze())
@@ -26,9 +26,13 @@ class Sax:
         return walk_data, run_data
 
     def apply_sax_transformation(self):
+        cut_size = cuts_for_asize(5)
+        print("letters:   " + str(["a", "b", "c", "d", "e"]))
+        print("cut points: " + str(cut_size))
+
         walk_data, run_data = self.convert_to_single_dim()
-        walk_results = ts_to_string(znorm(walk_data), cuts_for_asize(5))
-        run_results = ts_to_string(znorm(run_data), cuts_for_asize(5))
+        walk_results = ts_to_string(znorm(walk_data), cut_size)
+        run_results = ts_to_string(znorm(run_data), cut_size)
         return walk_results, run_results
 
 def main():
