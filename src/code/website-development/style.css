@@ -1,3 +1,10 @@
+/* Import Fonts */
+@font-face {
+    font-family: "Raleway";
+    src:url("resources/fonts/Raleway-Regular.ttf");
+}
+
+/* CSS code */
 * {
     width: 100%;
     height: 100%;
@@ -5,9 +12,8 @@
 }
 
 .main-image-section {
-    background: URL("resources/sun-run.jpg") no-repeat fixed center;
+    background: URL("resources/images/sun-run.jpg") no-repeat fixed center;
     height: 75%;
-    border-bottom: 1px solid  black;
 }
 
 .main-text {
@@ -26,8 +32,8 @@
     font-weight: bold;
     font-size: 2.5em;
 
-    -webkit-text-stroke-width: 0.5px;
-    -webkit-text-stroke-color: black;
+    text-shadow: horizontal-offset vertical-offset blur color;
+    text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
 }
 
 .sub-title {
@@ -60,9 +66,14 @@
     text-align: center;
     vertical-align: middle;
     display: table-cell;
-    font-family: Courier;
+
+    font-family: Raleway, sans-serif;
+    font-size: 1.3em;
+    font-weight: bold;
     color: whitesmoke;
 
+    text-shadow: horizontal-offset vertical-offset blur color;
+    text-shadow: 4px 4px 3px rgba(0,0,0,0.3);
 }
 
 .button:hover {
