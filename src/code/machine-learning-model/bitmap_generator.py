@@ -22,9 +22,10 @@ class BitmapGenerator:
             for i in range(0, len(activity_string)//32, 1):
                 image_source = activity_string[32*i:32*(i+1)]
                 print("Image Letter Scheme #" + str(count) + ": " + image_source)
-                text_to_image.encode(image_source, "../bitmaps/activity" + str(count) + ".png")
+                text_to_image.encode(image_source, "./pixel_bitmaps/activity" + str(count) + ".png")
                 count += 1
 
+    
 
 def main():
     generator = BitmapGenerator()

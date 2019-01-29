@@ -7,8 +7,8 @@ from saxpy.alphabet import cuts_for_asize
 
 class Sax:
 
-    walk_csv_path = "../../../resources/exercise-datasets/Walk01.csv"
-    run_csv_path = "../../../resources/exercise-datasets/Run01.csv"
+    walk_csv_path = "../../resources/exercise-datasets/Walk01.csv"
+    run_csv_path = "../../resources/exercise-datasets/Run01.csv"
 
     def __init__(self):
         self.walk_data = pd.read_csv(self.walk_csv_path, index_col=0, parse_dates=True, skiprows=[0, 1])
@@ -24,7 +24,6 @@ class Sax:
 
     def apply_sax_transformation(self):
         cut_size = cuts_for_asize(12)
-        print("letters:   " + str(["a", "b", "c", "d", "e"]))
         print("cut points: " + str(cut_size))
 
         walk_data, run_data = self.convert_to_single_dim()
