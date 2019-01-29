@@ -23,7 +23,7 @@ class Sax:
         return walk_data, run_data
 
     def apply_sax_transformation(self):
-        cut_size = cuts_for_asize(5)
+        cut_size = cuts_for_asize(12)
         print("letters:   " + str(["a", "b", "c", "d", "e"]))
         print("cut points: " + str(cut_size))
 
