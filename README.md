@@ -24,6 +24,17 @@ Another application of the project could be within the fitness industry. Specifi
 what type of activity people are doing within a gym environment. Personal trainers could use the application to 
 track their clients on a regular basis.
 
+#### Example of SAX transformation:
+![Sax information](src/resources/data-visualisations/WhatIsSAX.png)
+
+#### Example of Grey-Scale bitmap images:
+##### ImageA:
+![Sax information](src/resources/data-visualisations/bitmap%231.png)
+
+##### ImageB:
+![Sax information](src/resources/data-visualisations/bitmap%232.png)
+
+
 #### How is the project going to be implemented
 
 > More information can be found in my project proposal and functional specification.  
