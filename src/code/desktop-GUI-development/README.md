@@ -19,7 +19,7 @@ Start virtual environment:
 **Windows**: `.\env\Scripts\activate`
 
 ###### Note:
-To deactivate the virtual environement and return to the global packages scope,  
+To deactivate the virtual environment and return to the global packages scope,  
 simply run the command: `deactivate`
 
 With the virtual environement activated, install all necessary project packages:
