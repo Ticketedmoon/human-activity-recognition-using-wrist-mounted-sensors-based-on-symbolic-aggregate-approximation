@@ -21,8 +21,7 @@ pefile==2018.8.8
 Pillow==5.4.1
 pluggy==0.8.1
 py==1.7.0
-pip==18.1
-PyInstaller==3.4
+# PyInstaller==3.4
 pylint==2.2.2
 PyQt5==5.11.3
 PyQt5-sip==4.19.13
