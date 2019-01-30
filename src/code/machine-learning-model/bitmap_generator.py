@@ -31,7 +31,7 @@ class BitmapGenerator:
         for i in range(0, len(activity_sax_repr)//32, 1):
             image_source = activity_sax_repr[32*i:32*(i+1)]
             print("Image Letter Scheme #" + str(count) + ": " + image_source)
-            text_to_image.encode(image_source, "./pixel_bitmaps/" + activity + "/"
+            text_to_image.encode(image_source, "./pixel_bitmaps/train/" + activity + "/"
                                  + activity + "0" + str(count) + ".png")
             count += 1
 
