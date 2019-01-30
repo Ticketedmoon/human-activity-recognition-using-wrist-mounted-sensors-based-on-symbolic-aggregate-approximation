@@ -29,10 +29,10 @@ track their clients on a regular basis.
 
 #### Example of Grey-Scale bitmap images:
 ##### ImageA:
-![Sax information](src/resources/data-visualisations/bitmap%231.png)
+![Bitmap #1 information](src/resources/data-visualisations/bitmap_1.png)
 
 ##### ImageB:
-![Sax information](src/resources/data-visualisations/bitmap%232.png)
+![Bitmap #2 information](src/resources/data-visualisations/bitmap_2.png)
 
 
 #### How is the project going to be implemented
