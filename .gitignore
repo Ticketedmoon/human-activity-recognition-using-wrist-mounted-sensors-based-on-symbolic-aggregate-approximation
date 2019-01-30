@@ -25,4 +25,7 @@ __pycache__/
 .vscode/
 
 # Project Specific Ignores
-pixel_bitmaps/
+Walk/
+Run/
+LowResistanceBike/
+HighResistanceBike/
