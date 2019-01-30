@@ -4,7 +4,6 @@ from saxpy.znorm import znorm
 from saxpy.sax import ts_to_string
 from saxpy.alphabet import cuts_for_asize
 
-
 class SymbolicAggregateApproximation:
 
     exercise_path = "../../resources/exercise-datasets/"
@@ -12,6 +11,7 @@ class SymbolicAggregateApproximation:
     def generate_walk(self, file_no):
         walk_data = pd.read_csv(self.exercise_path + "Walk0" + str(file_no) + ".csv",
                                 index_col=0, parse_dates=True, skiprows=[0, 1])
+        print(walk_data)
         walk_stats = pd.Series(walk_data.values.squeeze())
         numeric_data = pd.to_numeric(walk_stats, errors='coerce')
         return self.apply_sax_transformation(numeric_data)
@@ -43,11 +43,9 @@ class SymbolicAggregateApproximation:
         exercise_results = ts_to_string(znorm(data), cut_size)
         return exercise_results
 
-
 def main():
     sax_obj = SymbolicAggregateApproximation()
     print_demo(sax_obj, 1)
-
 
 def print_demo(sax_obj, file_no):
     try:
@@ -64,8 +62,7 @@ def print_demo(sax_obj, file_no):
         print(sax_obj.generate_high_bike(file_no))
 
     except FileNotFoundError:
-        print("File with ID: Walk0" + str(file_no) + " Not Found")
-
+        print("File with ID: 0" + str(file_no) + " Not Found")
 
 if __name__ == "__main__":
     main()

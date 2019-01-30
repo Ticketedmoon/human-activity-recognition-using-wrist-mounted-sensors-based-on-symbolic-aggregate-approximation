@@ -1,7 +1,6 @@
 from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 import text_to_image
 
-
 class BitmapGenerator:
 
     def __init__(self):
@@ -36,11 +35,9 @@ class BitmapGenerator:
                                  + activity + "0" + str(count) + ".png")
             count += 1
 
-
 def main():
     generator = BitmapGenerator()
     generator.generate_bitmaps()
-
 
 if __name__ == "__main__":
     main()
