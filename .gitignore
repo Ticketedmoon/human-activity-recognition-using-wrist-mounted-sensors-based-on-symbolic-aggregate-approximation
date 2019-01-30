@@ -9,11 +9,11 @@
 # Ignore everything in the build directory.
 build/
 
+# Ignore dist directory.
+dist/
+
 # Ignore python virtual environments
 venv/
-
-# Ignore Dist/ folders
-dist/
 
 # Ignore __pycache__/
 __pycache__/
@@ -24,5 +24,4 @@ __pycache__/
 # Visual Studio Code
 .vscode/
 
-####### Project Specific Ignores ########
-pixel_bitmaps/
+# Project Specific Ignores
