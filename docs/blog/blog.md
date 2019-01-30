@@ -57,3 +57,56 @@ idea in great detail. Within the specification, I discuss:
 The blog is written in [markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 Markdown is a simple text-based mark-up language.
 
+## Blog Post #3 | Week 12 - End of Semester One | 18/12/2018
+
+Not much progress has been made on the project since I finished the functional specification back
+in week 7/8. Other modules have taken up my time however, I have been doing some research on the topic
+of Human Activity Recognition(HAR) and Machine Learning. In addition, i've looked into libraries
+and possible design choices I could take when developing my application.
+
+I came across and interesting article on how SAX (Symbolic Aggregate Approximation) can be implemented
+within Java and I may use this to aid my development within Python. Google Scholar has been helpful for
+finding Machine Learning related articles in the field. I have been looking a lot into **Supervised Learning**
+research papers and methods to optimise convolutional neural networks for image classification.
+Now, I will take some time off to spend with my family over christmas but once January hits, I will
+be back in the books for the exams.
+
+## Blog Post #4 | Examination Period | 06/1/2019
+
+Happy new year to those reading and a happy christmas as well. I had been researching the project over the last
+few days and coding some small prototypes to grasp how I was going to build the proclaimed software specified in the 
+functional specification. With the DCU exams in several days time, I have decided to but the project on the back seat
+while I focus thoroughly on my exams.
+
+## Blog Post #5 | Beginning development of the project | 26/01/2019
+
+Returning back from a week-long trip, I have started working on the project. I initially wanted to understand how
+I was going to build a desktop application using Python. I looked into several different libraries which seemed to
+offer the ability to do so. Eventually after enough research, I decided to go with PyQt5, which is based on QT. Qt is set of cross-platform C++ libraries that implement high-level APIs for accessing many aspects of modern desktop and mobile systems.
+
+Additionally, I looked into how to convert a `.py` file into a `.exe` file for end-users which I managed to come across
+a magical library for this exact purpose: **PyInstaller**. PyInstaller allows me to convert a .py file into a .exe file
+along with a `.spec` configuration file for how the .exe file is run. 
+
+## Blog Post #6 | Symbolic Aggregate Approximation | 28/01/2019
+
+The project directory structure has been created. I have created a small template website which is intended
+to host the download link for the application. In addition, the SAX python file (symbolic_aggregate_approximation.py)
+was created and coded up to convert the PPG exercise data sets into a string of characters.
+
+For example:
+`cccccaabbcbcabbddddbbabdbebebeeeebdabdbdbaa`
+
+The string above is just a simple example, the real string would be FAR FAR longer, representative of an hour in time.
+We have long strings like this for all 4 activities: *Walk/Run/Low Resistance Bike/High Resistance Bike*
+
+## Blog Post #7 | Bitmap Generation | 29/01/2019
+
+With the ability to generate SAX strings from the PPG data sets, the next step was to convert these strings into images.
+To do this, I found a library online called: `text-to-image`. This library allowed me to convert a subsequence of letters
+from the SAX string into a grey-scale pixel-based image. Specifically, the images are 32 pixels in size and after generating
+all the images for each SAX string for each activity, the **total number of available training images is greater than 10,000**.
+
+This grey-scale image approach may not be the optimal approach for this problem and for convolutional neural network training but,
+I will address this with my supervisor and I will research online and find out whatever the best approach is for image classification
+in relation to the technique of Symbolic Aggregate Approximation(SAX).
