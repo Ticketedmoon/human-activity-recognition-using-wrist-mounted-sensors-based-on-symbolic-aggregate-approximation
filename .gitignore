@@ -21,5 +21,8 @@ __pycache__/
 # Ignore .idea/ folders from IDEA products
 .idea/
 
+# Visual Studio Code
+.vscode/
+
 ####### Project Specific Ignores ########
 pixel_bitmaps/
