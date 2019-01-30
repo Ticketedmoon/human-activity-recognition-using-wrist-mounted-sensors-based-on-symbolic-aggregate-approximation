@@ -25,3 +25,4 @@ __pycache__/
 .vscode/
 
 # Project Specific Ignores
+pixel_bitmaps/
