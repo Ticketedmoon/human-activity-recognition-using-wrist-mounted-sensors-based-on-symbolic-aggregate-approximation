@@ -1,31 +1,41 @@
-from sax_transformation import Sax
+from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 import text_to_image
 
 
 class BitmapGenerator:
 
-    bitmap_strings = []
-
     def __init__(self):
-        self.sax_transform = Sax()
-        self.build_bitmap_strings()
-
-    def build_bitmap_strings(self):
-        walk_str, run_str = self.sax_transform.apply_sax_transformation()
-        self.bitmap_strings.append(walk_str)
-        self.bitmap_strings.append(run_str)
+        self.sax_obj = SymbolicAggregateApproximation()
+        self.generate_bitmaps()
 
     def generate_bitmaps(self):
-        count = 0
-        for activity_string in self.bitmap_strings:
-            print(activity_string)
-            for i in range(0, len(activity_string)//32, 1):
-                image_source = activity_string[32*i:32*(i+1)]
-                print("Image Letter Scheme #" + str(count) + ": " + image_source)
-                text_to_image.encode(image_source, "./pixel_bitmaps/activity" + str(count) + ".png")
-                count += 1
+        try:
+            for index in range(1, 7):
+                walk_sax_str = self.sax_obj.generate_walk(index)
+                self.generate("Walk", walk_sax_str)
 
-    
+                run_sax_str = self.sax_obj.generate_run(index)
+                self.generate("Run", run_sax_str)
+
+                low_bike_sax_str = self.sax_obj.generate_low_bike(index)
+                self.generate("LowResistanceBike", low_bike_sax_str)
+
+                high_bike_sax_str = self.sax_obj.generate_high_bike(index)
+                self.generate("HighResistanceBike", high_bike_sax_str)
+
+        except FileNotFoundError:
+            print("File not found")
+
+    @staticmethod
+    def generate(activity, activity_sax_repr):
+        count = 1
+        for i in range(0, len(activity_sax_repr)//32, 1):
+            image_source = activity_sax_repr[32*i:32*(i+1)]
+            print("Image Letter Scheme #" + str(count) + ": " + image_source)
+            text_to_image.encode(image_source, "./pixel_bitmaps/" + activity + "/"
+                                 + activity + "0" + str(count) + ".png")
+            count += 1
+
 
 def main():
     generator = BitmapGenerator()
