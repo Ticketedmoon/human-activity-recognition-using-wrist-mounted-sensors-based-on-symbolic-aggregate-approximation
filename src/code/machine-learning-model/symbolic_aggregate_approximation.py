@@ -11,7 +11,6 @@ class SymbolicAggregateApproximation:
     def generate_walk(self, file_no):
         walk_data = pd.read_csv(self.exercise_path + "Walk0" + str(file_no) + ".csv",
                                 index_col=0, parse_dates=True, skiprows=[0, 1])
-        print(walk_data)
         walk_stats = pd.Series(walk_data.values.squeeze())
         numeric_data = pd.to_numeric(walk_stats, errors='coerce')
         return self.apply_sax_transformation(numeric_data)
