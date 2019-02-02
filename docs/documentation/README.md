@@ -15,3 +15,6 @@ In addition, the file names you choose to use should make clear what the documen
 **The final version of your documents should be converted to PDF and stored in this same directory**
 
 *Do not place any other files in this directory.*
+
+---
+##### Any `.ipynb` files can be accessed through Google's: **Google Collaboration**  
