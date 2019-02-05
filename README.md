@@ -29,11 +29,16 @@ track their clients on a regular basis.
 
 #### Example of Grey-Scale bitmap images:
 ##### ImageA:
+##### String Representation:  
+###### 'qrqqrrrrrrqrrrqrqqppoopooononooopqqsstttttttttttttttttttttsrpoljifedcbaaaaaaaaaaaaaaaaaaaaaaaaabbbcccdeeggghiiijkkkklklkllllkmkm'  
+
 ![Bitmap #1 information](src/resources/data-visualisations/bitmap_1.png)
 
 ##### ImageB:
-![Bitmap #2 information](src/resources/data-visualisations/bitmap_2.png)
+##### String Representation:  
+###### 'kkklkkkkkjjjjijiiihihhhhgghhghhhhhhhihiiiiiiijjijjjkkkjjjjkkkkkllkklkklkkkkjjijihiihhgghhgggggfffffffffffefeffffffggghhijkllmnop'  
 
+![Bitmap #2 information](src/resources/data-visualisations/bitmap_2.png)
 
 #### How is the project going to be implemented
 
