@@ -40,10 +40,6 @@ track their clients on a regular basis.
 
 ![Bitmap #2 information](src/resources/data-visualisations/bitmap_2.png)  
 
-#### How does the computer view our grey-scale bitmaps?  
-
-![Bitmap computer vision -- matrix of values](src/resources/data-visualisations/grey-scale-example.gif)
-
 #### How is the project going to be implemented
 
 > More information can be found in my project proposal and functional specification.  
