@@ -29,3 +29,8 @@ Walk/
 Run/
 LowResistanceBike/
 HighResistanceBike/
+
+# Django ignore requirements
+env
+*.DS_Store
+*.pyc
