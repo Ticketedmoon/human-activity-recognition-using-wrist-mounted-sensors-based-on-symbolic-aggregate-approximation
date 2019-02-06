@@ -10,5 +10,5 @@ urlpatterns = [
     path('comments/<int:comment_id>/', views.get, name="get"),
 
     # Get all comments
-    path('comments/all/', views.getAllComments, name="getAllComments")
+    path('comments/', views.comments, name="comments")
 ]
