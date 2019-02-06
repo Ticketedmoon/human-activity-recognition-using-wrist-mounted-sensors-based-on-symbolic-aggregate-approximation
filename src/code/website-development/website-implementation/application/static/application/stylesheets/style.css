@@ -1,7 +1,7 @@
 /* Import Fonts */
 @font-face {
     font-family: "Raleway";
-    src:url("resources/fonts/Raleway-Regular.ttf");
+    src:url("../resources/fonts/Raleway-Regular.ttf");
 }
 
 /* CSS code */
@@ -12,7 +12,7 @@
 }
 
 .main-image-section {
-    background: URL("resources/images/sun-run.jpg") no-repeat fixed center;
+    background: URL("../resources/images/sun-run.jpg") no-repeat fixed center;
     height: 75%;
 }
 

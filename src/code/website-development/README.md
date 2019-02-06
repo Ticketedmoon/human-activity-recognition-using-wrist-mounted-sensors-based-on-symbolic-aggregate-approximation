@@ -3,7 +3,8 @@ The website will be split into different fragments focused on the project
 and any research findings discovered.  
 
 #### Django Documentation
-https://docs.djangoproject.com/en/2.1/intro/tutorial02/
+https://docs.djangoproject.com/en/2.1/intro/tutorial02/  
+The above tutorial document explains the concept of migrations and database access very well.
 
 ---
 
@@ -13,3 +14,5 @@ Important Django Management Information:
 2. Run python manage.py makemigrations to create migrations for those changes.  
 3. Run python manage.py migrate to apply those changes to the database.
 
+https://docs.djangoproject.com/en/2.1/intro/tutorial03/  
+The above tutorial document explains ths concept of templates and template/view communication and data passing.  

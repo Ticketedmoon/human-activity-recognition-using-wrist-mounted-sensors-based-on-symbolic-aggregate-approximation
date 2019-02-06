@@ -1,6 +1,9 @@
+<!-- Django specific Code for CSS and Other Resources -->
+{% load static %}
+
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="{% static 'application/stylesheets/style.css' %}">
         <title> Human Activity Recognition PPG Software </title>
     </head>
     <body>
