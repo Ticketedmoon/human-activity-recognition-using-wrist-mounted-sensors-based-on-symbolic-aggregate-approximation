@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class WebsiteApplicationConfig(AppConfig):
-    name = 'website_application'
+class WebsiteConfig(AppConfig):
+    name = 'website'
