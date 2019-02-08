@@ -54,3 +54,6 @@ d) `pyinstaller --onefile -w <your_script_name>.py`
 - Inside the **dist/** folder will you find the executable .exe file to run the GUI.  
 - Additionally, a `<your_script_name>.spec` file will be generated in the desktop-GUI-development root directory  
   which describes some configuration details of .exe.
+
+### A great link for PPG Arduino linking with PyQt5
+https://github.com/DingkunLiu/PPG_Monitor

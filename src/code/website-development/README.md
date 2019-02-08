@@ -16,3 +16,8 @@ Important Django Management Information:
 
 https://docs.djangoproject.com/en/2.1/intro/tutorial03/  
 The above tutorial document explains ths concept of templates and template/view communication and data passing.  
+
+---
+###### Keyboard Commands
+> f5 = refresh
+> ctrl + f5 = refresh with cache removal
