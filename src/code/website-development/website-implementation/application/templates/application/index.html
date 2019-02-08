@@ -4,16 +4,48 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="{% static 'application/stylesheets/style.css' %}">
+
         <title> Human Activity Recognition PPG Software </title>
     </head>
     <body>
-        <div class="container">
-            <div class="left-container">
+        <div class="container"> 
 
+            <!-- The video -->
+            <div class="fullscreen-video-wrap">
+                <video autoplay muted loop id="myVideo">
+                    <source src="../../static/application/resources/assets/background-video.mp4" type="video/mp4">
+                </video>
             </div>
-            <div class="right-container">
-                
+
+            <!-- Overlay  -->
+            <div class="video-overlay"></div>
+
+            <!-- Text centre of image -->
+            <div class="video-text">
+                <p class="background-video-text video-text-common"> Human Activity Recognition using Photoplethysmographic Signals </p>
+                <p class="background-video-sub-text video-text-common"> Arduino Software based on Machine Learning </p>
             </div>
+
+            <!-- Navigation menu -->
+            <div class="nav-bar">
+                <ul class="nav-table">
+                    <li class="nav-item"> <a href="#"> Home </li> </a>
+                    <li class="nav-item"> <a href="#"> Research </li></a>
+                    <li class="nav-item"> <a href="#"> Blog </li></a>
+                    <li class="nav-item"> <a href="#"> Discussion </li></a>
+                </ul>
+            </div>
+            
+            <!-- Download Link Button -->
+            <div class="wrap">
+                <button class="button"> Download </button>
+            </div>
+
+            <!-- Copyright -->
+            <div class="copyright">
+                <p class="copyright-text"> @Copyright, Shane Creedon, Computer Applications & Software Engineering, Fourth Year Project, DCU</p>
+            </div>
+
         </div>
     </body>
 </html>

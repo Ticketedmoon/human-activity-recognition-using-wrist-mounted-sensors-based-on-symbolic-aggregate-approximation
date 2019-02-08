@@ -4,25 +4,150 @@
     src:url("../resources/fonts/Raleway-Regular.ttf");
 }
 
+@font-face {
+    font-family: "IndieFlower";
+    src:url("../resources/fonts/IndieFlower.ttf");
+}
+
+@font-face {
+    font-family: "Rajdhani";
+    src:url("../resources/fonts/Rajdhani-Medium.ttf");
+}
+
 /* CSS code */
 * {
+    box-sizing: border-box;
     width: 100%;
-    height: 100%;
     margin: 0;
+    color: white;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    overflow-x: hidden;
 }
 
 .container {
-    background-color: whitesmoke;
+    height: 100%;
+}
+.video-text-common {
+    text-align: center;
+    font-family: "Raleway";
+    font-weight: bold;
+    
+    width: 100%;
+    text-shadow: horizontal-offset vertical-offset blur color;
+    text-shadow: 4px 4px 3px rgba(0,0,0,0.3);
 }
 
-.left-container {
-    background-color: rebeccapurple;
-    width: 49.5%;
-    float: left;
+.background-video-text { font-size: 2em; }
+.background-video-sub-text { font-size: 1.5em; }
+
+.fullscreen-video-wrap {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.50);
 }
 
-.right-container {
-    background-color: aqua;
-    width: 49.5%;
-    float: right;
+.video-text {
+    position:absolute;
+    z-index:1;
+    line-height: 4em;
+    padding-top: 10em;
 }
+
+.nav-bar {
+    background: rgba(0, 0, 0, 0.40);
+    position: absolute;
+    height: 4em;
+}
+
+.nav-table {
+    position: absolute;
+    list-style-type: none;
+    text-align: right;
+    top: 1.5em;
+
+    margin: 0;
+    z-index:1;
+    width: 95%;
+}
+
+.nav-item { display: inline; }
+
+.nav-item a {
+    text-decoration: none;
+    margin-right: 4em;
+    color: white;
+    font-family: "Raleway", "Arial";
+
+    text-shadow: horizontal-offset vertical-offset blur color;
+    text-shadow: 8px 8px 6px rgba(0, 0, 0, 0.3);
+}
+
+.nav-item a:hover {
+    color: #2EE59D;
+    cursor: pointer;
+    transition: all 0.5s ease 0s;
+}
+
+.video-overlay {
+    background-color: black;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    opacity: 0.8;
+}
+
+/* Button CSS styling */
+.wrap {
+    padding-top: 22em;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .button {
+    width: 200px;
+    height: 45px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    font-weight: 500;
+    color: #000;
+    background-color: #fff;
+    border: none;
+    border-radius: 45px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+    }
+  
+  .button:hover {
+    background-color: #2EE59D;
+    box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+    color: #fff;
+    transform: translateY(-7px);
+  }
+
+  /* Copyright */
+  .copyright {
+    width: 100%;
+    padding-top: 2em;
+    left: 0;
+    bottom: 2.5em;
+    position: absolute;
+    text-align: center;
+  }
+
+  .copyright-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85em;
+  }
