@@ -71,7 +71,7 @@
 
     margin: 0;
     z-index:1;
-    width: 95%;
+    width: 97.5%;
 }
 
 .nav-item { display: inline; }
@@ -81,6 +81,7 @@
     margin-right: 4em;
     color: white;
     font-family: "Raleway", "Arial";
+    font-size: 0.9em;
 
     text-shadow: horizontal-offset vertical-offset blur color;
     text-shadow: 8px 8px 6px rgba(0, 0, 0, 0.3);
@@ -99,7 +100,6 @@
     position: absolute;
     top: 0;
     left: 0;
-
     opacity: 0.8;
 }
 
