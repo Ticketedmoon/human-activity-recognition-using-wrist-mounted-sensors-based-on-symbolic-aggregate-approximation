@@ -21,3 +21,23 @@ The above tutorial document explains ths concept of templates and template/view 
 ###### Keyboard Commands
 > f5 = refresh
 > ctrl + f5 = refresh with cache removal
+
+###### Gunicorn / Django / Nginx Commands
+
+> Remember to start your virtual environment before initiating these commands.  
+
+**Gunicorn**
+
+- systemctl start gunicorn  
+- systemctl enable gunicorn  
+- systemctl status gunicorn  
+
+- systemctl daemon-reload  
+- systemctl restart gunicorn  
+
+**Check Gunicorn logs for errors**  
+
+- journalctl -u gunicorn
+
+**Nginx**
+
