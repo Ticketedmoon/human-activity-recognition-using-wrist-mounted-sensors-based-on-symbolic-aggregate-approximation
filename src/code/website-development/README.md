@@ -22,7 +22,7 @@ The above tutorial document explains ths concept of templates and template/view 
 > f5 = refresh
 > ctrl + f5 = refresh with cache removal
 
-###### Gunicorn / Django / Nginx Commands
+###### Gunicorn / Django / Nginx / Postgresql Commands
 
 > Remember to start your virtual environment before initiating these commands.  
 
@@ -41,3 +41,8 @@ The above tutorial document explains ths concept of templates and template/view 
 
 **Nginx**
 
+**Postgresql**
+
+- systemctl status postgresql
+- systemctl start postgresql
+- systemctl enable postgresql
