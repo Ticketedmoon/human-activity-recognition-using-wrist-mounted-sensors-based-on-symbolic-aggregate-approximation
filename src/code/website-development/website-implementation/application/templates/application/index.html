@@ -4,7 +4,6 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="{% static 'application/stylesheets/style.css' %}">
-
         <title> Human Activity Recognition PPG Software </title>
     </head>
     <body>
@@ -13,7 +12,7 @@
             <!-- The video -->
             <div class="fullscreen-video-wrap">
                 <video autoplay muted loop id="myVideo">
-                    <source src="../../static/application/resources/assets/background-video.mp4" type="video/mp4">
+                    <source src="{% static 'application/resources/assets/background-video.mp4' %}" type="video/mp4">
                 </video>
             </div>
 

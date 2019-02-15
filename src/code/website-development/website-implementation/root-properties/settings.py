@@ -26,8 +26,7 @@ with open('/etc/secret_key_CA400.txt') as f:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = ['projectactivityrecognition.ml', 'www.projectactivityrecognition.ml']
 
 # Application definition
 
@@ -59,7 +58,7 @@ ROOT_URLCONF = 'root-properties.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['application/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,7 +72,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'root-properties.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -126,8 +124,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/application/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, '/application/static/')
+STATIC_URL = '/static/'
+STATIC_ROOT = '/var/www/projectactivityrecognition.ml/html/website-implementation/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+	'/static/',
+]
 
 # Extra Stuff
 CSRF_COOKIE_SECURE = True
@@ -136,7 +138,7 @@ CONN_MAX_AGE = True
 SECURE_HSTS_SECONDS = 1
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
-SECURE_SSL_REDIRECT = False # Make this True for --Production
+SECURE_SSL_REDIRECT = True # Make this True for --Production
 X_FRAME_OPTIONS = 'DENY'
 SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
