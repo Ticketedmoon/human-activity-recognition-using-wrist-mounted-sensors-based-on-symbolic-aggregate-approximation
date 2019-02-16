@@ -110,3 +110,19 @@ all the images for each SAX string for each activity, the **total number of avai
 This grey-scale image approach may not be the optimal approach for this problem and for convolutional neural network training but,
 I will address this with my supervisor and I will research online and find out whatever the best approach is for image classification
 in relation to the technique of Symbolic Aggregate Approximation(SAX).
+
+## Blog Post #8 | Meetings and Discoveries | 16/02/2019
+
+Myself and Tomas (Supervisor) have met up several times to discuss the project conceptually. He has given me great advice and
+pushed me in the right general direction with the project. I read over **Eoin Brophy's** research paper on human activity recognition
+in relation to PPGs and that also helped improve my abstract view of the project. Previously, I was aiming for 32 pixels within a bitmap
+image for training, testing and validation. However, this only accumulated to 0.125 milliseconds of examination. As a result of reading Eoin's paper
+and discussing with Tomas, I modified this approach to now take on 2 entire seconds of detail per image. This amounts to 512 pixels per image.  
+
+Due to such a high pixel count per image, we decided to invoke the powers of **Transfer Learning** to ultimately improve our model's accuracy, by
+using pre-existing models to save us much training time and improve our accuracy. This technique involves training the penultimate layer of the
+convolutional neural network with our training data, and training the rest of the model with the transfer learning concept.  
+
+Finally, Tomas suggested I do away with the saxpy library I was using as well as the text-to-image library I was using. We decided for the sake
+of research and ad hoc project requirements that I would enter into the process of building my own SAX toolkit (library) and string to image conversion
+process.
