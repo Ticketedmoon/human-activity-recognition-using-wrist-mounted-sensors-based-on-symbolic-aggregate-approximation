@@ -126,3 +126,40 @@ convolutional neural network with our training data, and training the rest of th
 Finally, Tomas suggested I do away with the saxpy library I was using as well as the text-to-image library I was using. We decided for the sake
 of research and ad hoc project requirements that I would enter into the process of building my own SAX toolkit (library) and string to image conversion
 process.
+
+## Blog Post #9 | Normalisation problem discovery | 16/02/2019
+
+Through a thorough analysis of the data, I noticed the normalisation process was modifying the data negatively. After normalisation, each SAX string would generate but the distances
+between letters would be dictated solely on the data set the PPG microvolt data came from. What we really want is this to be relative to the entire project training data body.  
+**For Example:** The walk data set would map q -> ~1600 mV while the high-resistance cycle data set would map q -> 1300.  
+
+This is a problem and to address it I intend to make the comparison mapping values static to the project as a whole and not to the individual data set. The amplitude of our signals are discriminative, so therefore it might be best not to normalise.
+
+## Blog Post #10 | SAX implementation & Bitmap Detail for Machine Learning | 17/02/2019
+
+I have now wrote my own SAX module and bitmap generation scheme. Among the SAX module I wrote, I now have a very strong understanding of all the
+underlying components that make it up. I also made the module flexible and simple to use and tweak settings. One can specify the range of letters
+that make up the sax conversion process in addition to the lower-bounding property that makes up the window size of a particular letter.  
+
+To achieve this, I took X amount of entries the user desired for the window size | E.G. 10. I average out the values of these 10 entries by summing them
+and dividing by the quantity of entries. It is this average value I use to determine what letter these 10 entries should belong to. This is a simple yet
+effective method for segmenting groups of microvolt signals into a single letter. Adjusting this property may improve our accuracy & efficiency in the future
+so hence why I incorporate the feature.  
+
+Finally, I wrote my own bitmap module using techniques found online. I decided to map each letter to a particular RGB value:  
+**'a': (200, 125, 50)**  
+**'b': (20, 200, 50)**  
+**'c': (100, 90, 20)**  
+
+Previously, I used the **text-to-image** library to convert my sax-ified textual string into grey-scale images, however for the sake of my understanding
+and to improve the accuracy of our model, I looked into converting the images into RGB 24-bit based images. Using the library for grey-scale images also
+resulted in strange image dimensions. The size of the generated image seemed unpredictable and for our model it is practically a requirement to have a
+standardized image dimension. With writing my own bitmap module, I ensured that image sizes could only be 16x16 making up 256 pixels.  
+
+> Example of old grey-scale images against new 24-bit rgb images
+
+**8-bit Grey-scale bitmap**  
+![grey-scale-bitmap](images/grey-scale_bitmap.png)  
+
+**24-bit RGB bitmap**  
+![grey-scale-bitmap](images/example-rgb-image.png)
