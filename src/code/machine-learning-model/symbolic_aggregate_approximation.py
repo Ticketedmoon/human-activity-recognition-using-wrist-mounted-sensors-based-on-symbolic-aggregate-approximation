@@ -15,17 +15,17 @@ class SymbolicAggregateApproximation:
 
     def generate_run(self, file_no):
         run_path = self.exercise_path + "Run0" + str(file_no) + ".csv"
-        exercise_results = self.sax_obj.generate_string_from_time_series(run_path, 20, 10)
+        exercise_results = self.sax_obj.generate_string_from_time_series(run_path, 20, 1)
         return exercise_results
 
     def generate_low_bike(self, file_no):
         low_bike_path = self.exercise_path + "LowResistanceBike0" + str(file_no) + ".csv"
-        exercise_results = self.sax_obj.generate_string_from_time_series(low_bike_path, 20, 10)
+        exercise_results = self.sax_obj.generate_string_from_time_series(low_bike_path, 20, 1)
         return exercise_results
 
     def generate_high_bike(self, file_no):
         high_bike_path = self.exercise_path + "HighResistanceBike0" + str(file_no) + ".csv"
-        exercise_results = self.sax_obj.generate_string_from_time_series(high_bike_path, 20, 10)
+        exercise_results = self.sax_obj.generate_string_from_time_series(high_bike_path, 20, 1)
         return exercise_results
 
 def main():
