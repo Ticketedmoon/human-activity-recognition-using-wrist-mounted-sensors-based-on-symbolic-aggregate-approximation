@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 
-from SAX_module.norm_sax_letter_conversion import norm_letter_conversion
-from SAX_module.interval_sax_letter_conversion import int_letter_conversion
+from sax_module.norm_sax_letter_conversion import norm_letter_conversion
+from sax_module.interval_sax_letter_conversion import int_letter_conversion
 
 class Time_series_to_string_via_sax:
 
