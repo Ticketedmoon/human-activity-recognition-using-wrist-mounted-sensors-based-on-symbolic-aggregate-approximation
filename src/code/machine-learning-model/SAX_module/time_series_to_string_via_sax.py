@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
-from SAX_module.sax_letter_conversion import letter_conversion
+
+from SAX_module.norm_sax_letter_conversion import norm_letter_conversion
+from SAX_module.interval_sax_letter_conversion import int_letter_conversion
 
 class Time_series_to_string_via_sax:
 
@@ -52,6 +54,6 @@ class Time_series_to_string_via_sax:
         data = self.generate(file_path_to_ts)
         windowed_data = self.apply_letter_window(data, horizontal_window_size)
         norm_data = self.normalise_data(windowed_data)
-        options = letter_conversion(letter_boundary_size)
+        options = norm_letter_conversion(letter_boundary_size)
         sax_string = self.ts_to_string(norm_data, options)
         return sax_string

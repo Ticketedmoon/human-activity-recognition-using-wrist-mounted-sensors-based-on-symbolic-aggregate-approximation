@@ -1,6 +1,6 @@
 import numpy as np
 
-def letter_conversion(size):
+def norm_letter_conversion(size):
     options = {
         2: np.array([-np.inf,  0.00]),
         3: np.array([-np.inf, -0.4307273, 0.4307273]),
