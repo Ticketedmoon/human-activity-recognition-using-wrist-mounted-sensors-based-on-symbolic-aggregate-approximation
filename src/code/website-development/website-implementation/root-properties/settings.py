@@ -20,11 +20,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open('/etc/secret_key_CA400.txt') as f:
-    SECRET_KEY = f.read().strip()
+# with open('/etc/secret_key_CA400.txt') as f:
+#    SECRET_KEY = f.read().strip()
+
+SECRET_KEY = '!ub3zyvs8-y7ykxn!t9-mba4nv=4f!7qoiu2uds$mv313*@me3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['projectactivityrecognition.ml', 'www.projectactivityrecognition.ml']
 
@@ -111,13 +113,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'Europe/London'
 
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
@@ -125,20 +124,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/var/www/projectactivityrecognition.ml/html/website-implementation/static/'
+# PROD_UNDO: STATIC_ROOT = '/var/www/projectactivityrecognition.ml/html/website-implementation/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 	'/static/',
 ]
 
 # Extra Stuff
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-CONN_MAX_AGE = True
-SECURE_HSTS_SECONDS = 1
-SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_SSL_REDIRECT = True # Make this True for --Production
-X_FRAME_OPTIONS = 'DENY'
-SECURE_HSTS_PRELOAD = True
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# PROD_UNDO: CSRF_COOKIE_SECURE = True
+# PROD_UNDO: SESSION_COOKIE_SECURE = True
+# PROD_UNDO: CONN_MAX_AGE = True
+# PROD_UNDO: SECURE_HSTS_SECONDS = 1
+# PROD_UNDO: SECURE_CONTENT_TYPE_NOSNIFF = True
+# PROD_UNDO: SECURE_BROWSER_XSS_FILTER = True
+# PROD_UNDO: SECURE_SSL_REDIRECT = True # Make this True for --Production
+# PROD_UNDO: X_FRAME_OPTIONS = 'DENY'
+# PROD_UNDO: SECURE_HSTS_PRELOAD = True
+# PROD_UNDO: SECURE_HSTS_INCLUDE_SUBDOMAINS = True

@@ -1,6 +1,4 @@
 from struct import pack
-from symbolic_aggregate_approximation import SymbolicAggregateApproximation
-from bitmap_module.letter_to_colour_conversion import letter_to_colour
 import math
 
 class Bitmap():
@@ -51,26 +49,3 @@ class Bitmap():
         f.write(pack('<BBB', *px))
       for i in range (0, (s._bcWidth*3) % 4):
         f.write(pack('B', 0))
-
-
-
-def main():
-
-  sax = SymbolicAggregateApproximation()
-  string = sax.generate_walk(1)
-  total_images = math.ceil(len(string)/256)
-  
-  # 256 = 16 x 16 images
-
-  side = 16
-  b = Bitmap(side, side)
-  for row in range(0, side):
-      for col in range(0, side):
-        letter_choice = (row * side) + col
-        rgb_colour = letter_to_colour(string[letter_choice])
-        b.setPixel(row, col, rgb_colour)
-  b.write('file.bmp')
-
-
-if __name__ == '__main__':
-  main()

@@ -10,7 +10,7 @@ class SymbolicAggregateApproximation:
 
     def generate_walk(self, file_no):
         walk_path = self.exercise_path + "Walk0" + str(file_no) + ".csv"
-        exercise_results = self.sax_obj.generate_string_from_time_series(walk_path, 20, 10)
+        exercise_results = self.sax_obj.generate_string_from_time_series(walk_path, 20, 1)
         return exercise_results
 
     def generate_run(self, file_no):
