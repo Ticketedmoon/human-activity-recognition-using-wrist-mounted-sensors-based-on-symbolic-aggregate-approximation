@@ -9,3 +9,10 @@ In total for training and testing our model:
 
 *Training image data set total:* **12,555**  
 *Testing image data set total:* **3,145**
+
+---
+
+#### Some Essential Tools:  
+**TensorFlow**  
+**TensorBoard**  
+**Keras**  
