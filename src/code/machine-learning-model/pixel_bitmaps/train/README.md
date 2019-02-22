@@ -1,0 +1,1 @@
+> Training images directory

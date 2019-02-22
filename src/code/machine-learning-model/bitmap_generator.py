@@ -6,6 +6,21 @@ class BitmapGenerator:
 
     bitmap_size = 32
 
+    image_map = {
+        'train' : {
+            'Walk' : 0,
+            'Run' : 0,
+            'LowResistanceBike' : 0,
+            'HighResistanceBike' : 0
+        },
+        'test' : {
+            'Walk' : 0,
+            'Run' : 0,
+            'LowResistanceBike' : 0,
+            'HighResistanceBike' : 0
+        }
+    }
+
     def __init__(self):
         self.sax_obj = SymbolicAggregateApproximation()
 
@@ -14,48 +29,52 @@ class BitmapGenerator:
             try:
                 print("Activity level: " + str(index))
                 walk_sax_str = self.sax_obj.generate_walk(index)
-                self.generate_all("Walk", walk_sax_str, index)
+                self.generate_all("Walk", walk_sax_str)
 
                 run_sax_str = self.sax_obj.generate_run(index)
-                self.generate_all("Run", run_sax_str, index)
+                self.generate_all("Run", run_sax_str)
 
                 low_bike_sax_str = self.sax_obj.generate_low_bike(index)
-                self.generate_all("LowResistanceBike", low_bike_sax_str, index)
+                self.generate_all("LowResistanceBike", low_bike_sax_str)
 
                 high_bike_sax_str = self.sax_obj.generate_high_bike(index)
-                self.generate_all("HighResistanceBike", high_bike_sax_str, index)
+                self.generate_all("HighResistanceBike", high_bike_sax_str)
 
             except FileNotFoundError:
                 print("File not found with ID: (" + str(index) + ")")
 
-    def generate_all(self, activity, sax_string, classNo):
+    def generate_all(self, activity, sax_string):
         # Move up the sax_string by some 'shift' amount, each image will have some portion of the previous image within it.
         shift = 100
         for i in range(0, len(sax_string), shift):
-            counter = i // shift
+            pos_in_string = i // shift
 
             # 1 in 5 images generated get placed into the test set. This ensures we have a train/test breakdown of:
             # 80% / 20% for train and test respectively.
             if i % (shift * 5) != 0:
-                self.generate(activity, sax_string, classNo, counter, shift, 'train')
+                self.generate(activity, sax_string, pos_in_string, shift, 'train')
             else:
-                self.generate(activity, sax_string, classNo, counter, shift, 'test')
+                self.generate(activity, sax_string, pos_in_string, shift, 'test')
 
-    def generate(self, activity, sax_string, classNo, counter, shift, data_group):
+    def generate(self, activity, sax_string, pos_in_string, shift, data_group):
         # Image size: 32x32
         image = Bitmap(self.bitmap_size, self.bitmap_size)
         
+        # Tend towards data-group: increment image counters
+        self.image_map[data_group][activity] += 1
+        count = self.image_map[data_group][activity]
+
         # Try and Except - Except needed when iterations extend passed the SAX string length. 
         try:
             for row in range(self.bitmap_size):
                 for col in range(self.bitmap_size):
                     # We set each pixel in the bitmap based on the mapping function, from the bitmap_module.
-                    letter_choice = (shift * counter) + (row * self.bitmap_size) + col
+                    letter_choice = (shift * pos_in_string) + (row * self.bitmap_size) + col
                     rgb_colour = letter_to_colour(sax_string[letter_choice])
                     image.setPixel(row, col, rgb_colour)
 
             # Finally, write the bitmaps to the correct location (train/test)
-            image.write('./pixel_bitmaps/' + data_group + '/' + activity + '/' + activity + '(' + str(classNo) + ')-image-' + str(counter) + '.bmp')
+            image.write('./pixel_bitmaps/' + data_group + '/' + activity + '/' + activity + '-{}-{}.bmp'.format(data_group, count))
         except:
             pass
 
