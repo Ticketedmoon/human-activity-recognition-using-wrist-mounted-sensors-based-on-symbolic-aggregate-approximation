@@ -53,7 +53,7 @@ class Time_series_to_string_via_sax:
     def generate_string_from_time_series(self, file_path_to_ts, letter_boundary_size, horizontal_window_size):
         data = self.generate(file_path_to_ts)
         windowed_data = self.apply_letter_window(data, horizontal_window_size)
-        norm_data = self.normalise_data(windowed_data)
-        options = norm_letter_conversion(letter_boundary_size)
-        sax_string = self.ts_to_string(norm_data, options)
+        # norm_data = self.normalise_data(windowed_data)
+        options = int_letter_conversion(letter_boundary_size)
+        sax_string = self.ts_to_string(windowed_data, options)
         return sax_string

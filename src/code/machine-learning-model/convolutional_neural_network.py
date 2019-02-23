@@ -1,5 +1,8 @@
 # Machine Learning libraries
 import tensorflow as tf
+import h5py
+from keras.models import model_from_json
+from keras.models import load_model
 
 # Matrix Operation Libaries
 import cv2
@@ -112,14 +115,73 @@ class ConvolutionalNeuralNetwork:
         # Optimizer: Adam (gradient descent step)
         # Loss function: cross-entropy (sparse for > 2 class labels, binary otherwise)
         model.compile(optimizer='adam', 
-                    loss='sparse_categorical_crossentropy', 
+                    loss=tf.keras.losses.sparse_categorical_crossentropy, 
                     metrics=['accuracy'])
-        model.fit(x_train, y_train, epochs=100)
+        model.fit(x_train, y_train, epochs=25)
 
         # Print out model validation loss and validation accuracy
         # Determine underfitting / overfitting!
+        # model.summary (useful statistic)      
         val_loss, val_acc = model.evaluate(x_test, y_test)
-        print(val_loss, val_acc)
+        print("Validation Accuracy: {}\nValidation Loss: {}".format(val_acc, val_loss))
+
+        # Save model
+        # model.save('./model_data/model/activity_recognition_model.h5')
+        # serialize model to JSON
+        #  the keras model which is trained is defined as 'model' in this example
+        model_json = model.to_json()
+        with open("./model_data/model/activity_recognition_model.json", "w") as json_file:
+            json_file.write(model_json)
+
+        # serialize weights to HDF5
+        model.save_weights("./model_data/model/activity_recognition_model.h5", save_format="h5")
+
+    def load_model(self):
+        # Test data
+        x_test = self.read('./model_data/test/feature_set.pickle')
+        y_test = np.asarray(self.read('./model_data/test/class_set.pickle'))
+
+        # load json and create model
+        json_file = open('./model_data/model/activity_recognition_model.json', 'r')
+
+        loaded_model_json = json_file.read()
+        json_file.close()
+        loaded_model = tf.keras.models.model_from_json(loaded_model_json)
+
+        # load weights into new model
+        loaded_model.load_weights("./model_data/model/activity_recognition_model.h5")
+        print("Loaded model from disk")
+
+        # Predictions returned in form of 0, 1, 2, 3
+        # 0 = Walk, 1 = Run, 2 = Low Bike, 3 = High Bike
+        predicate_value = 0
+        predictions = loaded_model.predict(x_test)
+        print(np.argmax(predictions[predicate_value]))
+
+        # Make image
+        im = np.squeeze(x_test[predicate_value])
+        plt.imshow(im, cmap=plt.cm.binary)
+        plt.show()
+
+    def predict(self):
+        # Test data
+        x_test = self.read('./model_data/test/feature_set.pickle')
+        y_test = np.asarray(self.read('./model_data/test/class_set.pickle'))
+
+        # Loading Model: 
+        new_model = tf.keras.models.load_model('./model_data/model/activity_recognition.model')
+
+        # Make a prediction!
+        # returns an array of arrays of probability distributions
+        predictions = new_model.predict([x_test])
+
+        print(x_test[0])
+
+        # Get a value prediction!
+        print("Prediction: " + str(np.argmax(predictions[0])))
+
+        # Actual value will appear as image
+
 
     def show_train_image(self, imageNo):
         x_train = self.read('./model_data/train/feature_set.pickle')
@@ -131,9 +193,9 @@ class ConvolutionalNeuralNetwork:
 def main():
     # Extract data in matrix form
     cnn = ConvolutionalNeuralNetwork()
-    cnn.build_train_test_pickle_files()
-    cnn.start_training()
-    
+    # cnn.build_train_test_pickle_files()
+    # cnn.start_training()
+    cnn.load_model()
 
 if __name__ == "__main__":
     main()
