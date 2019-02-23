@@ -4,7 +4,7 @@ from bitmap_module.text_to_bmp_class import Bitmap
 
 class BitmapGenerator:
 
-    bitmap_size = 32
+    bitmap_size = 64
 
     image_map = {
         'train' : {
@@ -27,25 +27,24 @@ class BitmapGenerator:
     def generate_bitmaps(self):
         for index in range(1, 7):
             try:
-                print("Activity level: " + str(index))
                 walk_sax_str = self.sax_obj.generate_walk(index)
-                self.generate_all("Walk", walk_sax_str)
+                self.generate_all("Walk", walk_sax_str, index)
 
                 run_sax_str = self.sax_obj.generate_run(index)
-                self.generate_all("Run", run_sax_str)
+                self.generate_all("Run", run_sax_str, index)
 
                 low_bike_sax_str = self.sax_obj.generate_low_bike(index)
-                self.generate_all("LowResistanceBike", low_bike_sax_str)
+                self.generate_all("LowResistanceBike", low_bike_sax_str, index)
 
                 high_bike_sax_str = self.sax_obj.generate_high_bike(index)
-                self.generate_all("HighResistanceBike", high_bike_sax_str)
+                self.generate_all("HighResistanceBike", high_bike_sax_str, index)
 
             except FileNotFoundError:
                 print("File not found with ID: (" + str(index) + ")")
 
-    def generate_all(self, activity, sax_string):
+    def generate_all(self, activity, sax_string, count):
         # Move up the sax_string by some 'shift' amount, each image will have some portion of the previous image within it.
-        shift = 100
+        shift = 16
         for i in range(0, len(sax_string), shift):
             pos_in_string = i // shift
 
@@ -56,13 +55,11 @@ class BitmapGenerator:
             else:
                 self.generate(activity, sax_string, pos_in_string, shift, 'test')
 
+        print("{} ({}) complete - bitmaps for activity total: {}".format(activity, count, self.image_map["train"][activity]))
+
     def generate(self, activity, sax_string, pos_in_string, shift, data_group):
         # Image size: 32x32
         image = Bitmap(self.bitmap_size, self.bitmap_size)
-        
-        # Tend towards data-group: increment image counters
-        self.image_map[data_group][activity] += 1
-        count = self.image_map[data_group][activity]
 
         # Try and Except - Except needed when iterations extend passed the SAX string length. 
         try:
@@ -73,9 +70,13 @@ class BitmapGenerator:
                     rgb_colour = letter_to_colour(sax_string[letter_choice])
                     image.setPixel(row, col, rgb_colour)
 
+            # Tend towards data-group: increment image counters
+            self.image_map[data_group][activity] += 1
+            count = self.image_map[data_group][activity]
+
             # Finally, write the bitmaps to the correct location (train/test)
             image.write('./pixel_bitmaps/' + data_group + '/' + activity + '/' + activity + '-{}-{}.bmp'.format(data_group, count))
-        except:
+        except Exception as e:
             pass
 
 

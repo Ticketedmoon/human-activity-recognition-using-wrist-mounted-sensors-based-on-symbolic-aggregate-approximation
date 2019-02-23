@@ -34,3 +34,8 @@ HighResistanceBike/
 env
 *.DS_Store
 *.pyc
+
+# Pickle files and H5 stuff
+*.pickle
+*.h5
+*.json

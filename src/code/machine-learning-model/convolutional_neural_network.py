@@ -16,7 +16,9 @@ import pickle
 
 class ConvolutionalNeuralNetwork:
 
-    # Images are 32x32 24-bit RGB
+    # Images are 64x64 24-bit RGB
+    image_size = 64
+
     train_data_path = './pixel_bitmaps/train/'
     test_data_path = './pixel_bitmaps/test/'
     categories = ["Walk", "Run", "LowResistanceBike", "HighResistanceBike"]
@@ -56,7 +58,7 @@ class ConvolutionalNeuralNetwork:
         # -1 is a catch-all for all values
         # 32x32 size image
         # 1 is to specify grey-scale
-        X = np.array(X).reshape(-1, 32, 32, 1)
+        X = np.array(X).reshape(-1, self.image_size, self.image_size, 1)
 
         # Save data
         pickle_out = open("./model_data/{}/feature_set.pickle".format(img_type), "wb")
@@ -102,8 +104,9 @@ class ConvolutionalNeuralNetwork:
 
         # Add Dense Layer -- 2 Hidden Layers
         # Activation function: Relu (Rectified-Linear)
-        model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu)) 
-        model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu)) 
+        # Activation function: sigmoid
+        model.add(tf.keras.layers.Dense(128, activation=tf.nn.sigmoid)) 
+        model.add(tf.keras.layers.Dense(128, activation=tf.nn.sigmoid)) 
 
         # Output Layer
         # Uses softmax for probability distribution.
@@ -117,7 +120,7 @@ class ConvolutionalNeuralNetwork:
         model.compile(optimizer='adam', 
                     loss=tf.keras.losses.sparse_categorical_crossentropy, 
                     metrics=['accuracy'])
-        model.fit(x_train, y_train, epochs=15)
+        model.fit(x_train, y_train, epochs=25)
 
         # Print out model validation loss and validation accuracy
         # Determine underfitting / overfitting!
@@ -173,11 +176,12 @@ class ConvolutionalNeuralNetwork:
         prediction_value = np.argmax(predictions[index])
         print("Prediction: " + str(prediction_value) + " (" + categories[prediction_value] + ")")
 
+        self.show_train_image(index)
 
     def show_train_image(self, imageNo):
         x_train = self.read('./model_data/train/feature_set.pickle')
-        im = np.squeeze(x_train[0])
-        plt.imshow(im, cmap=plt.cm.binary)
+        im = np.squeeze(x_train[imageNo])
+        plt.imshow(im)
         plt.show()
 
 
@@ -187,7 +191,7 @@ def main():
     cnn.build_train_test_pickle_files()
     cnn.start_training()
     # cnn.load_model()
-    cnn.predict(1)
+    # cnn.predict(2)
 
 if __name__ == "__main__":
     main()
