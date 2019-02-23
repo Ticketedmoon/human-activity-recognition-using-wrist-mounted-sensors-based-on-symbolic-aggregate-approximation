@@ -117,7 +117,7 @@ class ConvolutionalNeuralNetwork:
         model.compile(optimizer='adam', 
                     loss=tf.keras.losses.sparse_categorical_crossentropy, 
                     metrics=['accuracy'])
-        model.fit(x_train, y_train, epochs=25)
+        model.fit(x_train, y_train, epochs=15)
 
         # Print out model validation loss and validation accuracy
         # Determine underfitting / overfitting!
@@ -154,28 +154,24 @@ class ConvolutionalNeuralNetwork:
 
         return loaded_model
 
-    def predict(self):
+    def predict(self, index):
         # Test data
         x_test = self.read('./model_data/test/feature_set.pickle')
         y_test = np.asarray(self.read('./model_data/test/class_set.pickle'))
 
         # Loading Model: 
-        new_model = tf.keras.models.load_model('./model_data/model/activity_recognition.model')
+        new_model = self.load_model()
 
         # Make a prediction!
         # returns an array of arrays of probability distributions
-        predictions = new_model.predict([x_test])
-
-        print(x_test[0])
+        predictions = new_model.predict(x_test)
 
         # Get a value prediction!
         # Predictions returned in form of 0, 1, 2, 3
         # 0 = Walk, 1 = Run, 2 = Low Bike, 3 = High Bike
         categories = ["Walk", "Run", "LowResistanceBike", "HighResistanceBike"]
-        prediction_value = np.argmax(predictions[0])
-        print("Prediction: " + str(prediction_value) + "(" + categories[predicate_value] + ")")
-
-        # Actual value will appear as image
+        prediction_value = np.argmax(predictions[index])
+        print("Prediction: " + str(prediction_value) + " (" + categories[prediction_value] + ")")
 
 
     def show_train_image(self, imageNo):
@@ -188,9 +184,10 @@ class ConvolutionalNeuralNetwork:
 def main():
     # Extract data in matrix form
     cnn = ConvolutionalNeuralNetwork()
-    # cnn.build_train_test_pickle_files()
-    # cnn.start_training()
-    cnn.load_model()
+    cnn.build_train_test_pickle_files()
+    cnn.start_training()
+    # cnn.load_model()
+    cnn.predict(1)
 
 if __name__ == "__main__":
     main()
