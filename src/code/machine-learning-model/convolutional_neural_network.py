@@ -152,16 +152,7 @@ class ConvolutionalNeuralNetwork:
         loaded_model.load_weights("./model_data/model/activity_recognition_model.h5")
         print("Loaded model from disk")
 
-        # Predictions returned in form of 0, 1, 2, 3
-        # 0 = Walk, 1 = Run, 2 = Low Bike, 3 = High Bike
-        predicate_value = 0
-        predictions = loaded_model.predict(x_test)
-        print(np.argmax(predictions[predicate_value]))
-
-        # Make image
-        im = np.squeeze(x_test[predicate_value])
-        plt.imshow(im, cmap=plt.cm.binary)
-        plt.show()
+        return loaded_model
 
     def predict(self):
         # Test data
@@ -178,7 +169,11 @@ class ConvolutionalNeuralNetwork:
         print(x_test[0])
 
         # Get a value prediction!
-        print("Prediction: " + str(np.argmax(predictions[0])))
+        # Predictions returned in form of 0, 1, 2, 3
+        # 0 = Walk, 1 = Run, 2 = Low Bike, 3 = High Bike
+        categories = ["Walk", "Run", "LowResistanceBike", "HighResistanceBike"]
+        prediction_value = np.argmax(predictions[0])
+        print("Prediction: " + str(prediction_value) + "(" + categories[predicate_value] + ")")
 
         # Actual value will appear as image
 
