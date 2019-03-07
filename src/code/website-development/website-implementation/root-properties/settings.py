@@ -28,7 +28,7 @@ SECRET_KEY = '!ub3zyvs8-y7ykxn!t9-mba4nv=4f!7qoiu2uds$mv313*@me3'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['projectactivityrecognition.ml', 'www.projectactivityrecognition.ml']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 

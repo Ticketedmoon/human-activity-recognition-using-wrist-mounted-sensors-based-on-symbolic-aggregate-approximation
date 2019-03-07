@@ -5,9 +5,27 @@ from django.http import Http404
 
 from .models import Comment
 
-# Create your views here.
+# Homepage.
 def index(request):
     template = loader.get_template('application/index.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+# Blog.
+def blog(request):
+    template = loader.get_template('application/blog.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+# Research.
+def research(request):
+    template = loader.get_template('application/research.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+# Discussion.
+def discussion(request):
+    template = loader.get_template('application/discussion.html')
     context = {}
     return HttpResponse(template.render(context, request))
 
