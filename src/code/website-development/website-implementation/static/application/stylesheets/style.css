@@ -14,53 +14,80 @@
     src:url("../resources/fonts/Rajdhani-Medium.ttf");
 }
 
-/* CSS code */
+/* General styling */
 * {
     box-sizing: border-box;
     width: 100%;
     margin: 0;
     color: white;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    overflow-x: hidden;
 }
 
-.container {
-    height: 100%;
-}
-.video-text-common {
-    text-align: center;
-    font-family: "Raleway";
-    font-weight: bold;
-    
-    width: 100%;
-    text-shadow: horizontal-offset vertical-offset blur color;
-    text-shadow: 4px 4px 3px rgba(0,0,0,0.3);
-}
-
-.background-video-text { font-size: 2em; }
-.background-video-sub-text { font-size: 1.5em; }
-
-.fullscreen-video-wrap {
-    position: absolute;
-    top:0;
-    left:0;
-    width: 100%;
+/* Background video + background video elements below */
+header {
+    position: relative;
+    background-color: black;
     height: 100vh;
+    min-height: 25rem;
+    width: 100%;
     overflow: hidden;
-    background: rgba(0, 0, 0, 0.50);
+}
+  
+header video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 0;
+    
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+  
+header .container {
+    position: relative;
+}
+  
+.text-container {
+    z-index: 2;
+    padding-top: 25vh;
 }
 
-.video-text {
-    position:absolute;
-    z-index:1;
-    line-height: 4em;
-    padding-top: 10em;
+header .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    opacity: 0.5;
+    z-index: 1;
+}
+  
+@media (pointer: coarse) and (hover: none) {
+    header {
+        background: url('https://source.unsplash.com/XT5OInaElMw/1600x900') black no-repeat center center scroll;
+    }
+    header video {
+        display: none;
+    }
 }
 
+.background-text {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Nav-Bar styling below */
 .nav-bar {
     background: rgba(0, 0, 0, 0.40);
     position: absolute;
     height: 4em;
+    z-index: 10;
 }
 
 .nav-table {
@@ -72,9 +99,12 @@
     margin: 0;
     z-index:1;
     width: 97.5%;
+    text-decoration: none;
 }
 
-.nav-item { display: inline; }
+.nav-item {
+    display: inline; 
+}
 
 .nav-item a {
     text-decoration: none;
@@ -91,63 +121,24 @@
     color: #2EE59D;
     cursor: pointer;
     transition: all 0.5s ease 0s;
+    text-decoration: none;
 }
 
-.video-overlay {
-    background-color: black;
-    width: 100vw;
-    height: 100vh;
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0.8;
+/* Button */
+.btn {
+    margin: 3em auto;
+    position: relative;
+    font-family: "Raleway", "Arial";
+    z-index: 2;
 }
 
-/* Button CSS styling */
-.wrap {
-    padding-top: 22em;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .button {
-    width: 200px;
-    height: 45px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 2.5px;
-    font-weight: 500;
-    color: #000;
-    background-color: #fff;
-    border: none;
-    border-radius: 45px;
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease 0s;
-    cursor: pointer;
-    outline: none;
-    }
-  
-  .button:hover {
-    background-color: #2EE59D;
-    box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
-    color: #fff;
-    transform: translateY(-7px);
-  }
-
-  /* Copyright */
-  .copyright {
-    width: 100%;
-    padding-top: 2em;
-    left: 0;
-    bottom: 2.5em;
-    position: absolute;
-    text-align: center;
-  }
-
-  .copyright-text {
-    font-family: 'Rajdhani', sans-serif;
+.quote {
     font-size: 0.85em;
-  }
+    padding: 1em;
+}
+
+/* Copyright Signature details below */
+.copyright {
+    padding-top: 17.5%;
+    z-index: 15;
+}

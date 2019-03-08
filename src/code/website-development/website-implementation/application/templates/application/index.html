@@ -5,27 +5,20 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="{% static 'application/stylesheets/style.css' %}">
-        <!-- <link rel="stylesheet" type="text/css" href="{% static 'application/resources/libraries/bootstrap/css/bootstrap.css' %}"> -->
+        <link rel="stylesheet" type="text/css" href="{% static 'application/resources/libraries/bootstrap/css/bootstrap.css' %}">
         <title> Human Activity Recognition PPG Software </title>
     </head>
-    <body>
-        <div class="container"> 
+    <body>  
 
-            <!-- The video -->
-            <div class="fullscreen-video-wrap">
-                <video autoplay muted loop id="myVideo">
-                    <source src="{% static 'application/resources/assets/background-video.mp4' %}" type="video/mp4">
-                </video>
-            </div>
+        <header>
+            
+            <!-- Overlay of background video -->
+            <div class="overlay"> </div>
 
-            <!-- Overlay  -->
-            <div class="video-overlay"></div>
-
-            <!-- Text centre of image -->
-            <div class="video-text">
-                <p class="background-video-text video-text-common"> Human Activity Recognition using Photoplethysmographic Signals </p>
-                <p class="background-video-sub-text video-text-common"> Arduino Software based on Machine Learning </p>
-            </div>
+            <!-- video -->
+            <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+                <source src="{% static 'application/resources/assets/background-video.mp4' %}" type="video/mp4">
+            </video>
 
             <!-- Navigation menu -->
             <div class="nav-bar">
@@ -36,22 +29,34 @@
                     <li class="nav-item"> <a href="/discussion"> Discussion </li></a>
                 </ul>
             </div>
-            
-            <!-- Download Link Button -->
-            <div class="wrap">
-                <button class="button"> Download </button>
+
+            <!-- Container (Bootstrap) -->
+            <div class="text-container col-12 w-100">
+                <div class="d-flex flex-column text-center align-items-center">
+
+                    <!-- Background video text -->
+                    <div class="background-text w-100 text-white">
+                        <h2> Human Activity Recognition using Photoplethysmographic Signals </h2>
+                        <h4> Arduino Software based on Machine Learning </h4>
+                    </div>
+
+                    <!-- Download Button -->
+                    <div class="col-2 text-center">
+                        <button class="btn btn-success btn"> Download </button>
+                    </div>
+
+                    <!-- Copyright -->
+                    <div class="copyright">
+                        <p> Copyright &copy; 2019 Shane Creedon, Computer Applications & Software Engineering, Fourth Year Project. All Rights Reserved.</p>
+                    </div>
+
+                </div>
             </div>
-
-            <!-- Copyright -->
-            <div class="copyright">
-                <p class="copyright-text"> Copyright &copy; 2019 Shane Creedon, Computer Applications & Software Engineering, Fourth Year Project. All Rights Reserved.</p>
-            </div>
-
-        </div>
-
+        </header>
+    
         <!-- Bootstrap & Jquery & Ajax -->
-        <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </body>
 </html>
