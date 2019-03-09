@@ -56,10 +56,6 @@ body {
     text-decoration: none;
 }
 
-.invisible {
-    display: none;
-}
-
 .nav-item {
     display: inline; 
 }
@@ -197,6 +193,7 @@ blockquote:before {
     margin-bottom: 0.8em;
     font-weight: 400;
     color: #4499CC;
+    opacity: 0.7;
 }
 
 blockquote > cite, blockquote > p > cite {
@@ -234,8 +231,5 @@ blockquote > cite, blockquote > p > cite {
 /* Media Queries for Responsive Design */
 
 /* If the browser window is 600px or smaller, the background color will be lightblue: */
-@media only screen and (max-width: 600px) {
-  .nav-bar {
-    background-color: lightblue;
-  }
+@media only screen and (max-width: 500px) {
 }
