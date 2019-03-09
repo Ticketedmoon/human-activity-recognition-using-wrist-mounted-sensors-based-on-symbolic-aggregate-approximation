@@ -7,6 +7,8 @@
         <link rel="stylesheet" type="text/css" href="{% static 'application/stylesheets/style.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'application/resources/libraries/bootstrap/css/bootstrap.css' %}">
         <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -22,10 +24,11 @@
         <!-- Navigation menu -->
         <div class="nav-bar">
             <ul class="nav-table">
-                <li class="nav-item"> <a href="/"> Home </li> </a>
-                <li class="nav-item"> <a href="/research"> Research </li></a>
-                <li class="nav-item"> <a href="/blog"> Blog </li></a>
-                <li class="nav-item"> <a href="/discussion"> Discussion </li></a>
+                <li class="nav-item visible"> <a href="/"> Home </li> </a>
+                <li class="nav-item visible"> <a href="/research"> Research </li></a>
+                <li class="nav-item visible"> <a href="/blog"> Blog </li></a>
+                <li class="nav-item visible"> <a href="/discussion"> Discussion </li></a>
+                <li class="nav-item invisible"> <a href="#"> Menu </li></a>
             </ul>
         </div>
         
@@ -44,12 +47,20 @@
                 <h5> Arduino Software based on Machine Learning </h5>
             </div>
 
+            <!-- Download Link Button -->
+            <div class="wrap">
+                <button class="button"> Download </button>
+            </div>
+    
+
             <!-- Quote -->
-            <div class="quote">
-                <blockquote cite="http://www.worldwildlife.org/who/index.html">
-                    For 50 years, WWF has been protecting the future of nature. The world's leading conservation
-                    organization, WWF works in 100 countries and is supported by 1.2 million members in the United
-                    States and close to 5 million globally.
+            <div class="quote-container">
+                <blockquote class="wp-block-quote"> 
+                    <p> Wearable technology will tell us how well we are sleeping and whether
+                        we need to exercise. Sensors in the street will help us avoid traffic jams
+                        and find parking. Telemedicine applications will allow physicians
+                        to treat patients who are hundreds of miles away. </p>
+                    <cite> John T. Chambers </cite>
                 </blockquote>
             </div>
         </div>
