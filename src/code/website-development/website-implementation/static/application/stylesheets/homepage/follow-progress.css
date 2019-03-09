@@ -1,0 +1,21 @@
+/* Copyright Signature details below */
+.copyright {
+    clear: both;
+    position: relative;
+    display: table-cell;
+    text-align: center;
+    vertical-align: bottom;
+    background-color: white;
+    color: black;
+    z-index: 2;
+
+    font-size: 0.65rem;
+    font-family: Arial, Helvetica, sans-serif;
+    text-shadow: 0 1px 5px rgba(12, 0, 0, 0.5);
+}
+
+/* Footer */
+.footer {
+    display: table;
+    width: 100%;
+}

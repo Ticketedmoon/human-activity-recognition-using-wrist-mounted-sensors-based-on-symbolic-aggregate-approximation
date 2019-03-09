@@ -1,0 +1,56 @@
+@font-face {
+    font-family: "Raleway";
+    src:url("../../resources/fonts/Raleway-Regular.ttf");
+}
+
+.about-container {
+    width: 100%;
+    background-color: white;
+    position: relative;
+    z-index:2;
+
+    padding: 0 12.5% 0em 12.5%;
+    margin: auto;
+}
+
+.about-wrap {
+    position: relative;
+    display: table-row;
+    width: 50%;
+    text-align: center;
+}
+
+.sub-title {
+    text-align: center;
+    font-family: "Raleway", "Arial", 'Courier New', Courier, monospace;
+    font-size: 1.4em;
+    padding: 2em 1.5em 0 1.5em;
+    font-weight: bold;
+}
+
+.about-box {
+    display: block;
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 5em;
+}
+
+.about-text {
+    text-align: justify;
+}
+
+.about-image {
+    background-image: url("../../resources/assets/Images/shane_creedon_casual.png");
+    width: 200px;
+    height: 200px;
+    margin: 1em auto;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    -webkit-border-radius: 99em;
+    -moz-border-radius: 99em;
+    border-radius: 99em;
+    border: 5px solid #eee;
+    box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);  
+    float: left;
+}

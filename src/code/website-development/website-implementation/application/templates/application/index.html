@@ -1,13 +1,13 @@
 <!-- Django specific Code for CSS and Other Resources -->
-{% load staticfiles %}
+{% load static from staticfiles %}
 
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="{% static 'application/stylesheets/style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'application/stylesheets/homepage/video-style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'application/stylesheets/homepage/about-me.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'application/stylesheets/homepage/follow-progress.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'application/resources/libraries/bootstrap/css/bootstrap.css' %}">
-        <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
-        <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -35,10 +35,9 @@
         <video autoplay loop id="video-background" muted plays-inline>
           <source src="{% static 'application/resources/assets/background-video.mp4' %}" type="video/mp4">
         </video>
-
             
         <!--  Content  -->
-        <div class="content">
+        <div class="video-text-content">
             
             <!-- Main Text -->
             <div class="main-text">                
@@ -61,6 +60,27 @@
                         to treat patients who are hundreds of miles away. </p>
                     <cite> John T. Chambers </cite>
                 </blockquote>
+            </div>
+        </div>
+
+        <div class="about-container">
+            <div class="sub-title">
+                <p> Project Developer </p>
+            </div>
+            <div class="about-wrap">
+                <div class="about-image about-box"></div>
+                <div class="about-text about-box">
+                    <p> <span style="font-weight: bold;"> Name: </span> Shane Creedon <br>
+                        <span style="font-weight: bold;"> Age: </span> 22 <br>
+                        <span style="font-weight: bold;"> Motivation: </span>  I have a keen interest in Human Activity Recognition and Data Science. <br>
+                            I wanted to build a project as such to understand the more novel concepts of Machine Learning. <br>
+                            This project is using the ever-so powerful classification algorithm of "Neural Networks", Specifically, 
+                            "Convolutional Neural Networks" - More information on my research can be found <a href="#"> here </a>. <br>
+                        <span style="font-weight: bold;"> Website: </span> <a href="https://www.skybreak.ml"> https://www.skybreak.ml </a>  <br>
+                        <span style="font-weight: bold;"> LinkedIn: </span> <a href="https://ie.linkedin.com/in/shane-creedon-49a142128"> https://ie.linkedin.com/in/shane-creedon-49a142128 </a>
+
+                    </p>
+                </div>
             </div>
         </div>
 

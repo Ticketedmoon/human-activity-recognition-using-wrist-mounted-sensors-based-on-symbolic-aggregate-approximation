@@ -1,17 +1,17 @@
 /* Import Fonts */
 @font-face {
     font-family: "Raleway";
-    src:url("../resources/fonts/Raleway-Regular.ttf");
+    src:url("../../resources/fonts/Raleway-Regular.ttf");
 }
 
 @font-face {
     font-family: "IndieFlower";
-    src:url("../resources/fonts/IndieFlower.ttf");
+    src:url("../../resources/fonts/IndieFlower.ttf");
 }
 
 @font-face {
     font-family: "Rajdhani";
-    src:url("../resources/fonts/Rajdhani-Medium.ttf");
+    src:url("../../resources/fonts/Rajdhani-Medium.ttf");
 }
 
 /* General styling */
@@ -103,13 +103,14 @@ body {
     z-index: 1;
 }
 
-.content {
+.video-text-content {
     position: relative;
     text-align: center;
     color: #f1f1f1;
     width: 100%;
     padding: 1em 1em;
     z-index: 2;
+    height: 100%;
 }
 
 .main-text h2, .main-text h4 {
@@ -155,8 +156,8 @@ body {
 /* Block Quote */
 .quote-container {
     margin: 0 auto;
-    padding-top: 5em;
-    max-width: 650px;
+    padding-top: 8em;
+    max-width: 700px;
 }
 
 blockquote {
@@ -172,7 +173,7 @@ blockquote {
 blockquote:after {
     content: "";
     display: block;
-    width: 3px;
+    width: 0.25em;
     height: 90%;
     position: absolute;
     color: #4499CC;
@@ -188,7 +189,7 @@ blockquote:after {
 blockquote:before {
     content:"\f10d";
     font-family: "fontawesome";
-    font-size: 14px;
+    font-size: 0.85em;
     display: block;
     margin-bottom: 0.8em;
     font-weight: 400;
@@ -198,34 +199,13 @@ blockquote:before {
 
 blockquote > cite, blockquote > p > cite {
     display: block;
-    font-size: 12px;
+    font-size: 0.8em;
     line-height: 1.3em;
     font-weight: 700;
     font-style: normal;
     margin-top: 1.1em;
     letter-spacing: 0;
     font-style:italic;
-}
-
-
-/* Copyright Signature details below */
-.copyright {
-    position: relative;
-    display: table-cell;
-    text-align: center;
-    vertical-align: bottom;
-    color: #f1f1f1;
-    z-index: 2;
-
-    font-size: 0.65rem;
-    font-family: Arial, Helvetica, sans-serif;
-    text-shadow: 0 1px 5px rgba(12, 0, 0, 0.5);
-}
-
-/* Footer */
-.footer {
-    display: table;
-    width: 100%;
 }
 
 /* Media Queries for Responsive Design */
