@@ -1,3 +1,36 @@
+.follow-progress {
+    width: 100%;
+    background-color: white;
+    position: relative;
+    z-index:2;
+
+    padding: 0 12.5% 0em 12.5%;
+    margin: auto;
+}
+
+.trello-container {
+    text-align: center;
+    padding: 1em 1em 2em 1em;
+}
+
+.trello-container img {
+    transition: all 0.5s ease-in-out 0s;
+    -moz-transition: all 0.5s ease-in-out 0s;
+    -webkit-transition: all 0.5s ease-in-out 0s;
+    -o-transition: all 0.5s ease-in-out 0s;
+}
+
+.trello-container img:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+    -moz-transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    -o-transform: scale(1.1);
+
+    -webkit-filter: brightness(50%) sepia(1) hue-rotate(132deg) saturate(103.2%) brightness(91.2%);
+    filter: brightness(50%) sepia(1) hue-rotate(132deg) saturate(103.2%) brightness(91.2%);
+}
+
 /* Copyright Signature details below */
 .copyright {
     clear: both;

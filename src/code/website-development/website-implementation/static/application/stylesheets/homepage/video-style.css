@@ -113,10 +113,14 @@ body {
     height: 100%;
 }
 
-.main-text h2, .main-text h4 {
+.main-text h2 {
     line-height: 2em;
     font-size: 2em;
     padding-top: 2em;
+}
+
+.main-text h5 {
+    font-size: 1.4em;
 }
 
 /* Download Button  */
@@ -156,7 +160,7 @@ body {
 /* Block Quote */
 .quote-container {
     margin: 0 auto;
-    padding-top: 8em;
+    padding-top: 4em;
     max-width: 700px;
 }
 
@@ -211,5 +215,29 @@ blockquote > cite, blockquote > p > cite {
 /* Media Queries for Responsive Design */
 
 /* If the browser window is 600px or smaller, the background color will be lightblue: */
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 700px) {
+
+    .main-text h2 {
+        line-height: 2em;
+        font-size: 1.4em;
+        padding-top: 1em;
+    }
+
+    .main-text h5 {
+        font-size: 1em;
+    }
+
+    blockquote {
+        font-size: 0.7rem;
+    }
+
+    .nav-table {
+        text-align: center;
+        padding: 0em 1em 0em 1em;
+    }
+
+    .nav-item a {
+        font-size: 0.8em;
+    }
+
 }
