@@ -9,14 +9,17 @@
     position: relative;
     z-index:2;
 
-    padding: 0 12.5% 0em 12.5%;
+    padding: 0 5% 0em 5%;
+    margin: auto;
+    text-align: center;
 }
 
 .about-wrap {
+    min-width: 90%;
     position: relative;
-    display: table-row;
-    width: 50%;
+    display: inline-block;
     text-align: center;
+
 }
 
 .sub-title {
@@ -28,21 +31,27 @@
 }
 
 .about-box {
-    display: table-cell;
+    display: inline-block;
     vertical-align: middle;
-    padding-left: 5em;
+    padding: 1em 5em 0em 0em;
 }
 
 .about-text {
     text-align: justify;
-    font-size: 0.85em;
+    font-size: 0.8em;
+    width: 50em;
+}
+
+.image-container {
+    display: inline-block;
+    padding-right: 3em;
 }
 
 .about-image {
     background-image: url("../../resources/assets/Images/shane_creedon_casual.png");
-    width: 200px;
-    height: 200px;
-    margin: 1em auto;
+    width: 180px;
+    height: 180px;
+    margin: auto;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
@@ -51,15 +60,47 @@
     border-radius: 99em;
     border: 5px solid #eee;
     box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);  
-    float: left;
 }
 
-@media only screen and (max-width: 700px) {
+ /* Media Query Start */
 
-    .about-container {
-        padding: 0;
+/* For large tablet design */
+@media only screen and (max-width: 1300px) {
+
+    .about-image {
+        width: 135px;
+        height: 135px;
+        border: 3px solid #eee;
     }
 
+    .about-text {
+        font-size: 0.65em;
+    }
+
+    .sub-title {
+        font-size: 0.85em;
+    }
+
+}
+
+/* For small tablet design */
+@media only screen and (max-width: 1000px) and (min-width: 700px) {
+
+    .about-image {
+        width: 100px;
+        height: 100px;
+        border: 2px solid #eee;
+    }
+
+    .about-text {
+        font-size: 0.45em;
+    }
+
+}
+
+
+ /* For Mobile Design */
+@media only screen and (max-width: 700px) {
     .about-wrap {
         display: block;
         width: 100%;
@@ -70,11 +111,16 @@
         display: block;
         width: 100%;
         margin: 0 auto;
+        padding: 1em;
     }
 
     .about-box {
         padding: 1.5em;
         text-align: justify;
+    }
+
+    .about-text {
+        width: 75%;
     }
 
     .about-image {

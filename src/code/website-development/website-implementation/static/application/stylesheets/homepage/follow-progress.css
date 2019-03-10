@@ -31,6 +31,10 @@
     filter: brightness(50%) sepia(1) hue-rotate(132deg) saturate(103.2%) brightness(91.2%);
 }
 
+.blue-text {
+    color: #4499CC;
+}
+
 /* Copyright Signature details below */
 .copyright {
     clear: both;
@@ -51,4 +55,20 @@
 .footer {
     display: table;
     width: 100%;
+}
+
+@media only screen and (max-width: 700px) {
+    
+    .trello-container img {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    
+    .trello-container img {
+        width: 100px;
+        height: 100px;
+    }
 }
