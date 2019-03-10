@@ -293,8 +293,8 @@ blockquote > cite, blockquote > p > cite {
         padding-top: 0.55em;
     }
 
-    .quote-container {
+    /* .quote-container {
         visibility: hidden;
-    }
+    } */
 
 }
