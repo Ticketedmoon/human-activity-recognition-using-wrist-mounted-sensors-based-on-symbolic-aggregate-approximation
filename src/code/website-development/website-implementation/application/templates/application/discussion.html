@@ -11,15 +11,23 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title></title>
-        <link rel="stylesheet" type="text/css" href="{% static 'application/stylesheets/style.css' %}">
 
+        <link rel="stylesheet" type="text/css" href="{% static 'application/stylesheets/common/navbar.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'application/stylesheets/discussion/sign-up.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'application/stylesheets/discussion/comment-listings.css' %}">
+        <title> Human Activity Recognition PPG Software </title>
+
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"> </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+   
+        <!-- AJAX + Django -->
+        <script src="{% static 'application/scripts/discussion-submit-comment.js' %}"></script>
     </head>
     <body>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-
 
         <!-- Navigation menu -->
         <div class="nav-bar">
@@ -31,7 +39,57 @@
             </ul>
         </div>
 
-        <!-- Blog Body -->
+        <!-- Primary comment container -->
+        <div class="comments-container">
+            <h1> General Discussion </h1>
+    
+            <ul id="comments-list" class="comments-list">
+                {% for comment in comments %}
+                <li>
+                    <div class="comment-main-level">
+
+                        <!-- Avatar -->
+                        <div class="comment-avatar"><img src="https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png" alt="profile icon"></div>
+
+                        <!-- Comment box area -->
+                        <div class="comment-box">
+                            <div class="comment-head">
+                                <h6 class="comment-name"> {{comment.comment_author}} </h6>
+                                <span> {{ comment.comment_publish_date }}</span>
+                                <i class="fa fa-reply"></i>
+                                <i class="fa fa-heart"></i>
+                            </div>
+                            <div class="comment-content">
+                                {{comment.comment_text}}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Post a Comment -->
+        {% block content %}
+        <form method="post">
+            {% csrf_token %}
+
+            <h1 class="form-title"> Join the Discussion </h1>
+        
+            <fieldset>
+                <legend><span class="number">1</span> User Name </legend>
+                <input type="text" id="name" name="user_name" required>
+            </fieldset>
+            
+            <fieldset>
+                <legend><span class="number">2</span> Comment </legend>
+                <textarea type="text" id="bio" name="user_bio" required></textarea>
+            </fieldset>
+        
+            <button id="submission-button" type="submit" > Submit Comment </button>
+            
+        </form>
+        {% endblock %}
 
         <!-- Footer  -->
         

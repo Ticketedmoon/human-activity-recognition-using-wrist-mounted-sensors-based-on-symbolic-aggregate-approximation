@@ -15,9 +15,13 @@ urlpatterns = [
     # Discussion Path
     path('discussion/', views.discussion, name='discussion'),
 
+    # Get all comments
+    path('comments/', views.comments, name="comments"),
+
     # Comment Results Path
     path('comments/<int:comment_id>/', views.get, name="get"),
 
-    # Get all comments
-    path('comments/', views.comments, name="comments")
+    # comment add
+    path('comments/validate_comment/', views.validate_comment, name='validate_comment'),
+
 ]

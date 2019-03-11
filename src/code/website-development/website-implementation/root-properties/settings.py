@@ -77,6 +77,8 @@ WSGI_APPLICATION = 'root-properties.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+# sudo -u postgres psql
+# psql -d fourth_year_project -U shane_creedon
 
 DATABASES = {
     'default': {
