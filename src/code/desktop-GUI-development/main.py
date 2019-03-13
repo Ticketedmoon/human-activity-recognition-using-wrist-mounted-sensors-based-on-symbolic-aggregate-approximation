@@ -5,17 +5,34 @@
 # Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
+import sys
 
 from PyQt5.Qt import *
 from PyQt5 import QtCore, QtGui, QtWidgets
 from auto_resizing_text_edit import AutoResizingTextEdit
 
 class Ui_PrimaryWindow(object):
+
     def setupUi(self, PrimaryWindow):
 
         PrimaryWindow.setObjectName("PrimaryWindow")
         PrimaryWindow.resize(1000, 600)
-        PrimaryWindow.setStyleSheet("background-color: rgb(179, 179, 179);")
+        PrimaryWindow.setStyleSheet("background-color: rgb(235, 235, 235);")
+
+        # Keyboard shortcuts
+        action = QAction("Quit Application", PrimaryWindow)
+        action.setShortcut("Ctrl+Q")
+        action.setStatusTip('Quit Application')
+        # action.triggered.connect(sys.exit())
+
+        # Menu Bar
+        self.menuBar = PrimaryWindow.menuBar() 
+        self.menuBar.setStyleSheet("background-color: rgb(255, 255, 255)")       
+        file_menu = self.menuBar.addMenu('&File')
+        file_menu = self.menuBar.addMenu('&Edit')
+        file_menu = self.menuBar.addMenu('&Settings')
+        file_menu = self.menuBar.addMenu('&Help')
+
 
         self.centralwidget = QtWidgets.QWidget(PrimaryWindow)
         self.centralwidget.setLayoutDirection(QtCore.Qt.LeftToRight)
@@ -50,7 +67,7 @@ class Ui_PrimaryWindow(object):
         self.status_txt.setGeometry(QtCore.QRect(100, 10, 300, 230))
         self.status_txt.setAlignment(Qt.AlignCenter)
         self.status_txt.setStyleSheet("background-color: rgb(0, 140, 180);")
-        movie = QtGui.QMovie("cycle.gif")
+        movie = QtGui.QMovie("assets/cycle.gif")
         self.status_txt.setMovie(movie)
         movie.start()
         self.status_txt.setLayout(QtWidgets.QHBoxLayout())
@@ -165,7 +182,7 @@ class Ui_PrimaryWindow(object):
         self.trend.setGeometry(QtCore.QRect(0, 0, 500, 250))
         self.trend.setAlignment(Qt.AlignCenter)
         self.trend.setStyleSheet("background-color: rgb(255, 255, 255);")
-        movie = QtGui.QMovie("trend.gif")
+        movie = QtGui.QMovie("assets/trend.gif")
         self.trend.setMovie(movie)
         movie.start()
         self.trend.setLayout(QtWidgets.QHBoxLayout())
@@ -179,6 +196,7 @@ class Ui_PrimaryWindow(object):
     def retranslateUi(self, PrimaryWindow):
         _translate = QtCore.QCoreApplication.translate
         PrimaryWindow.setWindowTitle(_translate("PrimaryWindow", "Arduino Software - Human Activity Recognition via PPG sensor"))
+        PrimaryWindow.setWindowIcon(QtGui.QIcon("assets/desktop-icon.png"))
         self.label.setText(_translate("PrimaryWindow", "Research and Findings"))
         self.label_pane_1.setText(_translate("PrimaryWindow", "Activity: Slow Cycle"))
         self.simulate_button.setToolTip(_translate("PrimaryWindow", "<html><head/><body><p>Select PPG data file via csv</p></body></html>"))
@@ -186,7 +204,6 @@ class Ui_PrimaryWindow(object):
         self.radioButton.setText(_translate("PrimaryWindow", "Is Arduino PPG Connected?"))
 
 if __name__ == "__main__":
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     PrimaryWindow = QtWidgets.QMainWindow()
     ui = Ui_PrimaryWindow()
