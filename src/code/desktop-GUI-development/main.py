@@ -8,6 +8,7 @@
 
 from PyQt5.Qt import *
 from PyQt5 import QtCore, QtGui, QtWidgets
+from auto_resizing_text_edit import AutoResizingTextEdit
 
 class Ui_PrimaryWindow(object):
     def setupUi(self, PrimaryWindow):
@@ -42,28 +43,17 @@ class Ui_PrimaryWindow(object):
         self.widget.setStyleSheet("background-color: rgb(100, 100, 100);")
         self.widget.setObjectName("widget")
 
-        self.calendarWidget = QtWidgets.QCalendarWidget(self.widget)
-        self.calendarWidget.setGeometry(QtCore.QRect(10, 10, 331, 191))
-
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(7)
-
-        self.calendarWidget.setFont(font)
-        self.calendarWidget.setAutoFillBackground(False)
-        self.calendarWidget.setStyleSheet("background-color: rgb(0, 140, 180);")
-        self.calendarWidget.setObjectName("calendarWidget")
-
         # Gif Animation 
+        self.widget_2.setStyleSheet("background-color: rgb(0, 140, 180);")
+
         self.status_txt = QtWidgets.QLabel(self.frame)
         self.status_txt.setGeometry(QtCore.QRect(100, 10, 300, 230))
         self.status_txt.setAlignment(Qt.AlignCenter)
-        self.status_txt.setStyleSheet("background-color: rgb(100, 100, 100);")
+        self.status_txt.setStyleSheet("background-color: rgb(0, 140, 180);")
         movie = QtGui.QMovie("cycle.gif")
         self.status_txt.setMovie(movie)
         movie.start()
         self.status_txt.setLayout(QtWidgets.QHBoxLayout())
-        # Gif Animation End
 
         # Set label in pane-1
         self.label_pane_1 = QtWidgets.QLabel(self.widget_2)
@@ -92,22 +82,31 @@ class Ui_PrimaryWindow(object):
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.frame_2)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
 
+        # Research Pane
         self.widget_4 = QtWidgets.QWidget(self.frame_2)
         self.widget_4.setStyleSheet("background-color: rgb(100, 100, 100);")
         self.widget_4.setObjectName("widget_4")
 
         self.verticalScrollBar = QtWidgets.QScrollBar(self.widget_4)
-        self.verticalScrollBar.setGeometry(QtCore.QRect(325, 40, 20, 151))
+        self.verticalScrollBar.setGeometry(QtCore.QRect(425, 40, 20, 200))
         self.verticalScrollBar.setOrientation(QtCore.Qt.Vertical)
         self.verticalScrollBar.setObjectName("verticalScrollBar")
 
+        # editor = AutoResizingTextEdit()
+        # editor.setMinimumLines(1)
+        # editor.setParent(self.widget_4)
+
         self.textEdit = QtWidgets.QTextEdit(self.widget_4)
-        self.textEdit.setGeometry(QtCore.QRect(20, 30, 291, 161))
+        self.textEdit.setReadOnly(True)
+        self.textEdit.setGeometry(QtCore.QRect(20, 40, 400, 200))
         self.textEdit.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.textEdit.setObjectName("textEdit")
 
+        # self.horizontalLayout_2.addWidget(editor)
+        # self.horizontalLayout_2.addStretch()
+
         self.label = QtWidgets.QLabel(self.widget_4)
-        self.label.setGeometry(QtCore.QRect(150, 6, 150, 20))
+        self.label.setGeometry(QtCore.QRect(150, 10, 150, 20))
 
         font = QtGui.QFont()
         font.setFamily("Arial")
@@ -121,6 +120,7 @@ class Ui_PrimaryWindow(object):
         self.label.setObjectName("label")
 
         self.horizontalLayout_2.addWidget(self.widget_4)
+
         self.widget_3 = QtWidgets.QWidget(self.frame_2)
         self.widget_3.setAutoFillBackground(False)
         self.widget_3.setStyleSheet("background-color: rgb(0, 140, 180);")
@@ -158,9 +158,21 @@ class Ui_PrimaryWindow(object):
         self.radioButton.setGeometry(QtCore.QRect(10, 5, 161, 20))
         self.radioButton.setObjectName("radioButton")
         self.horizontalLayout_2.addWidget(self.widget_3)
+
+        # Trend graph animation for now
+        self.widget.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.trend = QtWidgets.QLabel(self.widget)
+        self.trend.setGeometry(QtCore.QRect(0, 0, 500, 250))
+        self.trend.setAlignment(Qt.AlignCenter)
+        self.trend.setStyleSheet("background-color: rgb(255, 255, 255);")
+        movie = QtGui.QMovie("trend.gif")
+        self.trend.setMovie(movie)
+        movie.start()
+        self.trend.setLayout(QtWidgets.QHBoxLayout())
+
+        # Display all
         self.verticalLayout.addWidget(self.frame_2)
         PrimaryWindow.setCentralWidget(self.centralwidget)
-
         self.retranslateUi(PrimaryWindow)
         QtCore.QMetaObject.connectSlotsByName(PrimaryWindow)
 
@@ -168,11 +180,10 @@ class Ui_PrimaryWindow(object):
         _translate = QtCore.QCoreApplication.translate
         PrimaryWindow.setWindowTitle(_translate("PrimaryWindow", "Arduino Software - Human Activity Recognition via PPG sensor"))
         self.label.setText(_translate("PrimaryWindow", "Research and Findings"))
-        self.label_pane_1.setText(_translate("PrimaryWindow", "Activity: Walking"))
+        self.label_pane_1.setText(_translate("PrimaryWindow", "Activity: Slow Cycle"))
         self.simulate_button.setToolTip(_translate("PrimaryWindow", "<html><head/><body><p>Select PPG data file via csv</p></body></html>"))
         self.simulate_button.setText(_translate("PrimaryWindow", "Simulate Activity Recognition"))
         self.radioButton.setText(_translate("PrimaryWindow", "Is Arduino PPG Connected?"))
-
 
 if __name__ == "__main__":
     import sys
