@@ -42,6 +42,9 @@ pylint==2.2.2
 pylint-django==2.0.5
 pylint-plugin-utils==0.4
 pyparsing==2.3.0
+# PyQt5==5.11.3
+# PyQt5-sip==4.19.14
+# pyqt5-tools==5.11.3.1.4
 pytest==4.1.1
 pytest-cov==2.6.1
 python-dateutil==2.7.5
