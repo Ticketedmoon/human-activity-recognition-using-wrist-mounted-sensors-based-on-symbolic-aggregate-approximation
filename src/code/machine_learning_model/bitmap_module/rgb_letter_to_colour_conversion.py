@@ -1,4 +1,4 @@
-def letter_to_colour(letter):
+def rgb_letter_to_colour(letter):
     options = {
         'a': (255, 0, 0),
         'b': (200, 50, 50),

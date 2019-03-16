@@ -120,7 +120,7 @@ class ConvolutionalNeuralNetwork:
         model.compile(optimizer='adam', 
                     loss=tf.keras.losses.sparse_categorical_crossentropy, 
                     metrics=['accuracy'])
-        model.fit(x_train, y_train, epochs=25)
+        model.fit(x_train, y_train, epochs=5)
 
         # Print out model validation loss and validation accuracy
         # Determine underfitting / overfitting!

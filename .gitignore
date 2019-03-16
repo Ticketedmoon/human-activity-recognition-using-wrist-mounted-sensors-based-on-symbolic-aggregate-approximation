@@ -25,10 +25,7 @@ __pycache__/
 .vscode/
 
 # Project Specific Ignores
-Walk/
-Run/
-LowResistanceBike/
-HighResistanceBike/
+*.bmp
 
 # Django ignore requirements
 env
