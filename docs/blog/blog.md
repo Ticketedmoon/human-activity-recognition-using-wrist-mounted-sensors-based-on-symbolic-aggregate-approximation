@@ -162,4 +162,71 @@ standardized image dimension. With writing my own bitmap module, I ensured that 
 ![grey-scale-bitmap](images/grey-scale_bitmap.png)  
 
 **24-bit RGB bitmap**  
-![grey-scale-bitmap](images/example-rgb-image.png)
+![rgb-bitmap](images/example-rgb-image.png)
+
+# Blog Post #11 | Further Optional Parameters | 22/02/2019
+
+To provide further optionality and further diversity among my machine learning solution, I enabled the ability for both RGB (24-bit) images and Greyscale (8-bit) images to be generated. I wrote two python scripts which allow the pixels to be mapped within an RGB octet range
+and to be mapped within a Greyscale octet range.  
+
+#### Why did I do this?
+I did this to profilerate the amount of parameters we can adjust when building the project and tweaking the machine learning model.
+With more parameters, the flexibility of the model rises. Through tweaking these parameters we can hopefully accentuate the validation accuracy of the model while reducing the validation loss.
+
+# Blog Post #12 | The Convolutional Neural Network via TensorFlow and Keras | 30/02/2019
+
+Deciding to jump right into the deep learning was the next move on the project agenda. I took a few hours to research several
+python libraries and frameworks relating to machine learning like TensorFlow or Keras, Sci-Py was another one I researched.
+Eventually I decided to embark on this data science journey using TensorFlow with Keras to construct a convolutional neural network.
+
+I wrote about 200 lines of python code which constructed a machine learning model, which has 15 iterations (Epochs).  
+I intend to use `TensorBoard` to monitor the model and ensure overfitting and underfitting are avoided.  
+The model once trained is tested against a test set of images which are randomly obtained through the population.  
+I believe the model encompasses a 80%/20% split in terms of training and testing data respectively.  
+
+The training and testing set of images are converted to pickle files and are then shuffled to ensure the order is random.  
+This is important to ensure the model does not overtrain on one particular characteristic and has an fair chance of getting any  
+of the 4 labelled classes.  
+
+The model itself is then saved as a .h5 file using `h5.py` and then subsequently, as .json files for easy access and easy loading/reading.  
+These files take up a lot of space so they are generally hidden via `.gitignore`.
+
+##### Model Accuracy and Model Performance
+
+**Fig 1.0 - Early Stage Model - Accuracy: 51% - Tweaking at a minimum of model parameters**
+![Initial Model Performance](images/early-stage-accuracy-machine-learning-model_(relu).PNG)  
+
+At this point, the model has not been tuned at all, it simply has been trained using our training images and tested via the test set.
+Some of the details of the network configuration:
+- The optimizer used is the `adam` optimizer,
+- The lost function used is `Sparse Categorical Crossentropy`
+- Activation function used is: `ReLU`
+
+**Fig 1.1 - Best Model Accuracy Achieved: 74% - Tweaked - 25 Epochs, 12,000 images**
+![Best Model Performance](images/sigmoid-accuracy-machine-learning-model_v3_(Best_Accuracy-16px_shift).PNG)  
+
+Some of the details of the network configuration:
+- The optimizer used is the `adam` optimizer,
+- The lost function used is `Sparse Categorical Crossentropy`
+- Activation function used is: `Sigmoid`
+
+**Fig 1.2 - Cross Validation (More Realistic) Model - Accuracy: 62% - 5 Epochs - 28,000 images**
+![Cross-Validated Model Performance](images/cross-subject-validation-62%-accuracy.PNG)  
+
+Neural network configuration details are the same as the 'Best Model' described above. However, the test set used has become
+more realistic. Rather than taking 20% of the each class of image and using that as a test set, we have decided to take an entire
+subject's data for Walk, Run, Slow Resistance Cycle and High Resistance Cycle. 
+
+#### Why did we do this?
+
+We felt the individual characteristics that each person has when it comes to human movement must be considered when testing our
+model to get an accurate view. In the ultimatum of this projects life-cycle, the model must be capable of individual differences that  
+would generally be associated with each unique person.
+
+# Blog Post #13 | Website Development - Home Page | 30/02/2019
+
+# Blog Post #14 | Website Development - Discussion Page | 30/02/2019
+
+# Blog Post #16 | Desktop Application Design Process | 30/02/2019
+
+# Blog Post #17 | MQTT & Mosquitto - Subscribe/Publish Design Pattern | 30/02/2019

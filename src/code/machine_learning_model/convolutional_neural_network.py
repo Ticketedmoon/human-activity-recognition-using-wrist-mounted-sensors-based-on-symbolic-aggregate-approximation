@@ -43,7 +43,9 @@ class ConvolutionalNeuralNetwork:
         return training_data
 
     def pack(self, data, img_type):
+
         # Shuffle data so model doesn't over-train
+        # TODO: Possibly remove the 'shuffle' to accurately determine if prediction is correct.
         random.shuffle(data)
         # Feature Set (X)
         X = []
