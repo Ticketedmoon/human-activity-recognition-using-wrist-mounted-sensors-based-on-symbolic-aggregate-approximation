@@ -223,10 +223,121 @@ We felt the individual characteristics that each person has when it comes to hum
 model to get an accurate view. In the ultimatum of this projects life-cycle, the model must be capable of individual differences that  
 would generally be associated with each unique person.
 
-# Blog Post #13 | Website Development - Home Page | 30/02/2019
+# Blog Post #13 | Website Development - Home Page | 04/03/2019
 
-# Blog Post #14 | Website Development - Discussion Page | 30/02/2019
+The website design uses a simple box model. It's primary goal is to simply host the download for the desktop application, however
+I have decided to incorporate several different sections to understand the concept of the project as well as document any research
+findings.
 
-# Blog Post #16 | Desktop Application Design Process | 30/02/2019
+Website Tabular:
+1. Home
+2. Research
+3. Blog
+4. Discussion
 
-# Blog Post #17 | MQTT & Mosquitto - Subscribe/Publish Design Pattern | 30/02/2019
+The website uses the **Django Web Framework** for the back-end behaviour and **PostGresql** as the database technology.  
+Additionally, **NginX** and **Gunicorn** are used for web server functionality with **LetsEncrypt** being used to supply the 
+necessary SSL certificate to protect data and information on the website via encryption.
+
+**Fig 2.0 - Top of Home Page**
+![Top of Home Page](images/website-home.png)  
+
+A brief overview of the websites aims and what the software should achieve. Arduino based software with a mission to recognize 
+human activity through machine learning.
+
+---
+
+**Fig 2.1 - Bottom of Home Page** 
+![Bottom of Home Page](images/website-home-(1).png)  
+
+A bit about myself as well as a link to my websites and other online profiles/portfolios. Additionally, there is a link
+to my Trello board which was set-up at a later date for following the projects progress.
+
+# Blog Post #14 | Website Development - Discussion Page | 10/03/2019
+
+Due to very many assignments DCU has placed on its final year students, project work had to take a back seat. Many of 
+our modules demanded our attention and assignments were on-going constantly. I managed to make a small bit of progress with
+the project by linking the discussion page up to the Postgres database and enabled the ability to create comments and see
+other folks comments through the front-end UI.
+
+**Fig 3.0 - Top of Discussion Page**
+![Top of Discussion Page](images/Discussion-page.png)  
+
+View other users comments about Human Activity Recognition
+
+---
+
+**Fig 3.1 - Bottom of Discussion Page**
+![Bottom of Discussion Page](images/Discussion-page-(1).png)  
+
+The ability to create your own comment and join the discussion.
+
+# Blog Post #15 | Concurrent Trello Board |  11/03/2019
+
+I set up a Trello Board to increase the connectivity and communication between myself and my supervisor. This allowed us to
+share what activities I was prioritising and what steps needed to be taken to gradually move towards the end-goal. Additionally, 
+the trello project board helped keep me focused on what task was to be ticked off next.  
+
+**Fig 4.0 - Trello Project Board**
+![Trello Board](images/project-progress.png)  
+
+
+# Blog Post #16 | Desktop Application Design Process | 22/03/2019
+
+With the Concurrent and Distributed Assignment out of the way as well as the Image Processing assignment, only 1 college assignment was remaining. Thus, my focus was beginning to return back to the fourth year project. I had initalised a basic desktop application GUI
+several weeks back but it was very much in a bare-bones state. The previous iteration of the desktop application was about me understanding
+how to build a desktop application using Python via: `PyQt5` and `PyInstaller`.  
+
+`PyQt5` is a special python library for developing desktop applications. Originally based on C++, it was ported over to python enabling
+more flexibility across programming languages.
+
+`PyInstaller` is a python library which is capable of converting a python program to a .exe executable which will be extremely useful 
+when allowing users to download the project from the online platform: https://www.projectactivityrecognition.ml/
+
+**Fig 5.0 - Desktop Application Initial Iteration**
+![Desktop App Iteration #1](images/desktop-app-visual.PNG)  
+
+The initial iteration of the application is somewhat bland, but the idea is there.
+
+**Fig 5.1 - Desktop Application Second Iteration**
+![Desktop App Iteration #2](images/desktop-app-visual-v2.0.PNG)  
+
+The next iteration removed the placeholder calender object in the 2nd window-pane and modified some design aspects.
+
+**Fig 5.2 -Desktop Application Third Iteration**
+![Desktop App Iteration #3](images/desktop-app-visual-v3.0.PNG)  
+
+This iteration added the menu bar common in many desktop applications. Additionally the `Simulate Activity Recognition` button
+found in the 4th window-pane works correctly. Once selected, the file explorer will be brought up on Windows or Linux allowing you
+to select a .csv file for upload. This .csv file must contain a `Timestamp` column and a `Microvolt` column for accurate ppg real-
+time playback. Once uploaded, sections of the data will be converted to an image and these images can be passed into our model for
+predictions on which class label they belong to (Walk, Run, Low Resistance Cycle, High Resistance Cycle).
+
+# Blog Post #17 | MQTT & Mosquitto - Subscribe/Publish Design Pattern | 25/03/2019
+After speaking with my supervisor at our most recent meeting, we decided to place a large emphasis on the transfer learning portion of
+the project. This will be done using **Google's Inception** https://medium.com/@williamkoehrsen/object-recognition-with-googles-convolutional-neural-networks-2fe65657ff90().  
+
+Additionally, as per standard practice, I was advised to do K-fold cross validation. This involves repeatedly training the model on the different test data, picking a different test subject every time, and ultimately averaging out the 10 test cases. I was also tasked with doing up a Confusion Matrix for CNN results analysis.
+
+In regards to how the `Simulate Activity Recognition` functionality was, at least from the previous blog post, supposed to work, the architecture has been modified somewhat. The intention now, through discussing with Tomas, is to use the MQTT (Message Queueing Telemetry Transport) protocol to asynchronously perform this function.
+
+**How will this be done?**
+
+There is a good diagram I created using Balsamiq below which gives a good overview of how all the components connect together. Regardless, 
+I will describe how it works in text. The previous blog posts suggests that images will be generated from the data submitted and then simply
+passed to the machine learning model for a predictive result. However this will no longer be the case. These generated images from the uploaded data will be subsequently compressed. The compressed images will not hinder the machine learning model's prediction as the images are only made up of 64x64 pixels of colours. It is advantageous to use compressed images due to speeding up latency and network performance. The compressed images will then be converted to an array of bytes and can then be sent along the network.  
+
+All of the client machines that download the application will be able to click the particular button and upload a .csv file of the data.
+These client machines that start the application will automatically subscribe to a `Open source MQTT broker` which I built using `Mosquitto`. These client machines will also publish data to the broker, that data being the compressed set of images representing the data they uploaded.
+Once uploaded, this set of compressed images will pass to the broker at a particular topic, perhaps for example: `data_passageway_topic`.  
+
+Another machine on the other side of the network will be subscribed to this topic and will receive the data bytes representative of the image.
+This machine is where the processing will be done, and where the convolutional neural network will be based. It is here that the prediction 
+result will be generated. Once generated, the result will be based back to the client machine and can be coordinated with the software to
+showcase what activity was being performed at that time.
+
+This is extremely advantageous as the program can still continue to perform other processes while asynchronously, the simulated activity is
+being carried out.  
+
+**Fig 6.0 - MQTT protocol (Publish / Subscribe)**
+![MQTT Balsamiq Diagram](images/mqtt-model-concept.png)  
