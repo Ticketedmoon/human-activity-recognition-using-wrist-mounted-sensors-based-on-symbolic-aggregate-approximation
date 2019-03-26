@@ -9,7 +9,9 @@ import sys
 
 from PyQt5.Qt import *
 from PyQt5 import QtCore, QtGui, QtWidgets
-from auto_resizing_text_edit import AutoResizingTextEdit
+
+from tkinter import filedialog
+from tkinter import *
 
 class Ui_PrimaryWindow(object):
 
@@ -166,6 +168,8 @@ class Ui_PrimaryWindow(object):
         self.simulate_button.setStyleSheet("background-color: rgb(0, 190, 0); color: white;")
         self.simulate_button.setObjectName("simulate_button")
 
+        self.simulate_button.clicked.connect(self.submit_ppg_files)
+
         self.widget_5 = QtWidgets.QWidget(self.widget_3)
         self.widget_5.setGeometry(QtCore.QRect(30, 160, 171, 31))
         self.widget_5.setStyleSheet("background-color: rgb(255, 255, 255)")
@@ -192,6 +196,14 @@ class Ui_PrimaryWindow(object):
         PrimaryWindow.setCentralWidget(self.centralwidget)
         self.retranslateUi(PrimaryWindow)
         QtCore.QMetaObject.connectSlotsByName(PrimaryWindow)
+
+    def submit_ppg_files(self):
+        try:
+            root = Tk().withdraw()
+            filename = filedialog.askopenfilename(initialdir = "/",title = "Select file", filetypes = (("timestamp & PPG recordings CSV","*.csv"), ("all files","*.*")))
+            print(filename)
+        except Exception as error:
+            print("ERROR: " + repr(error))
 
     def retranslateUi(self, PrimaryWindow):
         _translate = QtCore.QCoreApplication.translate
