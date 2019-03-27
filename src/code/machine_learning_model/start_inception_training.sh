@@ -1,0 +1,1 @@
+python retrain.py --image_dir=./pixel_bitmaps/train

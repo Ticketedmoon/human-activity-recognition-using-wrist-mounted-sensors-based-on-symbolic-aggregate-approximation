@@ -26,6 +26,8 @@ __pycache__/
 
 # Project Specific Ignores
 *.bmp
+*.png
+*.jpg
 
 # Django ignore requirements
 env

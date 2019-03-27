@@ -2,10 +2,12 @@ from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 from bitmap_module.rgb_letter_to_colour_conversion import rgb_letter_to_colour
 from bitmap_module.greyscale_letter_to_colour_conversion import greyscale_letter_to_colour
 from bitmap_module.text_to_bmp_class import Bitmap
+from PIL import Image
+import os
 
 class BitmapGenerator:
 
-    bitmap_size = 64
+    bitmap_size = 96
 
     image_map = {
         'train' : {
@@ -52,14 +54,17 @@ class BitmapGenerator:
 
     def generate_all(self, activity, sax_string, count, data_type):
         # Move up the sax_string by some 'shift' amount, each image will have some portion of the previous image within it.
-        shift = 32
+        shift = 128
         for i in range(0, len(sax_string), shift):
             pos_in_string = i // shift
 
             # 80% / 20% for train and test respectively.
             self.generate(activity, sax_string, pos_in_string, shift, data_type)
 
-        print("{} ({}) complete - bitmaps for activity total: {}".format(activity, count, self.image_map["train"][activity]))
+        if (data_type == 'train'):
+            print("Training {} ({}) complete - bitmaps for activity total: {}".format(activity, count, self.image_map["train"][activity]))
+        else:
+            print("Testing {} ({}) complete - bitmaps for activity total: {}".format(activity, count, self.image_map["test"][activity]))
 
     def generate(self, activity, sax_string, pos_in_string, shift, data_group):
 
@@ -84,7 +89,14 @@ class BitmapGenerator:
             count = self.image_map[data_group][activity]
 
             # Finally, write the bitmaps to the correct location (train/test)
-            image.write('./pixel_bitmaps/' + data_group + '/' + activity + '/' + activity + '-{}-{}.bmp'.format(data_group, count))
+            save_location = './pixel_bitmaps/' + data_group + '/' + activity + '/' + activity + '-{}-{}'.format(data_group, count)
+            image.write(save_location + ".bmp")
+
+            # Convert to JPEG - Must be JPEG for inception model.
+            img = Image.open(save_location + ".bmp")
+            new_img = img.resize( (256, 256) )
+            new_img.save(save_location + ".png", 'png')
+            os.remove(save_location + ".bmp")
         except Exception as e:
             pass
 
