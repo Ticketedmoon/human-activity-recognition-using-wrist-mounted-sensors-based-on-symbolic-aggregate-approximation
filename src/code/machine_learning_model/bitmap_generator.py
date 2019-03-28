@@ -7,7 +7,7 @@ import os
 
 class BitmapGenerator:
 
-    bitmap_size = 96
+    bitmap_size = 32
 
     image_map = {
         'train' : {
@@ -54,7 +54,7 @@ class BitmapGenerator:
 
     def generate_all(self, activity, sax_string, count, data_type):
         # Move up the sax_string by some 'shift' amount, each image will have some portion of the previous image within it.
-        shift = 128
+        shift = 256
         for i in range(0, len(sax_string), shift):
             pos_in_string = i // shift
 
