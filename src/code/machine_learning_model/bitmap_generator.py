@@ -7,7 +7,7 @@ import os
 
 class BitmapGenerator:
 
-    bitmap_size = 32
+    bitmap_size = 64
 
     image_map = {
         'train' : {
@@ -54,7 +54,7 @@ class BitmapGenerator:
 
     def generate_all(self, activity, sax_string, count, data_type):
         # Move up the sax_string by some 'shift' amount, each image will have some portion of the previous image within it.
-        shift = 256
+        shift = 64
         for i in range(0, len(sax_string), shift):
             pos_in_string = i // shift
 
@@ -62,9 +62,9 @@ class BitmapGenerator:
             self.generate(activity, sax_string, pos_in_string, shift, data_type)
 
         if (data_type == 'train'):
-            print("Training {} ({}) complete - bitmaps for activity total: {}".format(activity, count, self.image_map["train"][activity]))
+            print("Training {} (Subject #{}) complete - bitmaps for activity total: {}".format(activity, count, self.image_map["train"][activity]))
         else:
-            print("Testing {} ({}) complete - bitmaps for activity total: {}".format(activity, count, self.image_map["test"][activity]))
+            print("Testing {} (Subject #{}) complete - bitmaps for activity total: {}".format(activity, count, self.image_map["test"][activity]))
 
     def generate(self, activity, sax_string, pos_in_string, shift, data_group):
 
@@ -94,7 +94,8 @@ class BitmapGenerator:
 
             # Convert to JPEG - Must be JPEG for inception model.
             img = Image.open(save_location + ".bmp")
-            new_img = img.resize( (256, 256) )
+            new_img = img.resize( (64, 64), Image.ANTIALIAS )
+
             new_img.save(save_location + ".png", 'png')
             os.remove(save_location + ".bmp")
         except Exception as e:
