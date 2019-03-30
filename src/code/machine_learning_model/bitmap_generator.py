@@ -7,7 +7,7 @@ import os
 
 class BitmapGenerator:
 
-    bitmap_size = 64
+    bitmap_size = 100
 
     image_map = {
         'train' : {
@@ -30,9 +30,12 @@ class BitmapGenerator:
 
     def build(self):
         # Train
-        self.generate_bitmaps('train', 2, 7)
-        # Test
-        self.generate_bitmaps('test', 1, 2)
+        self.generate_bitmaps('train', 1, 2)
+        self.generate_bitmaps('train', 3, 4)
+        self.generate_bitmaps('train', 4, 7)
+
+        # Test - why 3 - 4? Because we can guarantee all activities are from the same subject.
+        self.generate_bitmaps('test', 2, 3)
 
     def generate_bitmaps(self, data_type, start, end):
         for index in range(start, end):
@@ -54,7 +57,7 @@ class BitmapGenerator:
 
     def generate_all(self, activity, sax_string, count, data_type):
         # Move up the sax_string by some 'shift' amount, each image will have some portion of the previous image within it.
-        shift = 64
+        shift = 16
         for i in range(0, len(sax_string), shift):
             pos_in_string = i // shift
 
@@ -94,7 +97,7 @@ class BitmapGenerator:
 
             # Convert to JPEG - Must be JPEG for inception model.
             img = Image.open(save_location + ".bmp")
-            new_img = img.resize( (64, 64), Image.ANTIALIAS )
+            new_img = img.resize( (128, 128), Image.ANTIALIAS )
 
             new_img.save(save_location + ".png", 'png')
             os.remove(save_location + ".bmp")
