@@ -1,17 +1,10 @@
 import socket
 import paho.mqtt.client as mqtt
 import time
-import random
+import base64
+
 
 client_id = socket.gethostname()
-
-#=========================================================================  
-def on_connect(client, userdata, flags, rc):
-    topic = "topic"
-    msg = "MY_MESSAGE"
-
-    print("Publish to {} msg {}".format(topic, msg))
-    client.publish(topic, msg, qos=2)
 
 #=========================================================================
 def on_publish(client, userdata, mid) :
@@ -20,10 +13,6 @@ def on_publish(client, userdata, mid) :
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload))
-
-# on_log
-def on_log(client, userdata, level, buf):
-    print("Log: " + buf)
 
 # on_connect
 def on_connect(client, userdata, flags, rc):
@@ -41,31 +30,32 @@ def on_subscribe(client, userdata, flags, rc):
 #=========================================================================
 def send() :
     client = mqtt.Client("clientA")
-    client.on_connect = on_connect
-    client.on_log = on_log
     client.on_disconnect = on_disconnect
     client.on_message = on_message
     client.on_subscribe = on_subscribe
+    client.on_publish = on_publish
 
     # Online Test Broker: "test.mosquitto.org"
     host      = "127.0.0.1"
     port      = 1883
     keepalive = 60
 
+    # Default Connection statements
     print ("\nConnect to {}, keepalive {}".format(host, keepalive))
     client.connect(host=host, port=port, keepalive=keepalive)
-    randomValue = random.randint(0, 100)
+    client.publish("client_connections", "Client with ID {" + str(client_id) + "} connected...")
 
-    time.sleep(4)
+    # Subscribe to image topic
+    client.publish("image_check", IMAGEDTAILS)
+    client.subscribe("prediction_receive")
 
-    client.subscribe("messages")
-    client.publish("messages", "Random Value: {}".format(randomValue))
+    client.loop_forever()
 
-    client.loop_stop()
-    client.disconnect()
-# end send()
+def image_to_bytes(image_path):
+    image = open(image_path, 'rb') 
+    image_read = image.read() 
+    image_64_encode = base64.encodestring(image_read)
+    return image_64_encode
 
-#=========================================================================
 if __name__ == "__main__":
     send()
-# end if
