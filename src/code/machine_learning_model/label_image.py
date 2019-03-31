@@ -71,8 +71,7 @@ def load_labels(label_file):
     label.append(l.rstrip())
   return label
 
-
-if __name__ == "__main__":
+def initialize_prediction_process():
   file_name = "tensorflow/examples/label_image/data/grace_hopper.jpg"
   model_file = \
     "tensorflow/examples/label_image/data/inception_v3_2016_08_28_frozen.pb"
@@ -99,7 +98,7 @@ if __name__ == "__main__":
   if args.graph:
     model_file = args.graph
   if args.image:
-    file_name = args.image
+      file_name = args.image
   if args.labels:
     label_file = args.labels
   if args.input_height:
@@ -133,8 +132,14 @@ if __name__ == "__main__":
         input_operation.outputs[0]: t
     })
   results = np.squeeze(results)
+  return results, label_file
 
+def main():
+  results, label_file = initialize_prediction_process()
   top_k = results.argsort()[-5:][::-1]
   labels = load_labels(label_file)
   for i in top_k:
     print(labels[i], results[i])
+
+if __name__ == "__main__":
+  main()
