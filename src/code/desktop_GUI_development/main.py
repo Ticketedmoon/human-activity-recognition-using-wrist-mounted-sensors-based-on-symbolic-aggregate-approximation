@@ -6,6 +6,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 import sys
+sys.path.append('../machine_learning_model/mqtt_protocol_module')
 
 from PyQt5.Qt import *
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -13,7 +14,13 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from tkinter import filedialog
 from tkinter import *
 
+from client_connect import Client
+import threading
+
 class Ui_PrimaryWindow(object):
+
+    client = Client()
+    download_thread = threading.Thread(target=client.send)
 
     def setupUi(self, PrimaryWindow):
 
@@ -201,7 +208,9 @@ class Ui_PrimaryWindow(object):
         try:
             root = Tk().withdraw()
             filename = filedialog.askopenfilename(initialdir = "/",title = "Select file", filetypes = (("timestamp & PPG recordings CSV","*.csv"), ("all files","*.*")))
-            print(filename)
+            print("Simulating Activity Recognition for file: {" + str(filename) + "}")
+            self.client.send_compressed_image_for_prediction(filename)
+
         except Exception as error:
             print("ERROR: " + repr(error))
 
@@ -215,11 +224,20 @@ class Ui_PrimaryWindow(object):
         self.simulate_button.setText(_translate("PrimaryWindow", "Simulate Activity Recognition"))
         self.radioButton.setText(_translate("PrimaryWindow", "Is Arduino PPG Connected?"))
 
+    def connect_to_broker(self):
+        self.download_thread.start()
+
 if __name__ == "__main__":
+    # Set up Window
     app = QtWidgets.QApplication(sys.argv)
     PrimaryWindow = QtWidgets.QMainWindow()
     ui = Ui_PrimaryWindow()
     ui.setupUi(PrimaryWindow)
+    
+    ui.connect_to_broker()
     PrimaryWindow.show()
-    sys.exit(app.exec_())
 
+    # TODO: Ensure all threads have ended when program closes. 
+    # Close Program
+    sys.exit(app.exec_())
+    ui.client.client.disconnect()

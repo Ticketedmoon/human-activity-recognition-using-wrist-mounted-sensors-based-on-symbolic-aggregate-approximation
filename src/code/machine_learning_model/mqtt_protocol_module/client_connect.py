@@ -6,6 +6,7 @@ import base64
 class Client:
 
     client_id = socket.gethostname()
+    client = mqtt.Client(client_id)
 
     #=========================================================================
     def on_publish(self, client, userdata, mid) :
@@ -34,11 +35,10 @@ class Client:
 
     #=========================================================================
     def send(self) :
-        client = mqtt.Client("clientA")
-        client.on_disconnect = self.on_disconnect
-        client.on_message = self.on_message
-        client.on_subscribe = self.on_subscribe
-        client.on_publish = self.on_publish
+        self.client.on_disconnect = self.on_disconnect
+        self.client.on_message = self.on_message
+        self.client.on_subscribe = self.on_subscribe
+        self.client.on_publish = self.on_publish
 
         # Online Test Broker: "test.mosquitto.org"
         host      = "127.0.0.1"
@@ -47,21 +47,20 @@ class Client:
 
         # Default Connection statements
         print ("\nClient: Connect to {}, keepalive {}".format(host, keepalive))
-        client.connect(host=host, port=port, keepalive=keepalive)
+        self.client.connect(host=host, port=port, keepalive=keepalive)
 
-        client.publish("client_connections", "Client with ID {" + str(self.client_id) + "} connected...")
+        self.client.publish("client_connections", "Client with ID {" + str(self.client_id) + "} connected...")
 
-        client.subscribe("prediction_receive")
+        self.client.subscribe("prediction_receive")
         print("Client: Subscribing to topic {prediction_receive}")
 
-        self.send_compressed_image_for_prediction(client, "../pixel_bitmaps/test/Walk/Walk-test-1.png")
-
-        client.loop_forever()
+        # self.send_compressed_image_for_prediction(client, "../pixel_bitmaps/test/Walk/Walk-test-1.png")
+        self.client.loop_forever()
 
     # TODO: Remember to Disconnect client when program executes | Done via the desktop application
-    def send_compressed_image_for_prediction(self, client, image_path):
+    def send_compressed_image_for_prediction(self, image_path):
         encoded_image = self.image_to_bytes(image_path)
-        client.publish("image_check", encoded_image)
+        self.client.publish("image_check", encoded_image)
 
     def image_to_bytes(self, image_path):
         image = open(image_path, 'rb') 
