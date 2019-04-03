@@ -6,7 +6,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 import sys
-sys.path.append('../machine_learning_model/mqtt_protocol_module')
+
+sys.path.append('../machine_learning_model/')
 
 from PyQt5.Qt import *
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -14,8 +15,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from tkinter import filedialog
 from tkinter import *
 
-from client_connect import Client
+from mqtt_protocol_module.client_connect import Client
+
 import threading
+import bitmap_module
 
 class Application(object):
 
@@ -230,6 +233,9 @@ class Application(object):
             self.client.send_compressed_image_for_prediction(filename)
         except Exception as error:
             print("Error: " + repr(error))
+
+    def send_test_image(self):
+        pass
 
 if __name__ == "__main__":
 

@@ -71,7 +71,7 @@ class BitmapGenerator:
 
     def generate(self, activity, sax_string, pos_in_string, shift, data_group):
 
-        # Image size: 64x64
+        # Image size: 100x100
         image = Bitmap(self.bitmap_size, self.bitmap_size)
 
         # Try and Except - Except needed when iterations extend passed the SAX string length. 
