@@ -27,6 +27,15 @@ class Application(object):
         self.frame = QtWidgets.QFrame(self.centralwidget)
         self.widget_2 = QtWidgets.QWidget(self.frame)
         self.label_pane_1 = QtWidgets.QLabel(self.widget_2)
+        app.aboutToQuit.connect(self.closeEvent)
+        self.download_thread.start()
+
+    def closeEvent(self):
+        #Your desired functionality here
+        print('Closing Application...')
+        self.client.prevent_publish_mechanism()
+        self.client.disconnect()
+        sys.exit(0)
 
     def setup_window_framework(self, PrimaryWindow):
         PrimaryWindow.setObjectName("PrimaryWindow")
@@ -34,12 +43,6 @@ class Application(object):
         PrimaryWindow.setWindowIcon(QtGui.QIcon("assets/desktop-icon.png"))
         PrimaryWindow.resize(1000, 600)
         PrimaryWindow.setStyleSheet("background-color: rgb(235, 235, 235);")
-
-        # Keyboard shortcuts
-        action = QAction("Quit Application", PrimaryWindow)
-        action.setShortcut("Ctrl+Q")
-        action.setStatusTip('Quit Application')
-        # action.triggered.connect(sys.exit())
 
     def setup_menu_bar(self, PrimaryWindow):
         # Menu Bar
@@ -228,27 +231,13 @@ class Application(object):
         except Exception as error:
             print("Error: " + repr(error))
 
-    def connect_to_broker(self):
-        self.download_thread.start()
-
-    def closeEvent(self, event):
-        print("closing...")
-        widgetList = QApplication.topLevelWidgets()
-        numWindows = len(widgetList)
-        if numWindows > 1:
-            event.ignore()
-        else:
-            event.accept()
-
 if __name__ == "__main__":
 
     # Set up Window
     app = QtWidgets.QApplication(sys.argv)
     primaryWindow = QtWidgets.QMainWindow()
     application = Application(primaryWindow)
-    application.launch(primaryWindow)
-    
-    #application.connect_to_broker()
+    application.launch(primaryWindow)    
     primaryWindow.show()
 
     # TODO: Ensure all threads have ended when program closes.

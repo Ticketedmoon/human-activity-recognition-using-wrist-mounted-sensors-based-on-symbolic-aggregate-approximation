@@ -8,16 +8,20 @@ class Client:
 
     client_id = socket.gethostname()
     client = mqtt.Client(client_id)
+    has_disconnected = False
 
     #=========================================================================
     def on_publish(self, client, userdata, mid) :
-        print ("Client: Message with ID {} Published".format(mid))
+        print ("Client with ID {} has published message with ID {} Published".format(self.client_id, mid))
 
     # The callback for when a PUBLISH message is received from the server.
     def on_message(self, client, userdata, msg):
         if (msg.topic == "prediction_receive"):
             message = msg.payload.decode("utf-8", "ignore")
             print(message)
+
+    def prevent_publish_mechanism(self):
+        self.has_disconnected = True
 
     # on_connect
     def on_connect(self, client, userdata, flags, rc):
@@ -28,7 +32,7 @@ class Client:
 
     def on_disconnect(self, client, userdata, flags, rc=0):
         client.publish("client_connections", "Client with ID {" + str(self.client_id) + "} disconnected...")
-        print("Disconnected result code: ", rc)
+        print("Client with ID {} has been disconnected...".format(self.client_id))
 
     def on_subscribe(self, client, userdata, flags, rc):
         # Do nothing
@@ -51,16 +55,17 @@ class Client:
         keepalive = 60
 
         # Default Connection statements
-        print ("\nClient: Connect to {}, keepalive {}".format(host, keepalive))
+        print ("\nClient with ID {} connecting to {}... keepalive {}".format(self.client_id, host, keepalive))
         self.client.connect(host=host, port=port, keepalive=keepalive)
 
-        self.client.publish("client_connections", "Client with ID {" + str(self.client_id) + "} connected...")
+        if (not self.has_disconnected):
+            self.client.publish("client_connections", "Client with ID {" + str(self.client_id) + "} connected...")
+            self.client.subscribe("prediction_receive")
+            print("Client with ID {} subscribing to topic {}".format(self.client_id, "prediction_receive"))
 
-        self.client.subscribe("prediction_receive")
-        print("Client: Subscribing to topic {prediction_receive}")
-
-        # self.send_compressed_image_for_prediction(client, "../pixel_bitmaps/test/Walk/Walk-test-1.png")
-        self.client.loop_forever()
+            # self.send_compressed_image_for_prediction(client, "../pixel_bitmaps/test/Walk/Walk-test-1.png")
+            
+            self.client.loop_forever()
 
     # TODO: Remember to Disconnect client when program executes | Done via the desktop application
     def send_compressed_image_for_prediction(self, image_path):
