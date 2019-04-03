@@ -17,14 +17,21 @@ from tkinter import *
 from client_connect import Client
 import threading
 
-class Ui_PrimaryWindow(object):
+class Application(object):
 
     client = Client()
     download_thread = threading.Thread(target=client.send)
 
-    def setupUi(self, PrimaryWindow):
+    def __init__(self, primaryWindow):
+        self.centralwidget = QtWidgets.QWidget(primaryWindow)
+        self.frame = QtWidgets.QFrame(self.centralwidget)
+        self.widget_2 = QtWidgets.QWidget(self.frame)
+        self.label_pane_1 = QtWidgets.QLabel(self.widget_2)
 
+    def setup_window_framework(self, PrimaryWindow):
         PrimaryWindow.setObjectName("PrimaryWindow")
+        PrimaryWindow.setWindowTitle("Arduino Software - Human Activity Recognition via PPG sensor")
+        PrimaryWindow.setWindowIcon(QtGui.QIcon("assets/desktop-icon.png"))
         PrimaryWindow.resize(1000, 600)
         PrimaryWindow.setStyleSheet("background-color: rgb(235, 235, 235);")
 
@@ -34,6 +41,7 @@ class Ui_PrimaryWindow(object):
         action.setStatusTip('Quit Application')
         # action.triggered.connect(sys.exit())
 
+    def setup_menu_bar(self, PrimaryWindow):
         # Menu Bar
         self.menuBar = PrimaryWindow.menuBar() 
         self.menuBar.setStyleSheet("background-color: rgb(255, 255, 255)")       
@@ -42,7 +50,6 @@ class Ui_PrimaryWindow(object):
         file_menu = self.menuBar.addMenu('&Settings')
         file_menu = self.menuBar.addMenu('&Help')
 
-
         self.centralwidget = QtWidgets.QWidget(PrimaryWindow)
         self.centralwidget.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.centralwidget.setObjectName("centralwidget")
@@ -50,7 +57,6 @@ class Ui_PrimaryWindow(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
 
-        self.frame = QtWidgets.QFrame(self.centralwidget)
         self.frame.setStyleSheet("")
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -59,7 +65,6 @@ class Ui_PrimaryWindow(object):
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.frame)
         self.horizontalLayout.setObjectName("horizontalLayout")
 
-        self.widget_2 = QtWidgets.QWidget(self.frame)
         self.widget_2.setStyleSheet("background-color: rgb(100, 100, 100);")
         self.widget_2.setObjectName("widget_2")
 
@@ -69,7 +74,8 @@ class Ui_PrimaryWindow(object):
         self.widget.setStyleSheet("background-color: rgb(100, 100, 100);")
         self.widget.setObjectName("widget")
 
-        # Gif Animation 
+    def check_activity_animation(self):
+        # Activity Animation 
         self.widget_2.setStyleSheet("background-color: rgb(0, 140, 180);")
 
         self.status_txt = QtWidgets.QLabel(self.frame)
@@ -81,9 +87,8 @@ class Ui_PrimaryWindow(object):
         movie.start()
         self.status_txt.setLayout(QtWidgets.QHBoxLayout())
 
-        # Set label in pane-1
-        self.label_pane_1 = QtWidgets.QLabel(self.widget_2)
-        self.label_pane_1.setGeometry(QtCore.QRect(175, 195, 230, 100))
+    def draw_activity_text(self):
+        self.label_pane_1.setGeometry(QtCore.QRect(170, 190, 230, 100))
 
         font = QtGui.QFont()
         font.setFamily("Dubai Light")
@@ -95,20 +100,10 @@ class Ui_PrimaryWindow(object):
         self.label_pane_1.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.label_pane_1.setStyleSheet("color: rgb(255, 255, 255)")
         self.label_pane_1.setObjectName("label")
-        # Set label in pane-1 End
+        self.label_pane_1.setText("Activity: Slow Cycle")
 
-        self.horizontalLayout.addWidget(self.widget)
-        self.verticalLayout.addWidget(self.frame)
-
-        self.frame_2 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_2.setObjectName("frame_2")
-
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.frame_2)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-
-        # Research Pane
+    # Research Pane
+    def build_research_pane(self):
         self.widget_4 = QtWidgets.QWidget(self.frame_2)
         self.widget_4.setStyleSheet("background-color: rgb(100, 100, 100);")
         self.widget_4.setObjectName("widget_4")
@@ -118,21 +113,15 @@ class Ui_PrimaryWindow(object):
         self.verticalScrollBar.setOrientation(QtCore.Qt.Vertical)
         self.verticalScrollBar.setObjectName("verticalScrollBar")
 
-        # editor = AutoResizingTextEdit()
-        # editor.setMinimumLines(1)
-        # editor.setParent(self.widget_4)
-
         self.textEdit = QtWidgets.QTextEdit(self.widget_4)
         self.textEdit.setReadOnly(True)
         self.textEdit.setGeometry(QtCore.QRect(20, 40, 400, 200))
         self.textEdit.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.textEdit.setObjectName("textEdit")
-
-        # self.horizontalLayout_2.addWidget(editor)
-        # self.horizontalLayout_2.addStretch()
-
+        
         self.label = QtWidgets.QLabel(self.widget_4)
         self.label.setGeometry(QtCore.QRect(150, 10, 150, 20))
+        self.label.setText("Research and Findings")
 
         font = QtGui.QFont()
         font.setFamily("Arial")
@@ -145,6 +134,7 @@ class Ui_PrimaryWindow(object):
         self.label.setStyleSheet("color: rgb(255, 255, 255)")
         self.label.setObjectName("label")
 
+    def build_simulation_pane(self):
         self.horizontalLayout_2.addWidget(self.widget_4)
 
         self.widget_3 = QtWidgets.QWidget(self.frame_2)
@@ -173,8 +163,10 @@ class Ui_PrimaryWindow(object):
         self.simulate_button.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.simulate_button.setAcceptDrops(False)
         self.simulate_button.setStyleSheet("background-color: rgb(0, 190, 0); color: white;")
+        
         self.simulate_button.setObjectName("simulate_button")
-
+        self.simulate_button.setToolTip("<html><head/><body><p>Select PPG data file via csv</p></body></html>")
+        self.simulate_button.setText("Simulate Activity Recognition")
         self.simulate_button.clicked.connect(self.submit_ppg_files)
 
         self.widget_5 = QtWidgets.QWidget(self.widget_3)
@@ -185,8 +177,11 @@ class Ui_PrimaryWindow(object):
         self.radioButton = QtWidgets.QRadioButton(self.widget_5)
         self.radioButton.setGeometry(QtCore.QRect(10, 5, 161, 20))
         self.radioButton.setObjectName("radioButton")
+        self.radioButton.setText("Is Arduino PPG Connected?")
+        
         self.horizontalLayout_2.addWidget(self.widget_3)
 
+    def build_analytical_pane(self):
         # Trend graph animation for now
         self.widget.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.trend = QtWidgets.QLabel(self.widget)
@@ -198,11 +193,31 @@ class Ui_PrimaryWindow(object):
         movie.start()
         self.trend.setLayout(QtWidgets.QHBoxLayout())
 
+    def launch(self, primaryWindow):
+        self.setup_window_framework(primaryWindow)
+        self.setup_menu_bar(primaryWindow)
+        self.check_activity_animation()
+        self.draw_activity_text()
+
+        self.horizontalLayout.addWidget(self.widget)
+        self.verticalLayout.addWidget(self.frame)
+
+        self.frame_2 = QtWidgets.QFrame(self.centralwidget)
+        self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_2.setObjectName("frame_2")
+
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.frame_2)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+
+        self.build_research_pane()
+        self.build_simulation_pane()
+        self.build_analytical_pane()
+
         # Display all
         self.verticalLayout.addWidget(self.frame_2)
-        PrimaryWindow.setCentralWidget(self.centralwidget)
-        self.retranslateUi(PrimaryWindow)
-        QtCore.QMetaObject.connectSlotsByName(PrimaryWindow)
+        primaryWindow.setCentralWidget(self.centralwidget)
+        QtCore.QMetaObject.connectSlotsByName(primaryWindow)
 
     def submit_ppg_files(self):
         try:
@@ -210,34 +225,31 @@ class Ui_PrimaryWindow(object):
             filename = filedialog.askopenfilename(initialdir = "/",title = "Select file", filetypes = (("timestamp & PPG recordings CSV","*.csv"), ("all files","*.*")))
             print("Simulating Activity Recognition for file: {" + str(filename) + "}")
             self.client.send_compressed_image_for_prediction(filename)
-
         except Exception as error:
-            print("ERROR: " + repr(error))
-
-    def retranslateUi(self, PrimaryWindow):
-        _translate = QtCore.QCoreApplication.translate
-        PrimaryWindow.setWindowTitle(_translate("PrimaryWindow", "Arduino Software - Human Activity Recognition via PPG sensor"))
-        PrimaryWindow.setWindowIcon(QtGui.QIcon("assets/desktop-icon.png"))
-        self.label.setText(_translate("PrimaryWindow", "Research and Findings"))
-        self.label_pane_1.setText(_translate("PrimaryWindow", "Activity: Slow Cycle"))
-        self.simulate_button.setToolTip(_translate("PrimaryWindow", "<html><head/><body><p>Select PPG data file via csv</p></body></html>"))
-        self.simulate_button.setText(_translate("PrimaryWindow", "Simulate Activity Recognition"))
-        self.radioButton.setText(_translate("PrimaryWindow", "Is Arduino PPG Connected?"))
+            print("Error: " + repr(error))
 
     def connect_to_broker(self):
         self.download_thread.start()
 
+    def closeEvent(self, event):
+        print("closing...")
+        widgetList = QApplication.topLevelWidgets()
+        numWindows = len(widgetList)
+        if numWindows > 1:
+            event.ignore()
+        else:
+            event.accept()
+
 if __name__ == "__main__":
+
     # Set up Window
     app = QtWidgets.QApplication(sys.argv)
-    PrimaryWindow = QtWidgets.QMainWindow()
-    ui = Ui_PrimaryWindow()
-    ui.setupUi(PrimaryWindow)
+    primaryWindow = QtWidgets.QMainWindow()
+    application = Application(primaryWindow)
+    application.launch(primaryWindow)
     
-    ui.connect_to_broker()
-    PrimaryWindow.show()
+    #application.connect_to_broker()
+    primaryWindow.show()
 
-    # TODO: Ensure all threads have ended when program closes. 
-    # Close Program
+    # TODO: Ensure all threads have ended when program closes.
     sys.exit(app.exec_())
-    ui.client.client.disconnect()

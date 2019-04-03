@@ -2,6 +2,7 @@ import socket
 import paho.mqtt.client as mqtt
 import time
 import base64
+import sys
 
 class Client:
 
@@ -32,6 +33,10 @@ class Client:
     def on_subscribe(self, client, userdata, flags, rc):
         # Do nothing
         pass
+
+    def disconnect(self):
+        self.client.disconnect()
+        sys.exit()
 
     #=========================================================================
     def send(self) :
