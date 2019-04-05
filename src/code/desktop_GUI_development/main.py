@@ -228,9 +228,9 @@ class Application(object):
     def submit_ppg_files(self):
         try:
             root = Tk().withdraw()
-            filename = filedialog.askopenfilename(initialdir = "/",title = "Select file", filetypes = (("timestamp & PPG recordings CSV","*.csv"), ("all files","*.*")))
-            print("Simulating Activity Recognition for file: {" + str(filename) + "}")
-            self.client.send_compressed_image_for_prediction(filename)
+            file_path = filedialog.askopenfilename(initialdir = "/",title = "Select file", filetypes = (("timestamp & PPG recordings CSV","*.csv"), ("all files","*.*")))
+            print("Simulating Activity Recognition for file: {" + str(file_path) + "}")
+            self.client.convert_and_send(file_path)
         except Exception as error:
             print("Error: " + repr(error))
 

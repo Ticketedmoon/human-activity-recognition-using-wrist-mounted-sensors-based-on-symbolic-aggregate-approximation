@@ -5,14 +5,19 @@ import sys
 import base64
 import subprocess
 import re
+import os
 
 sys.path.append("../")
 
 from label_image import initialize_prediction_process
+from bitmap_generator import BitmapGenerator
 
 client_id = socket.gethostname()
 
 class Server:
+
+    server_bitmap_generator = BitmapGenerator()
+    temporary_image_directory = "./temp"
 
     def on_connect(self, client, userdata, flags, rc):
         topic = "client_connections"
@@ -26,8 +31,10 @@ class Server:
 
     # The callback for when a PUBLISH message is received from the server.
     def on_message(self, client, userdata, msg):
-        if (msg.topic == "image_check"):
-            self.image_receive(client, msg.payload)
+        if (msg.topic == "sax_check"):
+            print("Server: Prediction Resolve Acknowledged")
+            self.sax_decode_activity(client, msg.payload)
+            self.real_time_simulate_activity_recognition()
         else:
             message = str(msg.payload)
             print(message[2:-1])
@@ -63,19 +70,30 @@ class Server:
         client.subscribe("client_connections")
         print("Server: Subscribing to topic {client_connections}")
 
-        client.subscribe("image_check")
-        print("Server: Subscribing to topic {image_check}")
+        client.subscribe("sax_check")
+        print("Server: Subscribing to topic {sax_check}")
 
         client.loop_forever()
 
-    def image_receive(self, client, image_64_encode):
-        print("Image decode request received.")
-        image_64_decode = base64.decodestring(image_64_encode)
-        with open("test.png", 'wb') as f:
-            f.write(image_64_decode)  
-        print("Image saved temporarily.")
+    def sax_decode_activity(self, client, symbolic_base_64_string_encoded):
+        sax_string = base64.decodestring(symbolic_base_64_string_encoded)
+        sax_string_decoded = str(sax_string)[2:-1]
+        self.image_encode_activity(client, sax_string_decoded)
 
-        prediction = self.model_predict("test.png") 
+    # Image sizes are 100 x 100
+    # shift 256 is equivalent of shifting 1-second
+    def image_encode_activity(self, client, sax_string_decoded):
+        print("Server: Starting Image Encoding Process... Symbolic Length: {}".format(len(sax_string_decoded)))
+        shift_position = 256
+        bitmap_size = 100 * 100
+        while(shift_position < len(sax_string_decoded)):
+            substring = sax_string_decoded[shift_position-256:bitmap_size + shift_position]
+            self.server_bitmap_generator.generate_single_bitmap(substring)   
+            shift_position += 256
+            print("Image Built; Shift Value: " + shift_position)
+
+    def real_time_simulate_activity_recognition(self):
+        prediction = self.model_predict("./temp/activity-0.png") 
         client.publish("prediction_receive", prediction)
         print("Activity classification: Resolved.")
 

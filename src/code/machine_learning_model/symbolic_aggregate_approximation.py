@@ -6,9 +6,13 @@ class SymbolicAggregateApproximation:
     training_exercise_path = "../../resources/exercise-datasets/"
     letter_size = 20
 
-    def __init__(self, path):
+    def __init__(self):
         print("Symbolic Aggregate Approximation Letter Size: " + str(self.letter_size))
         self.sax_obj = Time_series_to_string_via_sax()
+
+    # General Abstract Generate method; unsure of the activity; useful for server.
+    def generate(self, filename):
+        return self.sax_obj.generate_string_from_time_series(filename, self.letter_size, 1)
 
     def generate_walk(self, file_no):
         walk_path = self.training_exercise_path + "Walk0" + str(file_no) + ".csv"

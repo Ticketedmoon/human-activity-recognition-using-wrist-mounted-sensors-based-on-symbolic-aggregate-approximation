@@ -7,6 +7,7 @@ import os
 
 class BitmapGenerator:
 
+    # TODO: Low this to 32 x 32  or 48 x 48 -- 2 Seconds and 4 seconds respectively; 100x100 corresponds to 40 seconds... bad...
     bitmap_size = 100
 
     image_map = {
@@ -23,6 +24,8 @@ class BitmapGenerator:
             'HighResistanceBike' : 0
         }
     }
+
+    server_image_counter = 0
 
     def __init__(self, colour="greyscale"):
         self.sax_obj = SymbolicAggregateApproximation()
@@ -94,6 +97,42 @@ class BitmapGenerator:
             # Finally, write the bitmaps to the correct location (train/test)
             save_location = './pixel_bitmaps/' + data_group + '/' + activity + '/' + activity + '-{}-{}'.format(data_group, count)
             image.write(save_location + ".bmp")
+
+            # Convert to JPEG - Must be JPEG for inception model.
+            img = Image.open(save_location + ".bmp")
+            new_img = img.resize( (128, 128), Image.ANTIALIAS )
+
+            new_img.save(save_location + ".png", 'png')
+            os.remove(save_location + ".bmp")
+        except Exception as e:
+            pass
+
+    # Function designed for incoming sax strings from clients
+    # simply only takes a symbol string of SAX characters and converts to an image
+    # Saves temporarily on server in ./temp
+    # Colour is greyscale by default; Can be changed via the function call.
+    def generate_single_bitmap(self, symbolic_string):
+        
+        # Image size: 100x100
+        image = Bitmap(self.bitmap_size, self.bitmap_size)
+
+        # Try and Except - Except needed when iterations extend passed the SAX string length. 
+        try:
+            for row in range(self.bitmap_size):
+                for col in range(self.bitmap_size):
+                    # We set each pixel in the bitmap based on the mapping function, from the bitmap_module.
+                    letter_choice = (row * self.bitmap_size) + col
+                    if (self.colour == "rgb"):
+                        pixel_colour = rgb_letter_to_colour(symbolic_string[letter_choice])
+                    else:
+                        pixel_colour = greyscale_letter_to_colour(symbolic_string[letter_choice])
+
+                    image.setPixel(row, col, pixel_colour)
+
+            print("saving...")
+            save_location = "./temp/activity-{}".format(self.server_image_counter)
+            image.write(save_location + ".bmp")
+            print("saving...")
 
             # Convert to JPEG - Must be JPEG for inception model.
             img = Image.open(save_location + ".bmp")
