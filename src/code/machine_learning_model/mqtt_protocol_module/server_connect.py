@@ -7,6 +7,7 @@ import subprocess
 import re
 import os
 import glob
+import threading
 
 sys.path.append("../")
 
@@ -34,8 +35,8 @@ class Server:
     def on_message(self, client, userdata, msg):
         if (msg.topic == "sax_check"):
             print("Server: Prediction Resolve Acknowledged")
-            self.sax_decode_activity(client, msg.payload)
-            self.real_time_simulate_activity_recognition(client)
+            initialize_simulation_loop = threading.Thread(target=self.sax_decode_activity, args=[client, msg.payload])
+            initialize_simulation_loop.start()
         else:
             message = str(msg.payload)
             print(message[2:-1])
@@ -85,26 +86,31 @@ class Server:
     # shift 256 is equivalent of shifting 1-second
     def image_encode_activity(self, client, sax_string_decoded):
         print("Server: Starting Image Encoding Process... Symbolic Length: {}".format(len(sax_string_decoded)))
-        shift_position = 256
-        bitmap_size = 100 * 100
-        limit = len(sax_string_decoded) - bitmap_size
-        while(shift_position < limit):
-            substring = sax_string_decoded[shift_position-256:bitmap_size + shift_position]
-            self.server_bitmap_generator.generate_single_bitmap(substring)   
-            print("Image Built {}; Shift Value: {}".format(shift_position // 256,shift_position))
-            shift_position += 256
+        try:
+            shift_position = 256
+            bitmap_size = 100 * 100
+            limit = len(sax_string_decoded) - bitmap_size
+            while(shift_position < limit):
+                enum_counter = (shift_position // 256) - 1
+                substring = sax_string_decoded[shift_position-256:bitmap_size + shift_position]
+                self.server_bitmap_generator.generate_single_bitmap(substring)   
+                print("Image Built {} - Shift Value: {}".format(shift_position // 256, shift_position))
+                self.real_time_simulate_activity_recognition(client, enum_counter)
+                shift_position += 256
+            print("Activity classification: Resolved.")
 
-    def real_time_simulate_activity_recognition(self, client):
+        finally:
+            # After Simulation Activity Recognition Function Complete => Destroy Temp Folder
+            print("Destroying Temporaries...")
+            self.destroy_temp_folder()
+
+    def real_time_simulate_activity_recognition(self, client, count):
         path = "./temp/"
-        prediction = self.model_predict(path + "activity-0.png") 
+        prediction = self.model_predict(path + "activity-{}.png".format(count))
+        print("Prediction Posted: {}".format(prediction))
         client.publish("prediction_receive", prediction)
 
-        # After Simulation Activity Recognition Function Complete.
-        self.destroy_temp_folder()
-        print("Activity classification: Resolved.")
-
     def model_predict(self, client_image_path):
-        print("Resolving Classification...")
         p = subprocess.Popen(["python", "../label_image.py", "--graph=C:/tmp/output_graph.pb", "--labels=C:/tmp/output_labels.txt", "--input_layer=Placeholder",
                                     "--output_layer=final_result", "--image={}".format(client_image_path)], stdout=subprocess.PIPE)
         out, err = p.communicate()
@@ -115,6 +121,7 @@ class Server:
         files = glob.glob('./temp/*')
         for f in files:
             os.remove(f)
+
         # Also reset counter
         self.server_bitmap_generator.reset_activity_counter()
 

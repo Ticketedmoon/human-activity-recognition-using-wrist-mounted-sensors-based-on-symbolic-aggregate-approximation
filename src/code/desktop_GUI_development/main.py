@@ -230,12 +230,13 @@ class Application(object):
             root = Tk().withdraw()
             file_path = filedialog.askopenfilename(initialdir = "/",title = "Select file", filetypes = (("timestamp & PPG recordings CSV","*.csv"), ("all files","*.*")))
             print("Simulating Activity Recognition for file: {" + str(file_path) + "}")
-            self.client.convert_and_send(file_path)
+            
+            # Start thread here - does not freeze up the main thread
+            simulate_thread = threading.Thread(target=self.client.convert_and_send, args=[file_path])
+            simulate_thread.start()
+
         except Exception as error:
             print("Error: " + repr(error))
-
-    def send_test_image(self):
-        pass
 
 if __name__ == "__main__":
 
