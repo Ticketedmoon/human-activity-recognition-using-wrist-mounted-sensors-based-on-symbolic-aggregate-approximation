@@ -19,25 +19,46 @@ from mqtt_protocol_module.client_connect import Client
 
 import threading
 import bitmap_module
+import base64
 
-class Application(object):
+class Application(Client):
 
-    client = Client()
-    download_thread = threading.Thread(target=client.send)
+    exercise_time = 0
 
     def __init__(self, primaryWindow):
+        super().__init__()
         self.centralwidget = QtWidgets.QWidget(primaryWindow)
         self.frame = QtWidgets.QFrame(self.centralwidget)
         self.widget_2 = QtWidgets.QWidget(self.frame)
         self.label_pane_1 = QtWidgets.QLabel(self.widget_2)
+        self.label_pane_2 = QtWidgets.QLabel(self.widget_2)
+        self.label_pane_3 = QtWidgets.QLabel(self.widget_2)
         app.aboutToQuit.connect(self.closeEvent)
+    
+        self.download_thread = threading.Thread(target=self.send)
         self.download_thread.start()
+    
+    # The callback for when a PUBLISH message is received from the server.
+    # Used by MQTT Client class
+    def on_message(self, client, userdata, msg):
+        if (msg.topic == "prediction_receive"):
+            print("prediction received")
+
+            encoded_prediction = base64.decodestring(msg.payload)
+            decoded_prediction = encoded_prediction.decode("utf-8", "ignore")
+            prediction = (self.replaceMultiple(decoded_prediction, ['[', ']', ',', '\''] , "")).split()
+            self.exercise_time += 1
+
+            print(prediction)
+            # When message received, update UI
+            print("Client with ID {} received message: {}".format(self.client_id, decoded_prediction))
+            self.update_activity_user_interface(prediction)
 
     def closeEvent(self):
         #Your desired functionality here
         print('Closing Application...')
-        self.client.prevent_publish_mechanism()
-        self.client.disconnect()
+        self.prevent_publish_mechanism()
+        self.disconnect()
         sys.exit(0)
 
     def setup_window_framework(self, PrimaryWindow):
@@ -85,7 +106,7 @@ class Application(object):
         self.widget_2.setStyleSheet("background-color: rgb(0, 140, 180);")
 
         self.status_txt = QtWidgets.QLabel(self.frame)
-        self.status_txt.setGeometry(QtCore.QRect(100, 10, 300, 230))
+        self.status_txt.setGeometry(QtCore.QRect(135, 50, 225, 200))
         self.status_txt.setAlignment(Qt.AlignCenter)
         self.status_txt.setStyleSheet("background-color: rgb(0, 140, 180);")
         movie = QtGui.QMovie("assets/cycle.gif")
@@ -94,19 +115,33 @@ class Application(object):
         self.status_txt.setLayout(QtWidgets.QHBoxLayout())
 
     def draw_activity_text(self):
-        self.label_pane_1.setGeometry(QtCore.QRect(170, 190, 230, 100))
+        self.label_pane_1.setGeometry(QtCore.QRect(15, 10, 125, 15))
+        self.label_pane_2.setGeometry(QtCore.QRect(15, 35, 125, 15))
+        self.label_pane_3.setGeometry(QtCore.QRect(15, 60, 125, 15))
 
         font = QtGui.QFont()
-        font.setFamily("Dubai Light")
-        font.setPointSize(14)
+        font.setFamily("Calibri")
+        font.setPointSize(11)
         font.setBold(False)
-        font.setWeight(50)
+        font.setWeight(30)
 
         self.label_pane_1.setFont(font)
         self.label_pane_1.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.label_pane_1.setStyleSheet("color: rgb(255, 255, 255)")
         self.label_pane_1.setObjectName("label")
         self.label_pane_1.setText("Activity: Slow Cycle")
+
+        self.label_pane_2.setFont(font)
+        self.label_pane_2.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.label_pane_2.setStyleSheet("color: rgb(255, 255, 255)")
+        self.label_pane_2.setObjectName("label")
+        self.label_pane_2.setText("Exercise Time: {}".format(self.exercise_time))
+
+        self.label_pane_3.setFont(font)
+        self.label_pane_3.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.label_pane_3.setStyleSheet("color: rgb(255, 255, 255)")
+        self.label_pane_3.setObjectName("label")
+        self.label_pane_3.setText("Accuracy: {}%".format("???"))
 
     # Research Pane
     def build_research_pane(self):
@@ -225,18 +260,44 @@ class Application(object):
         primaryWindow.setCentralWidget(self.centralwidget)
         QtCore.QMetaObject.connectSlotsByName(primaryWindow)
 
+    def update_activity_user_interface(self, prediction_message):
+        if (prediction_message[0] == "lowresistancebike"):
+            activity_prediction = "Slow Cycle"
+        elif (prediction_message[0] == "highresistancebike"):
+            activity_prediction = "Fast Cycle"
+        else:
+            activity_prediction = prediction_message[0]
+
+        prediction_accuracy = (round(float(prediction_message[1]), 4)) * 100
+        self.label_pane_1.setText("Activity: {}".format(activity_prediction))
+        self.label_pane_2.setText("Exercise Time: {}s".format(self.exercise_time))
+        self.label_pane_3.setText("Accuracy: {:.2f}%".format(prediction_accuracy))
+        print("Client User Interface Updated")
+
     def submit_ppg_files(self):
         try:
             root = Tk().withdraw()
             file_path = filedialog.askopenfilename(initialdir = "/",title = "Select file", filetypes = (("timestamp & PPG recordings CSV","*.csv"), ("all files","*.*")))
-            print("Simulating Activity Recognition for file: {" + str(file_path) + "}")
-            
-            # Start thread here - does not freeze up the main thread
-            simulate_thread = threading.Thread(target=self.client.convert_and_send, args=[file_path])
-            simulate_thread.start()
+            if (file_path != ""):
+                print("Simulating Activity Recognition for file: {" + str(file_path) + "}")
+                
+                # Start thread here - does not freeze up the main thread
+                simulate_thread = threading.Thread(target=self.convert_and_send, args=[file_path])
+                simulate_thread.start()
 
         except Exception as error:
             print("Error: " + repr(error))
+
+    # Helper Function - Maybe move to new class (Helper)
+    def replaceMultiple(self, mainString, toBeReplaces, newString):
+        # Iterate over the strings to be replaced
+        for elem in toBeReplaces:
+            # Check if string is in the main string
+            if elem in mainString:
+                # Replace the string
+                mainString = mainString.replace(elem, newString)
+        
+        return  mainString
 
 if __name__ == "__main__":
 

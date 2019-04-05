@@ -38,3 +38,6 @@ env
 *.pickle
 *.h5
 *.json
+
+# Temp Directory
+temp/

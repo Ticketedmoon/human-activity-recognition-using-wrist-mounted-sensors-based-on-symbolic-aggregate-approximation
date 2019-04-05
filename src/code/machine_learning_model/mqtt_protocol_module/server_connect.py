@@ -108,7 +108,9 @@ class Server:
         path = "./temp/"
         prediction = self.model_predict(path + "activity-{}.png".format(count))
         print("Prediction Posted: {}".format(prediction))
-        client.publish("prediction_receive", prediction)
+
+        encoded_prediction = base64.b64encode(bytes(prediction, 'utf-8'))
+        client.publish("prediction_receive", encoded_prediction)
 
     def model_predict(self, client_image_path):
         p = subprocess.Popen(["python", "../label_image.py", "--graph=C:/tmp/output_graph.pb", "--labels=C:/tmp/output_labels.txt", "--input_layer=Placeholder",
@@ -116,6 +118,31 @@ class Server:
         out, err = p.communicate()
         matches = re.findall("[wrlh]\w+ \d+\.\d+", str(out))
         return str(matches[0].split())
+
+    # TODO: Use this function to dissect how to only load the graph one time - drastically speeding up the server side.
+    # Additionally, perhaps all bitmap images for the specified csv should be generated first, and then
+    # Time.sleep(X seconds) between each activity prediction - also take into account potential network latency.
+    def run_graph(src, labels, input_layer_name, output_layer_name, num_top_predictions):
+        with tf.Session() as sess:
+            i=0
+            #outfile=open('submit.txt','w')
+            #outfile.write('image_id, label \n')
+            for f in os.listdir(dest):
+                image_data=load_image(os.path.join(dest,test[i]+'.jpg'))
+                #image_data=load_image(os.path.join(src,f))
+                softmax_tensor = sess.graph.get_tensor_by_name(output_layer_name)
+                predictions, = sess.run(softmax_tensor, {input_layer_name: image_data})
+
+                # Sort to show labels in order of confidence
+                top_k = predictions.argsort()[-num_top_predictions:][::-1]
+                for node_id in top_k:
+                    human_string = labels[node_id]
+                    score = predictions[node_id]
+                    #print('%s (score = %.5f) %s , %s' % (test[i], human_string))
+                    print('%s, %s' % (test[i], human_string))
+                    #outfile.write(test[i]+', '+human_string+'\n')
+                i+=1
+        return 0
 
     def destroy_temp_folder(self):
         files = glob.glob('./temp/*')

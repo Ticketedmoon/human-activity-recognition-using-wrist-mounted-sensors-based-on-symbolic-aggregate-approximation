@@ -10,20 +10,22 @@ from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 
 class Client:
 
-    client_id = socket.gethostname()
-    client = mqtt.Client(client_id)
-    symbol_converter = SymbolicAggregateApproximation()
-    has_disconnected = False
+    def __init__(self):
+        self.client_id = socket.gethostname()
+        self.client = mqtt.Client(self.client_id)
+        self.symbol_converter = SymbolicAggregateApproximation()
+        self.has_disconnected = False
 
-    #=========================================================================
     def on_publish(self, client, userdata, mid) :
         print ("Client with ID {} has published message with ID {} Published".format(self.client_id, mid))
 
     # The callback for when a PUBLISH message is received from the server.
-    def on_message(self, client, userdata, msg):
-        if (msg.topic == "prediction_receive"):
-            message = msg.payload.decode("utf-8", "ignore")
-            print(message)
+    # def on_message(self, client, userdata, msg):
+    #     if (msg.topic == "prediction_receive"):
+    #         message = msg.payload.decode("utf-8", "ignore")
+
+    #         # When message received, update UI
+    #         print("Client with ID {} received message: {}".format(self.client_id, message))
 
     def prevent_publish_mechanism(self):
         self.has_disconnected = True
