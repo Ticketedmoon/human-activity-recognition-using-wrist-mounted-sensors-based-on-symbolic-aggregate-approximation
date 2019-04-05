@@ -129,10 +129,9 @@ class BitmapGenerator:
 
                     image.setPixel(row, col, pixel_colour)
 
-            print("saving...")
             save_location = "./temp/activity-{}".format(self.server_image_counter)
             image.write(save_location + ".bmp")
-            print("saving...")
+            self.server_image_counter += 1
 
             # Convert to JPEG - Must be JPEG for inception model.
             img = Image.open(save_location + ".bmp")
@@ -142,6 +141,9 @@ class BitmapGenerator:
             os.remove(save_location + ".bmp")
         except Exception as e:
             pass
+
+    def reset_activity_counter(self):
+        self.server_image_counter = 0
 
 if __name__ == "__main__":
     x = BitmapGenerator()

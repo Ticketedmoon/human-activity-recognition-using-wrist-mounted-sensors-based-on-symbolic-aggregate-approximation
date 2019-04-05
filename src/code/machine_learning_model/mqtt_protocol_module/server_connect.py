@@ -6,6 +6,7 @@ import base64
 import subprocess
 import re
 import os
+import glob
 
 sys.path.append("../")
 
@@ -34,7 +35,7 @@ class Server:
         if (msg.topic == "sax_check"):
             print("Server: Prediction Resolve Acknowledged")
             self.sax_decode_activity(client, msg.payload)
-            self.real_time_simulate_activity_recognition()
+            self.real_time_simulate_activity_recognition(client)
         else:
             message = str(msg.payload)
             print(message[2:-1])
@@ -86,24 +87,36 @@ class Server:
         print("Server: Starting Image Encoding Process... Symbolic Length: {}".format(len(sax_string_decoded)))
         shift_position = 256
         bitmap_size = 100 * 100
-        while(shift_position < len(sax_string_decoded)):
+        limit = len(sax_string_decoded) - bitmap_size
+        while(shift_position < limit):
             substring = sax_string_decoded[shift_position-256:bitmap_size + shift_position]
             self.server_bitmap_generator.generate_single_bitmap(substring)   
+            print("Image Built {}; Shift Value: {}".format(shift_position // 256,shift_position))
             shift_position += 256
-            print("Image Built; Shift Value: " + shift_position)
 
-    def real_time_simulate_activity_recognition(self):
-        prediction = self.model_predict("./temp/activity-0.png") 
+    def real_time_simulate_activity_recognition(self, client):
+        path = "./temp/"
+        prediction = self.model_predict(path + "activity-0.png") 
         client.publish("prediction_receive", prediction)
+
+        # After Simulation Activity Recognition Function Complete.
+        self.destroy_temp_folder()
         print("Activity classification: Resolved.")
 
     def model_predict(self, client_image_path):
         print("Resolving Classification...")
         p = subprocess.Popen(["python", "../label_image.py", "--graph=C:/tmp/output_graph.pb", "--labels=C:/tmp/output_labels.txt", "--input_layer=Placeholder",
-                                    "--output_layer=final_result", "--image=../pixel_bitmaps/test/Walk/Walk-test-300.png"], stdout=subprocess.PIPE)
+                                    "--output_layer=final_result", "--image={}".format(client_image_path)], stdout=subprocess.PIPE)
         out, err = p.communicate()
         matches = re.findall("[wrlh]\w+ \d+\.\d+", str(out))
         return str(matches[0].split())
+
+    def destroy_temp_folder(self):
+        files = glob.glob('./temp/*')
+        for f in files:
+            os.remove(f)
+        # Also reset counter
+        self.server_bitmap_generator.reset_activity_counter()
 
 if __name__ == "__main__":
     server = Server()
