@@ -1,4 +1,8 @@
+import sys
+
+sys.path.append("../../")
 from logger_module.Logger import Logger
+
 from sax_module.time_series_to_string_via_sax import Time_series_to_string_via_sax
 
 class SymbolicAggregateApproximation:
@@ -37,26 +41,4 @@ class SymbolicAggregateApproximation:
         return exercise_results
 
 def main():
-    sax_obj = SymbolicAggregateApproximation()
-    # print_demo(sax_obj, 1)
-
-def print_demo(sax_obj, file_no):
-
-    try:
-        print(" -- Walk Results --")
-        print(sax_obj.generate_walk(file_no))
-
-        print(" -- Run Results --")
-        print(sax_obj.generate_run(file_no))
-
-        print(" -- Low Resistance Bike Results --")
-        print(sax_obj.generate_low_bike(file_no))
-
-        print(" -- High Resistance Bike Results --")
-        print(sax_obj.generate_high_bike(file_no))
-
-    except FileNotFoundError:
-        print("File with ID: 0" + str(file_no) + " Not Found")
-
-if __name__ == "__main__":
-    main()
+    sax_obj = SymbolicAggregateApproximation(True)

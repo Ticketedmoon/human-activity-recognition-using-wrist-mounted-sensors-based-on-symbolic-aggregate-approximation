@@ -1,6 +1,9 @@
 # This script's purpose is to ensure each class of data will have an equal amount.
 import os
 import re
+import sys
+
+sys.path.append("../")
 from logger_module.Logger import Logger
 
 logger = Logger()

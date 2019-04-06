@@ -5,10 +5,14 @@ import pickle
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+
 # Import standard libaries
 import os
 import random
 import tensorflow as tf
+import sys
+
+sys.path.append("../")
 from logger_module.Logger import Logger
 
 class ConvolutionalNeuralNetwork:

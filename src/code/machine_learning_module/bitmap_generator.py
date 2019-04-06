@@ -2,14 +2,17 @@ from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 from bitmap_module.rgb_letter_to_colour_conversion import rgb_letter_to_colour
 from bitmap_module.greyscale_letter_to_colour_conversion import greyscale_letter_to_colour
 from bitmap_module.text_to_bmp_class import Bitmap
-from logger_module.Logger import Logger
 from PIL import Image
 import os
+
+import sys
+sys.path.append("../")
+from logger_module.Logger import Logger
 
 class BitmapGenerator:
 
     # Logger
-    logger = Logger("../", "logs/BitmapGenerator")
+    logger = Logger("../../", "logs/BitmapGenerator")
 
     # TODO: Low this to 32 x 32  or 48 x 48 -- 2 Seconds and 4 seconds respectively; 100x100 corresponds to 40 seconds... bad...
     bitmap_size = 100
@@ -32,7 +35,7 @@ class BitmapGenerator:
     server_image_counter = 0
 
     def __init__(self, colour="greyscale"):
-        self.sax_obj = SymbolicAggregateApproximation()
+        self.sax_obj = SymbolicAggregateApproximation(False)
         self.colour = colour
 
     def build(self):

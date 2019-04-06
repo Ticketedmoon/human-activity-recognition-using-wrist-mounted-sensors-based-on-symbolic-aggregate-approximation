@@ -4,33 +4,28 @@ import sys
 import base64
 import paho.mqtt.client as mqtt
 
-sys.path.append("../")
-
+# ../ from Desktop Application
+# ../../ from MQTT-Protocol Module
+sys.path.append("../../")
 from logger_module.Logger import Logger
+
+sys.path.append("../")
 from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 
 class Client:
 
     # Logger
-    logger = Logger("../", "logs/Client")
+    logger = Logger("../../", "logs/Client")
 
     def __init__(self):
         self.client_id = socket.gethostname()
         self.client = mqtt.Client(self.client_id)
-        self.symbol_converter = SymbolicAggregateApproximation()
+        self.symbol_converter = SymbolicAggregateApproximation(False)
         self.has_disconnected = False
 
     def on_publish(self, client, userdata, mid) :
         self.logger.info("Client with ID {} has published message with ID {} Published".format(self.client_id, mid))
-
-    # The callback for when a PUBLISH message is received from the server.
-    # def on_message(self, client, userdata, msg):
-    #     if (msg.topic == "prediction_receive"):
-    #         message = msg.payload.decode("utf-8", "ignore")
-
-    #         # When message received, update UI
-    #         print("Client with ID {} received message: {}".format(self.client_id, message))
-
+        
     def prevent_publish_mechanism(self):
         self.has_disconnected = True
 
@@ -55,7 +50,6 @@ class Client:
 
     def send(self) :
         self.client.on_disconnect = self.on_disconnect
-        self.client.on_message = self.on_message
         self.client.on_subscribe = self.on_subscribe
         self.client.on_publish = self.on_publish
 

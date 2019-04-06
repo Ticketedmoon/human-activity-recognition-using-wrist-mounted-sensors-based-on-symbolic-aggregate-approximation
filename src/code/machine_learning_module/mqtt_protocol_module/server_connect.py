@@ -11,8 +11,9 @@ import re
 import tensorflow as tf
 
 sys.path.append("../")
-
 from bitmap_generator import BitmapGenerator
+
+sys.path.append("../")
 from logger_module.Logger import Logger
 
 client_id = socket.gethostname()
@@ -20,7 +21,7 @@ client_id = socket.gethostname()
 class Server:
 
     # Logger
-    logger = Logger("../", "logs/Server")
+    logger = Logger("../../", "logs/Server")
 
     server_bitmap_generator = BitmapGenerator()
     temporary_image_directory = "./temp"
