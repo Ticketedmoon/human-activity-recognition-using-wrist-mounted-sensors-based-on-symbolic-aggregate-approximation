@@ -11,11 +11,10 @@ import random
 import tensorflow as tf
 from logger_module.Logger import Logger
 
-
 class ConvolutionalNeuralNetwork:
 
     # Logger
-    logger = Logger()
+    logger = Logger("../", "logs/Convolutional")
 
     # Images are 64x64 24-bit RGB
     image_size = 64

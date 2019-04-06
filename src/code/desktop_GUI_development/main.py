@@ -7,7 +7,8 @@
 # WARNING! All changes made in this file will be lost!
 import sys
 
-sys.path.append('../machine_learning_model/')
+sys.path.append('../')
+from logger_module.Logger import Logger
 
 from PyQt5.Qt import *
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -15,7 +16,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from tkinter import filedialog
 from tkinter import *
 
+sys.path.append('../machine_learning_model/')
 from mqtt_protocol_module.client_connect import Client
+
 
 import threading
 import bitmap_module
@@ -23,7 +26,11 @@ import base64
 
 class Application(Client):
 
+    # Dynamic GUI variable
     exercise_time = 0
+    
+    # Logger
+    logger = Logger("../", "logs/DesktopGUI")
 
     def __init__(self, primaryWindow):
         super().__init__()

@@ -20,7 +20,7 @@ client_id = socket.gethostname()
 class Server:
 
     # Logger
-    logger = Logger()
+    logger = Logger("../", "logs/Server")
 
     server_bitmap_generator = BitmapGenerator()
     temporary_image_directory = "./temp"

@@ -8,7 +8,7 @@ class SymbolicAggregateApproximation:
 
     def __init__(self, logger=True):
         if (logger):
-            self.logger = Logger()
+            self.logger = Logger("../", "logs/SymbolicAggregateApproximation")
             self.logger.info("Symbolic Aggregate Approximation Object Created...")
         self.sax_obj = Time_series_to_string_via_sax()
 

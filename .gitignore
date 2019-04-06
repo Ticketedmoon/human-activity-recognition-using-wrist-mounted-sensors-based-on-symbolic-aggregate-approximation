@@ -41,3 +41,6 @@ env
 
 # Temp Directory
 temp/
+
+# Logs don't need to be versioned
+*.log

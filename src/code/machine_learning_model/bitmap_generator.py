@@ -9,7 +9,7 @@ import os
 class BitmapGenerator:
 
     # Logger
-    logger = Logger()
+    logger = Logger("../", "logs/BitmapGenerator")
 
     # TODO: Low this to 32 x 32  or 48 x 48 -- 2 Seconds and 4 seconds respectively; 100x100 corresponds to 40 seconds... bad...
     bitmap_size = 100

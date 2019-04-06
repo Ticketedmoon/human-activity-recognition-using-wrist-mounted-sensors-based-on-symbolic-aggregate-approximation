@@ -6,13 +6,13 @@ import paho.mqtt.client as mqtt
 
 sys.path.append("../")
 
-from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 from logger_module.Logger import Logger
+from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 
 class Client:
 
     # Logger
-    logger = Logger()
+    logger = Logger("../", "logs/Client")
 
     def __init__(self):
         self.client_id = socket.gethostname()
