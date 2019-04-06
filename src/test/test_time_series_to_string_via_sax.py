@@ -1,7 +1,8 @@
 import unittest
 import sys
 
-sys.path.append('../code/machine_learning_model')
+# Path is viewed from where run_tests.py is
+sys.path.append('./code/machine_learning_module')
 
 from sax_module.time_series_to_string_via_sax import Time_series_to_string_via_sax
 

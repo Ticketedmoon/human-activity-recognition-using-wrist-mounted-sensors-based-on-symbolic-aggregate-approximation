@@ -2,7 +2,8 @@ import glob
 import unittest
 import sys
 
-sys.path.append('./code/machine_learning_model/')
+# Path is viewed from where run_tests.py is
+sys.path.append('./code/')
 
 from logger_module.Logger import Logger
 

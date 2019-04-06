@@ -4,7 +4,7 @@ import test.all_tests
 import sys
 
 # Be mindful of the pathing of the test suite.
-sys.path.append('./code/machine_learning_model')
+sys.path.append('./code/')
 
 from logger_module.Logger import Logger
 
