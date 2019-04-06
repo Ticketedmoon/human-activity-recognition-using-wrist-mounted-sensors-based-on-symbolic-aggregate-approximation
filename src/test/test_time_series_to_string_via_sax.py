@@ -5,6 +5,8 @@ sys.path.append('../code/machine_learning_model')
 
 from sax_module.time_series_to_string_via_sax import Time_series_to_string_via_sax
 
+from logger_module.Logger import Logger
+
 class Test_Symbolic_Aggregate_Approximation(unittest.TestCase):
 
     # Test idx2Letter method as part of Time_series_to_string_via_sax class

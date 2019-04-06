@@ -5,10 +5,11 @@ class SymbolicAggregateApproximation:
 
     training_exercise_path = "../../resources/exercise-datasets/"
     letter_size = 20
-    logger = Logger()
 
-    def __init__(self):
-        self.logger.info("Symbolic Aggregate Approximation Object Created...")
+    def __init__(self, logger=True):
+        if (logger):
+            self.logger = Logger()
+            self.logger.info("Symbolic Aggregate Approximation Object Created...")
         self.sax_obj = Time_series_to_string_via_sax()
 
     # General Abstract Generate method; unsure of the activity; useful for server.

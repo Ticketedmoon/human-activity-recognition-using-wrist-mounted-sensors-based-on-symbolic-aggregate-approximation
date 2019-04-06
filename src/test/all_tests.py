@@ -2,7 +2,9 @@ import glob
 import unittest
 import sys
 
-sys.path.append('../code/machine_learning_model')
+sys.path.append('./code/machine_learning_model/')
+
+from logger_module.Logger import Logger
 
 def create_test_suite():
     test_file_strings = glob.glob('test/test_*.py')
