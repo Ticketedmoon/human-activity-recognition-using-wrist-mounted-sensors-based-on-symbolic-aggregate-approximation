@@ -2,10 +2,14 @@ from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 from bitmap_module.rgb_letter_to_colour_conversion import rgb_letter_to_colour
 from bitmap_module.greyscale_letter_to_colour_conversion import greyscale_letter_to_colour
 from bitmap_module.text_to_bmp_class import Bitmap
+from logger_module.Logger import Logger
 from PIL import Image
 import os
 
 class BitmapGenerator:
+
+    # Logger
+    logger = Logger()
 
     # TODO: Low this to 32 x 32  or 48 x 48 -- 2 Seconds and 4 seconds respectively; 100x100 corresponds to 40 seconds... bad...
     bitmap_size = 100
@@ -56,7 +60,7 @@ class BitmapGenerator:
                 self.generate_all("HighResistanceBike", high_bike_sax_str, index, data_type)
 
             except FileNotFoundError:
-                print("File not found with ID: (" + str(index) + ")")
+                self.logger.error("File not found with ID: (" + str(index) + ")")
 
     def generate_all(self, activity, sax_string, count, data_type):
         # Move up the sax_string by some 'shift' amount, each image will have some portion of the previous image within it.
@@ -67,10 +71,10 @@ class BitmapGenerator:
             # 80% / 20% for train and test respectively.
             self.generate(activity, sax_string, pos_in_string, shift, data_type)
 
-        if (data_type == 'train'):
-            print("Training {} (Subject #{}) complete - bitmaps for activity total: {}".format(activity, count, self.image_map["train"][activity]))
+        if data_type == 'train':
+            self.logger.info("Training {} (Subject #{}) complete - bitmaps for activity total: {}".format(activity, count, self.image_map["train"][activity]))
         else:
-            print("Testing {} (Subject #{}) complete - bitmaps for activity total: {}".format(activity, count, self.image_map["test"][activity]))
+            self.logger.info("Testing {} (Subject #{}) complete - bitmaps for activity total: {}".format(activity, count, self.image_map["test"][activity]))
 
     def generate(self, activity, sax_string, pos_in_string, shift, data_group):
 

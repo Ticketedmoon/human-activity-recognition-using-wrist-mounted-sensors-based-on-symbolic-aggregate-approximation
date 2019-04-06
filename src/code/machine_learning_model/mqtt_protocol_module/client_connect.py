@@ -1,14 +1,18 @@
 import socket
-import paho.mqtt.client as mqtt
-import time
-import base64
 import sys
+
+import base64
+import paho.mqtt.client as mqtt
 
 sys.path.append("../")
 
 from symbolic_aggregate_approximation import SymbolicAggregateApproximation
+from logger_module.Logger import Logger
 
 class Client:
+
+    # Logger
+    logger = Logger()
 
     def __init__(self):
         self.client_id = socket.gethostname()
@@ -17,7 +21,7 @@ class Client:
         self.has_disconnected = False
 
     def on_publish(self, client, userdata, mid) :
-        print ("Client with ID {} has published message with ID {} Published".format(self.client_id, mid))
+        self.logger.info("Client with ID {} has published message with ID {} Published".format(self.client_id, mid))
 
     # The callback for when a PUBLISH message is received from the server.
     # def on_message(self, client, userdata, msg):
@@ -33,13 +37,13 @@ class Client:
     # on_connect
     def on_connect(self, client, userdata, flags, rc):
         if (rc == 0):
-            print("Connected Successful")
+            self.logger.info("Connected Successful")
         else:
-            print("Bad connection - Returned Code=", rc)
+            self.logger.info("Bad connection - Returned Code=", rc)
 
     def on_disconnect(self, client, userdata, flags, rc=0):
         client.publish("client_connections", "Client with ID {" + str(self.client_id) + "} disconnected...")
-        print("Client with ID {} has been disconnected...".format(self.client_id))
+        self.logger.info("Client with ID {} has been disconnected...".format(self.client_id))
 
     def on_subscribe(self, client, userdata, flags, rc):
         # Do nothing
@@ -60,13 +64,13 @@ class Client:
         keepalive = 60
 
         # Default Connection statements
-        print ("\nClient with ID {} connecting to {}... keepalive {}".format(self.client_id, host, keepalive))
+        self.logger.info("\nClient with ID {} connecting to {}... keepalive {}".format(self.client_id, host, keepalive))
         self.client.connect(host=host, port=port, keepalive=keepalive)
 
         if (not self.has_disconnected):
             self.client.publish("client_connections", "Client with ID {" + str(self.client_id) + "} connected...")
             self.client.subscribe("prediction_receive")
-            print("Client with ID {} subscribing to topic {}".format(self.client_id, "prediction_receive"))
+            self.logger.info("Client with ID {} subscribing to topic {}".format(self.client_id, "prediction_receive"))
 
             self.client.loop_forever()
 

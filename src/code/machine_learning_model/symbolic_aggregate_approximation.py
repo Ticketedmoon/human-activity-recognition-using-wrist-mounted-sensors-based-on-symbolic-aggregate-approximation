@@ -1,13 +1,14 @@
-import pandas as pd
+from logger_module.Logger import Logger
 from sax_module.time_series_to_string_via_sax import Time_series_to_string_via_sax
 
 class SymbolicAggregateApproximation:
 
     training_exercise_path = "../../resources/exercise-datasets/"
     letter_size = 20
+    logger = Logger()
 
     def __init__(self):
-        print("Symbolic Aggregate Approximation Letter Size: " + str(self.letter_size))
+        self.logger.info("Symbolic Aggregate Approximation Object Created...")
         self.sax_obj = Time_series_to_string_via_sax()
 
     # General Abstract Generate method; unsure of the activity; useful for server.
@@ -36,7 +37,7 @@ class SymbolicAggregateApproximation:
 
 def main():
     sax_obj = SymbolicAggregateApproximation()
-    print_demo(sax_obj, 1)
+    # print_demo(sax_obj, 1)
 
 def print_demo(sax_obj, file_no):
 

@@ -1,20 +1,21 @@
 # Machine Learning libraries
-import tensorflow as tf
-import h5py
-from keras.models import model_from_json
-from keras.models import load_model
+import pickle
 
 # Matrix Operation Libaries
 import cv2
+import matplotlib.pyplot as plt
 import numpy as np
-
 # Import standard libaries
 import os
-import matplotlib.pyplot as plt
 import random
-import pickle
+import tensorflow as tf
+from logger_module.Logger import Logger
+
 
 class ConvolutionalNeuralNetwork:
+
+    # Logger
+    logger = Logger()
 
     # Images are 64x64 24-bit RGB
     image_size = 64
@@ -37,7 +38,7 @@ class ConvolutionalNeuralNetwork:
                     img_array = cv2.imread(os.path.join(path, img), cv2.IMREAD_GRAYSCALE)
                     training_data.append([img_array, class_num])
                 except Exception as e:
-                    print("Image Broken")
+                    self.logger.error("Image Broken")
                     pass
 
         return training_data
@@ -128,7 +129,7 @@ class ConvolutionalNeuralNetwork:
         # Determine underfitting / overfitting!
         # model.summary (useful statistic)      
         val_loss, val_acc = model.evaluate(x_test, y_test)
-        print("Validation Accuracy: {}\nValidation Loss: {}".format(val_acc, val_loss))
+        self.logger.info("Validation Accuracy: {}\nValidation Loss: {}".format(val_acc, val_loss))
 
         # Save model
         # model.save('./model_data/model/activity_recognition_model.h5')
@@ -155,7 +156,7 @@ class ConvolutionalNeuralNetwork:
 
         # load weights into new model
         loaded_model.load_weights("./model_data/model/activity_recognition_model.h5")
-        print("Loaded model from disk")
+        self.logger.info("Loaded model from disk")
 
         return loaded_model
 
@@ -176,8 +177,8 @@ class ConvolutionalNeuralNetwork:
         # 0 = Walk, 1 = Run, 2 = Low Bike, 3 = High Bike
         categories = ["Walk", "Run", "LowResistanceBike", "HighResistanceBike"]
         prediction_value = np.argmax(predictions[index])
-        print("Prediction: " + str(prediction_value) + " (" + categories[prediction_value] + ")")
 
+        self.logger.info("Prediction: " + str(prediction_value) + " (" + categories[prediction_value] + ")")
         self.show_train_image(index)
 
     def show_train_image(self, imageNo):

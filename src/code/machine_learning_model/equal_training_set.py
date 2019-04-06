@@ -1,6 +1,9 @@
 # This script's purpose is to ensure each class of data will have an equal amount.
-import os, shutil
+import os
 import re
+from logger_module.Logger import Logger
+
+logger = Logger()
 
 path, dirs, files = next(os.walk("./pixel_bitmaps/train/HighResistanceBike"))
 file_count = len(files)
@@ -19,10 +22,10 @@ def limit_to_folder_size(folder):
             if os.path.isfile(file_path) and picture_id > file_count:
                 os.unlink(file_path)
         except Exception as e:
-            print(e)
+            logger.error("Problem limiting folder to correct size...")
 
 if __name__ == "__main__":
     limit_to_folder_size(folder_walk)
     limit_to_folder_size(folder_run)
     limit_to_folder_size(folder_low_resistance_bike)
-    print("Directory reshape complete.")
+    logger.info("Directory reshape complete.")
