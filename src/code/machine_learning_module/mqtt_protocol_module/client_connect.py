@@ -65,7 +65,8 @@ class Client:
             self.client.publish("client_connections", "Client with ID {" + str(self.client_id) + "} connected...")
             self.client.subscribe("prediction_receive")
             self.logger.info("Client with ID {} subscribing to topic {}".format(self.client_id, "prediction_receive"))
-
+            self.client.subscribe("clock_reset")
+            self.logger.info("Client with ID {} subscribing to topic {}".format(self.client_id, "clock_reset"))
             self.client.loop_forever()
 
     def convert_and_send(self, csv_path):

@@ -25,12 +25,14 @@ import time, os, re, base64
 
 class Classify_Image:
 
-    tensor_shift = 50
+    tensor_shift = 20
 
     def __init__(self, default_image="tensorflow/examples/label_image/data/grace_hopper.jpg",
-        graph_path="tensorflow/examples/label_image/data/inception_v3_2016_08_28_frozen.pb", 
-        label_path="tensorflow/examples/label_image/data/imagenet_slim_labels.txt",
-         test_dir=None, input_layer="input", output_layer="InceptionV3/Predictions/Reshape_1"):
+        graph_path="C:/tmp/output_graph.pb", 
+        label_path="C:/tmp/output_labels.txt",
+        test_dir="./pixel_bitmaps/test/Walk", input_layer="Placeholder", 
+        output_layer="final_result"):
+        
       self.graph_path = graph_path
       self.test_dir = test_dir
       self.label_path = label_path
@@ -58,28 +60,31 @@ class Classify_Image:
                                     input_width=299,
                                     input_mean=0,
                                     input_std=255):
-      input_name = "file_reader"
-      output_name = "normalized"
-      file_reader = tf.read_file(file_name, input_name)
-      if file_name.endswith(".png"):
-        image_reader = tf.image.decode_png(
-            file_reader, channels=3, name="png_reader")
-      elif file_name.endswith(".gif"):
-        image_reader = tf.squeeze(
-            tf.image.decode_gif(file_reader, name="gif_reader"))
-      elif file_name.endswith(".bmp"):
-        image_reader = tf.image.decode_bmp(file_reader, name="bmp_reader")
-      else:
-        image_reader = tf.image.decode_jpeg(
-            file_reader, channels=3, name="jpeg_reader")
-      float_caster = tf.cast(image_reader, tf.float32)
-      dims_expander = tf.expand_dims(float_caster, 0)
-      resized = tf.image.resize_bilinear(dims_expander, [input_height, input_width])
-      normalized = tf.divide(tf.subtract(resized, [input_mean]), [input_std])
-      sess = tf.Session()
-      result = sess.run(normalized)
+      try:
+        input_name = "file_reader"
+        output_name = "normalized"
+        file_reader = tf.read_file(file_name, input_name)
+        if file_name.endswith(".png"):
+          image_reader = tf.image.decode_png(
+              file_reader, channels=3, name="png_reader")
+        elif file_name.endswith(".gif"):
+          image_reader = tf.squeeze(
+              tf.image.decode_gif(file_reader, name="gif_reader"))
+        elif file_name.endswith(".bmp"):
+          image_reader = tf.image.decode_bmp(file_reader, name="bmp_reader")
+        else:
+          image_reader = tf.image.decode_jpeg(
+              file_reader, channels=3, name="jpeg_reader")
+        float_caster = tf.cast(image_reader, tf.float32)
+        dims_expander = tf.expand_dims(float_caster, 0)
+        resized = tf.image.resize_bilinear(dims_expander, [input_height, input_width])
+        normalized = tf.divide(tf.subtract(resized, [input_mean]), [input_std])
+        sess = tf.Session()
+        result = sess.run(normalized)
 
-      return result
+        return result
+      except:
+        pass
 
     def load_labels(self, label_file):
       label = []
@@ -88,7 +93,7 @@ class Classify_Image:
         label.append(l.rstrip())
       return label
 
-    def initialize_prediction_process(self):
+    def initialize_prediction_process(self, client=None):
 
       graph = self.load_graph(self.graph_path)
 
@@ -109,46 +114,41 @@ class Classify_Image:
 
             top_k = results.argsort()[-5:][::-1]
             labels = self.load_labels(self.label_path)
-            for i in top_k:
-              print(labels[i], results[i])
+            prediction_label, prediction_accuracy = labels[top_k[0]], results[top_k[0]]
 
-            prediction = str([top_k[0], labels[0]])
-            encoded_prediction = base64.b64encode(bytes(prediction, 'utf-8'))
-            client.publish("prediction_receive", encoded_prediction)
+            if (client != None):
+              prediction = str([prediction_label, prediction_accuracy])
+              encoded_prediction = base64.b64encode(bytes(prediction, 'utf-8'))
+              client.publish("prediction_receive", encoded_prediction)
+              time.sleep(1)
 
-      # return results, label_file
+        client.publish("clock_reset", "Reset")
 
+
+    # TODO: make this more flexible via the file_name formatting.
     def build_tensors_in_range(self, test_image_dir, input_height, input_width, input_mean, input_std):
-
       tensors = []
 
-      for i in range(self.tensor_shift - 50, self.tensor_shift):
-        try:
-          file_name = "{}/{}-test-{}.jpeg".format(test_image_dir, "Walk", i)
-          t = self.read_tensor_from_image_file(
-              file_name,
-              input_height=input_height,
-              input_width=input_width,
-              input_mean=input_mean,
-              input_std=input_std)
+      try:
+        for i in range(self.tensor_shift - 19, self.tensor_shift):
+            file_name = "{}/activity-{}.jpeg".format(test_image_dir, i)
+            t = self.read_tensor_from_image_file(
+                file_name,
+                input_height=input_height,
+                input_width=input_width,
+                input_mean=input_mean,
+                input_std=input_std)
 
-          tensors.append(t)
-          print(file_name + " - Tensor Stored")
-        except:
-          print("problem in tensor creation (probably while loop out of range)")
+            tensors.append(t)
+      except:
+          pass
 
-      self.tensor_shift += 50
-      return tensors;      
+      finally:
+        self.tensor_shift += 20
+        return tensors
 
 def main():
-  graph_path = "C:/tmp/output_graph.pb"
-  label_path = "C:/tmp/output_labels.txt"
-  test_dir = "./pixel_bitmaps/test/Walk"
-  input_layer = "Placeholder"
-  output_layer = "final_result"
-
-  classifier = Classify_Image(graph_path=graph_path, label_path=label_path, test_dir=test_dir,
-          input_layer=input_layer, output_layer=output_layer)
+  classifier = Classify_Image()
   classifier.initialize_prediction_process()
 
 if __name__ == "__main__":

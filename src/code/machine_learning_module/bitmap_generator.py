@@ -12,7 +12,7 @@ from logger_module.Logger import Logger
 class BitmapGenerator:
 
     # Logger
-    logger = Logger("../", "logs/BitmapGenerator")
+    logger = Logger("../../", "logs/BitmapGenerator")
 
     # TODO: Low this to 32 x 32  or 48 x 48 -- 2 Seconds and 4 seconds respectively; 100x100 corresponds to 40 seconds... bad...
     bitmap_size = 100
@@ -145,7 +145,7 @@ class BitmapGenerator:
             img = Image.open(save_location + ".bmp")
             new_img = img.resize( (128, 128), Image.ANTIALIAS )
 
-            new_img.save(save_location + ".png", 'png')
+            new_img.save(save_location + ".jpeg", 'jpeg')
             os.remove(save_location + ".bmp")
         except Exception as e:
             pass

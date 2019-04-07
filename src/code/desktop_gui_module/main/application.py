@@ -74,6 +74,12 @@ class Application(Client, QObject):
             # Update UI Here
             self.update_activity_user_interface(prediction)
 
+        elif(msg.topic == "clock_reset"):
+            print("Received Clock Reset Notification")
+            self.exercise_time = 0
+            self.label_pane_2.setText("Exercise Time: {}s".format(self.exercise_time))
+            self.update_activity_user_interface(("idle", 0))
+
     def closeEvent(self):
         #Your desired functionality here
         print('Closing Application...')
@@ -301,6 +307,8 @@ class Application(Client, QObject):
             activity_prediction = "Slow Cycle"
         elif (prediction_message[0] == "highresistancebike"):
             activity_prediction = "Fast Cycle"
+        else:
+            activity_prediction = "idle"
 
         self.display_activity_animation(prediction_message[0])
         prediction_accuracy = (round(float(prediction_message[1]), 4)) * 100

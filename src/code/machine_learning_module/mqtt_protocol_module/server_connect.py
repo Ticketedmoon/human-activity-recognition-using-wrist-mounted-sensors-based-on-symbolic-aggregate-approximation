@@ -10,7 +10,9 @@ import paho.mqtt.client as mqtt
 import re
 import tensorflow as tf
 
+
 sys.path.append("../")
+from label_image import Classify_Image
 from bitmap_generator import BitmapGenerator
 
 sys.path.append("../")
@@ -110,18 +112,15 @@ class Server:
         path = "./temp/"
         total_files = len(os.listdir(path))
         try:
-            self.model_predict(path)
+            self.model_predict(path, client)
         finally:
             # After Simulation Activity Recognition Function Complete => Destroy Temp Folder
             self.logger.warning("Destroying Temporaries...")
             self.destroy_temp_folder()
 
-    def model_predict(self, dir_path):
-        p = subprocess.Popen(["python", "../label_image.py", "--graph=C:/tmp/output_graph.pb", "--labels=C:/tmp/output_labels.txt", "--input_layer=Placeholder",
-                                    "--output_layer=final_result", "test_dir={}".format(dir_path)], stdout=subprocess.PIPE)
-        out, err = p.communicate()
-        matches = re.findall("[wrlh]\w+ \d+\.\d+", str(out))
-        return str(matches[0].split())
+    def model_predict(self, dir_path, client):
+        classifier = Classify_Image(test_dir=dir_path)
+        classifier.initialize_prediction_process(client)
 
     # TODO: Use this function to dissect how to only load the graph one time - drastically speeding up the server side.
     # Additionally, perhaps all bitmap images for the specified csv should be generated first, and then
