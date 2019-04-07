@@ -13,11 +13,11 @@ class Movie_Player(QtWidgets.QLabel):
         self.setAlignment(Qt.AlignCenter)
 
         # Default activity to display
-        self.movie = QtGui.QMovie("../assets/walk.gif", QtCore.QByteArray(), self)
-        self.movie.setSpeed(150)
+        self.movie = QtGui.QMovie("../assets/idle.gif", QtCore.QByteArray(), self)
+        self.movie.setSpeed(50)
         self.setMovie(self.movie)
 
-        self.set_animation("walk")
+        self.set_animation("idle")
 
     @pyqtSlot('QString')
     def set_animation(self, activity):

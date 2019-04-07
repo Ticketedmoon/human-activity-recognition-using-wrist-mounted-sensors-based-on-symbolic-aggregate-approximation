@@ -10,6 +10,7 @@ import sys
 from PyQt5.Qt import *
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
+from PyQt5.QtGui import *
 
 from tkinter import filedialog
 from tkinter import *
@@ -35,7 +36,7 @@ class Application(Client, QObject):
     trigger = pyqtSignal(str)
 
     # Current activity performed
-    activity = None
+    activity = "Idle"
 
     def __init__(self, primaryWindow):
         super().__init__()
@@ -143,7 +144,7 @@ class Application(Client, QObject):
         self.label_pane_1.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.label_pane_1.setStyleSheet("color: rgb(255, 255, 255)")
         self.label_pane_1.setObjectName("label")
-        self.label_pane_1.setText("Activity: Walk")
+        self.label_pane_1.setText("Activity: {}".format(self.activity))
 
         self.label_pane_2.setFont(font)
         self.label_pane_2.setLayoutDirection(QtCore.Qt.LeftToRight)
@@ -198,42 +199,57 @@ class Application(Client, QObject):
         self.widget_3.setObjectName("widget_3")
 
         self.progressBar = QtWidgets.QProgressBar(self.widget_3)
-        self.progressBar.setGeometry(QtCore.QRect(30, 70, 231, 23))
+        self.progressBar.setGeometry(QtCore.QRect(215, 25, 231, 23))
+        self.progressBar.setStyleSheet("background-color: rgb(0, 70, 150); color: white;")
 
         font = QtGui.QFont()
         font.setFamily("Calibri")
+        font.setPointSize(8.5)
 
         self.progressBar.setFont(font)
-        self.progressBar.setProperty("value", 24)
+        self.progressBar.setProperty("value", 0)
         self.progressBar.setObjectName("progressBar")
 
         self.simulate_button = QtWidgets.QPushButton(self.widget_3)
         self.simulate_button.setGeometry(QtCore.QRect(30, 20, 151, 23))
 
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(7)
-
         self.simulate_button.setFont(font)
         self.simulate_button.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.simulate_button.setAcceptDrops(False)
-        self.simulate_button.setStyleSheet("background-color: rgb(0, 190, 0); color: white;")
-        
+        self.simulate_button.setStyleSheet("background-color: rgb(0, 70, 150); color: white;")
+        self.simulate_button.resize(150,32)
+
         self.simulate_button.setObjectName("simulate_button")
-        self.simulate_button.setToolTip("<html><head/><body><p>Select PPG data file via csv</p></body></html>")
+        self.simulate_button.setToolTip("Select PPG data file via csv")
         self.simulate_button.setText("Simulate Activity Recognition")
         self.simulate_button.clicked.connect(self.submit_ppg_files)
 
         self.widget_5 = QtWidgets.QWidget(self.widget_3)
-        self.widget_5.setGeometry(QtCore.QRect(30, 160, 171, 31))
-        self.widget_5.setStyleSheet("background-color: rgb(255, 255, 255)")
+        self.widget_5.setGeometry(QtCore.QRect(45, 207, 171, 31))
+        self.widget_5.setStyleSheet("color: white;")
         self.widget_5.setObjectName("widget_5")
+        self.widget_5.setFont(font)
 
-        self.radioButton = QtWidgets.QRadioButton(self.widget_5)
-        self.radioButton.setGeometry(QtCore.QRect(10, 5, 161, 20))
-        self.radioButton.setObjectName("radioButton")
-        self.radioButton.setText("Is Arduino PPG Connected?")
+        self.ppg_connection = QtWidgets.QLabel(self.widget_5)
+        self.ppg_connection.setGeometry(QtCore.QRect(10, 5, 161, 20))
+        self.ppg_connection.setObjectName("ppg_connection")
+        self.ppg_connection.setText("Arduino PPG Connected?")
+        self.ppg_connection.setFont(font)
+
+        self.widget_6 = QtWidgets.QWidget(self.widget_3)
+        self.widget_6.setGeometry(QtCore.QRect(5, 205, 50, 31))
+        self.widget_6.setAutoFillBackground(False)
+        self.widget_6.setObjectName("widget_6")
+
+        self.red_dot = QtWidgets.QLabel(self.widget_6)
+        self.red_dot.setGeometry(QtCore.QRect(25, 8, 20, 20))
         
+        self.pixmap = QtGui.QPixmap('../assets/red-dot.png')
+        self.red_dot.setScaledContents(True)
+        self.red_dot.setPixmap(self.pixmap)
+        self.red_dot.setAlignment(Qt.AlignRight)
+
+        self.red_dot.setLayout(QtWidgets.QHBoxLayout())
         self.horizontalLayout_2.addWidget(self.widget_3)
 
     def build_analytical_pane(self):
