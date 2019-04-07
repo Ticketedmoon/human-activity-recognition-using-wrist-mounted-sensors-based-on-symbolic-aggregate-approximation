@@ -96,30 +96,29 @@ class Server:
             bitmap_size = 100 * 100
             limit = len(sax_string_decoded) - bitmap_size
             while(shift_position < limit):
-                enum_counter = (shift_position // 256) - 1
                 substring = sax_string_decoded[shift_position-256:bitmap_size + shift_position]
                 self.server_bitmap_generator.generate_single_bitmap(substring)   
                 self.logger.info("Image Built {} - Shift Value: {}".format(shift_position // 256, shift_position))
-                self.real_time_simulate_activity_recognition(client, enum_counter)
                 shift_position += 256
             self.logger.info("Activity classification: Resolved.")
 
+        finally:
+            # Perform activity recognition
+            self.real_time_simulate_activity_recognition(client)
+
+    def real_time_simulate_activity_recognition(self, client):
+        path = "./temp/"
+        total_files = len(os.listdir(path))
+        try:
+            self.model_predict(path)
         finally:
             # After Simulation Activity Recognition Function Complete => Destroy Temp Folder
             self.logger.warning("Destroying Temporaries...")
             self.destroy_temp_folder()
 
-    def real_time_simulate_activity_recognition(self, client, count):
-        path = "./temp/"
-        prediction = self.model_predict(path + "activity-{}.png".format(count))
-        self.logger.info("Prediction Posted: {}".format(prediction))
-
-        encoded_prediction = base64.b64encode(bytes(prediction, 'utf-8'))
-        client.publish("prediction_receive", encoded_prediction)
-
-    def model_predict(self, client_image_path):
+    def model_predict(self, dir_path):
         p = subprocess.Popen(["python", "../label_image.py", "--graph=C:/tmp/output_graph.pb", "--labels=C:/tmp/output_labels.txt", "--input_layer=Placeholder",
-                                    "--output_layer=final_result", "--image={}".format(client_image_path)], stdout=subprocess.PIPE)
+                                    "--output_layer=final_result", "test_dir={}".format(dir_path)], stdout=subprocess.PIPE)
         out, err = p.communicate()
         matches = re.findall("[wrlh]\w+ \d+\.\d+", str(out))
         return str(matches[0].split())
