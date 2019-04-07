@@ -125,7 +125,7 @@ def initialize_prediction_process():
   output_operation = graph.get_operation_by_name(output_name)
 
   activities = ["Walk", "Run", "LowResistanceBike", "HighResistanceBike"]
-  tensors = []
+  tensors = [0] * 300
 
   for activity in activities:
     repeat = len(os.listdir(test_image_dir + "/" + activity))
@@ -138,8 +138,15 @@ def initialize_prediction_process():
           input_mean=input_mean,
           input_std=input_std)
 
-      tensors.append(t)
+      #tensors.append(t)
       print(file_name + " - Tensor Stored")
+      with tf.Session(graph=graph) as sess:
+        results = sess.run(output_operation.outputs[0], {
+            input_operation.outputs[0]: t
+        })
+        results = np.squeeze(results)
+        print(results)
+
   print("Tensors built...")
 
   with tf.Session(graph=graph) as sess:
@@ -149,7 +156,6 @@ def initialize_prediction_process():
       })
       results = np.squeeze(results)
       print(results)
-      time.sleep(1)
 
   # return results, label_file
 
