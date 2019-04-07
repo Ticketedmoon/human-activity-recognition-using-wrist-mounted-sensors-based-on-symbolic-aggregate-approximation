@@ -12,7 +12,7 @@ from logger_module.Logger import Logger
 class BitmapGenerator:
 
     # Logger
-    logger = Logger("../../", "logs/BitmapGenerator")
+    logger = Logger("../", "logs/BitmapGenerator")
 
     # TODO: Low this to 32 x 32  or 48 x 48 -- 2 Seconds and 4 seconds respectively; 100x100 corresponds to 40 seconds... bad...
     bitmap_size = 100
@@ -44,7 +44,7 @@ class BitmapGenerator:
         self.generate_bitmaps('train', 3, 4)
         self.generate_bitmaps('train', 4, 7)
 
-        # Test - why 3 - 4? Because we can guarantee all activities are from the same subject.
+        # Test Subject #2 - Because we can guarantee all activities are from the same subject.
         self.generate_bitmaps('test', 2, 3)
 
     def generate_bitmaps(self, data_type, start, end):
@@ -63,7 +63,7 @@ class BitmapGenerator:
                 self.generate_all("HighResistanceBike", high_bike_sax_str, index, data_type)
 
             except FileNotFoundError:
-                self.logger.error("File not found with ID: (" + str(index) + ")")
+                self.logger.warning("File not found with ID: (" + str(index) + ")")
 
     def generate_all(self, activity, sax_string, count, data_type):
         # Move up the sax_string by some 'shift' amount, each image will have some portion of the previous image within it.
@@ -109,7 +109,7 @@ class BitmapGenerator:
             img = Image.open(save_location + ".bmp")
             new_img = img.resize( (128, 128), Image.ANTIALIAS )
 
-            new_img.save(save_location + ".png", 'png')
+            new_img.save(save_location + ".jpeg", 'jpeg')
             os.remove(save_location + ".bmp")
         except Exception as e:
             pass
@@ -118,6 +118,7 @@ class BitmapGenerator:
     # simply only takes a symbol string of SAX characters and converts to an image
     # Saves temporarily on server in ./temp
     # Colour is greyscale by default; Can be changed via the function call.
+    # TODO: Test this
     def generate_single_bitmap(self, symbolic_string):
         
         # Image size: 100x100

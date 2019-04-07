@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append("../../")
+sys.path.append("../")
 from logger_module.Logger import Logger
 
 from sax_module.time_series_to_string_via_sax import Time_series_to_string_via_sax

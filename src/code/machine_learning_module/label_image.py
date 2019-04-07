@@ -21,7 +21,7 @@ import argparse
 
 import numpy as np
 import tensorflow as tf
-
+import time, os
 
 def load_graph(model_file):
   graph = tf.Graph()
@@ -63,7 +63,6 @@ def read_tensor_from_image_file(file_name,
 
   return result
 
-
 def load_labels(label_file):
   label = []
   proto_as_ascii_lines = tf.gfile.GFile(label_file).readlines()
@@ -75,6 +74,7 @@ def initialize_prediction_process():
   file_name = "tensorflow/examples/label_image/data/grace_hopper.jpg"
   model_file = \
     "tensorflow/examples/label_image/data/inception_v3_2016_08_28_frozen.pb"
+  test_image_dir = None
   label_file = "tensorflow/examples/label_image/data/imagenet_slim_labels.txt"
   input_height = 299
   input_width = 299
@@ -86,6 +86,7 @@ def initialize_prediction_process():
   parser = argparse.ArgumentParser()
   parser.add_argument("--image", help="image to be processed")
   parser.add_argument("--graph", help="graph/model to be executed")
+  parser.add_argument("--test_dir", help="Directory of test images to be predicted iteratively")
   parser.add_argument("--labels", help="name of file containing labels")
   parser.add_argument("--input_height", type=int, help="input height")
   parser.add_argument("--input_width", type=int, help="input width")
@@ -97,6 +98,8 @@ def initialize_prediction_process():
 
   if args.graph:
     model_file = args.graph
+  if args.test_dir != None:
+    test_image_dir = args.test_dir
   if args.image:
       file_name = args.image
   if args.labels:
@@ -115,24 +118,40 @@ def initialize_prediction_process():
     output_layer = args.output_layer
 
   graph = load_graph(model_file)
-  t = read_tensor_from_image_file(
-      file_name,
-      input_height=input_height,
-      input_width=input_width,
-      input_mean=input_mean,
-      input_std=input_std)
 
   input_name = "import/" + input_layer
   output_name = "import/" + output_layer
   input_operation = graph.get_operation_by_name(input_name)
   output_operation = graph.get_operation_by_name(output_name)
 
+  activities = ["Walk", "Run", "LowResistanceBike", "HighResistanceBike"]
+  tensors = []
+
+  for activity in activities:
+    repeat = len(os.listdir(test_image_dir + "/" + activity))
+    for i in range(1, repeat):
+      file_name = "{}/{}/{}-test-{}.jpeg".format(test_image_dir, activity, activity, i)
+      t = read_tensor_from_image_file(
+          file_name,
+          input_height=input_height,
+          input_width=input_width,
+          input_mean=input_mean,
+          input_std=input_std)
+
+      tensors.append(t)
+      print(file_name + " - Tensor Stored")
+  print("Tensors built...")
+
   with tf.Session(graph=graph) as sess:
-    results = sess.run(output_operation.outputs[0], {
-        input_operation.outputs[0]: t
-    })
-  results = np.squeeze(results)
-  return results, label_file
+    for tensor in tensors:
+      results = sess.run(output_operation.outputs[0], {
+          input_operation.outputs[0]: tensor
+      })
+      results = np.squeeze(results)
+      print(results)
+      time.sleep(1)
+
+  # return results, label_file
 
 def main():
   results, label_file = initialize_prediction_process()

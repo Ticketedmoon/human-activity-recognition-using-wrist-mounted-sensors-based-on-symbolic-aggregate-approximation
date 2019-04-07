@@ -28,6 +28,7 @@ __pycache__/
 *.bmp
 *.png
 *.jpg
+*.jpeg
 
 # Django ignore requirements
 env
