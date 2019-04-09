@@ -17,6 +17,9 @@ class Client:
     # Logger
     logger = Logger("../../", "logs/Client")
 
+    # Document length currently being read
+    document_length_for_playback = 1
+
     def __init__(self):
         self.client_id = socket.gethostname()
         self.client = mqtt.Client(self.client_id)
@@ -69,10 +72,11 @@ class Client:
             # Clock reset for UI
             self.client.subscribe("clock_reset")
             self.logger.info("Client with ID {} subscribing to topic {}".format(self.client_id, "clock_reset"))
-            #TEMP: self.client.loop_forever()
+            self.client.loop_forever()
 
     def convert_and_send(self, csv_path):
         symbolic_data = self.symbol_converter.generate(csv_path)
+        self.document_length_for_playback = len(symbolic_data)
         encoded_symbolic_data = base64.b64encode(bytes(symbolic_data, 'utf-8'))
         self.client.publish("sax_check", encoded_symbolic_data)
 

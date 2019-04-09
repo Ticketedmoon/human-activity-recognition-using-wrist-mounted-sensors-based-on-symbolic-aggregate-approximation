@@ -5,6 +5,8 @@ import functools
 
 class Movie_Player(QtWidgets.QLabel):
 
+    currentActivity = None
+
     def __init__(self, *args, **kwargs):
         QLabel.__init__(self, *args, **kwargs)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -21,8 +23,10 @@ class Movie_Player(QtWidgets.QLabel):
 
     @pyqtSlot('QString')
     def set_animation(self, activity):
-        try:
-            self.movie.stop()
-            self.movie.setFileName("../assets/{}.gif".format(activity))
-        finally:
-            self.movie.start()
+        if (activity != self.currentActivity):
+            try:
+                self.movie.stop()
+                self.movie.setFileName("../assets/{}.gif".format(activity))
+            finally:
+                self.movie.start()
+                self.currentActivity = activity

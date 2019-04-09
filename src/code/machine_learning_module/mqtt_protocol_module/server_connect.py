@@ -114,7 +114,10 @@ class Server:
             self.image_encode_activity(client, sax_string_decoded, startLetterIndex, endLetterIndex)
             startLetterIndex += 20
             endLetterIndex += 20
+            
         self.logger.info("Human Activity Simulation Playback complete for client with ID {}".format(self.client_objects[client]))
+        # Reset clock
+        client.publish("clock_reset", "notify")
 
     # Image sizes are 100 x 100
     # shift 256 is equivalent of shifting 1-second

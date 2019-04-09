@@ -128,7 +128,7 @@ class Classify_Image:
               prediction = str([prediction_label, prediction_accuracy])
               encoded_prediction = base64.b64encode(bytes(prediction, 'utf-8'))
               client.publish("prediction_receive", encoded_prediction)
-              time.sleep(1)
+              time.sleep(0.25)
 
 
     # TODO: make this more flexible via the file_name formatting.
