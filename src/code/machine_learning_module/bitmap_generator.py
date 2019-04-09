@@ -11,9 +11,6 @@ from logger_module.Logger import Logger
 
 class BitmapGenerator:
 
-    # Logger
-    logger = Logger("../../", "logs/BitmapGenerator")
-
     # TODO: Low this to 32 x 32  or 48 x 48 -- 2 Seconds and 4 seconds respectively; 100x100 corresponds to 40 seconds... bad...
     bitmap_size = 100
 
@@ -34,9 +31,12 @@ class BitmapGenerator:
 
     server_image_counter = 0
 
-    def __init__(self, colour="greyscale"):
+    def __init__(self, colour="greyscale", logger_path="../../"):
         self.sax_obj = SymbolicAggregateApproximation(False)
         self.colour = colour
+        
+        # Logger
+        self.logger = Logger(logger_path, "logs/BitmapGenerator")
 
     def build(self):
         # Train
