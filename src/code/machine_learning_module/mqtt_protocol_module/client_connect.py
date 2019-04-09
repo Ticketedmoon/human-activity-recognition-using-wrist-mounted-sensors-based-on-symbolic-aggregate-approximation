@@ -69,7 +69,7 @@ class Client:
             # Clock reset for UI
             self.client.subscribe("clock_reset")
             self.logger.info("Client with ID {} subscribing to topic {}".format(self.client_id, "clock_reset"))
-            self.client.loop_forever()
+            #TEMP: self.client.loop_forever()
 
     def convert_and_send(self, csv_path):
         symbolic_data = self.symbol_converter.generate(csv_path)

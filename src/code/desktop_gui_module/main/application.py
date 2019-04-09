@@ -204,11 +204,11 @@ class Application(Client, QObject):
 
         self.widget_3 = QtWidgets.QWidget(self.frame_2)
         self.widget_3.setAutoFillBackground(False)
-        self.widget_3.setStyleSheet("background-color: rgb(0, 140, 180);")
+        self.widget_3.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.widget_3.setObjectName("widget_3")
 
         self.progressBar = QtWidgets.QProgressBar(self.widget_3)
-        self.progressBar.setGeometry(QtCore.QRect(215, 25, 231, 23))
+        self.progressBar.setGeometry(QtCore.QRect(30, 80, 231, 23))
         self.progressBar.setStyleSheet("background-color: rgb(0, 70, 150); color: white;")
 
         font = QtGui.QFont()
@@ -225,7 +225,7 @@ class Application(Client, QObject):
         self.simulate_button.setFont(font)
         self.simulate_button.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.simulate_button.setAcceptDrops(False)
-        self.simulate_button.setStyleSheet("background-color: rgb(0, 70, 150); color: white;")
+        self.simulate_button.setStyleSheet("background-color: rgb(0, 180, 30); color: white;")
         self.simulate_button.resize(150,32)
 
         self.simulate_button.setObjectName("simulate_button")
@@ -235,7 +235,7 @@ class Application(Client, QObject):
 
         self.widget_5 = QtWidgets.QWidget(self.widget_3)
         self.widget_5.setGeometry(QtCore.QRect(45, 207, 171, 31))
-        self.widget_5.setStyleSheet("color: white;")
+        self.widget_5.setStyleSheet("color: black;")
         self.widget_5.setObjectName("widget_5")
         self.widget_5.setFont(font)
 
@@ -245,11 +245,13 @@ class Application(Client, QObject):
         self.ppg_connection.setText("Arduino PPG Connected?")
         self.ppg_connection.setFont(font)
 
+        # Red dot widget container
         self.widget_6 = QtWidgets.QWidget(self.widget_3)
         self.widget_6.setGeometry(QtCore.QRect(5, 205, 50, 31))
         self.widget_6.setAutoFillBackground(False)
         self.widget_6.setObjectName("widget_6")
 
+        # red dot
         self.red_dot = QtWidgets.QLabel(self.widget_6)
         self.red_dot.setGeometry(QtCore.QRect(25, 8, 20, 20))
         
@@ -260,6 +262,21 @@ class Application(Client, QObject):
 
         self.red_dot.setLayout(QtWidgets.QHBoxLayout())
         self.horizontalLayout_2.addWidget(self.widget_3)
+
+        # loading icon widget container
+        self.widget_7 = QtWidgets.QWidget(self.widget_3)
+        self.widget_7.setGeometry(QtCore.QRect(175, 10, 100, 50))
+        self.widget_7.setAutoFillBackground(False)
+        self.widget_7.setObjectName("widget_7")
+
+        self.loader = QtWidgets.QLabel(self.widget_7)
+        self.loader.setGeometry(QtCore.QRect(0, 0, 100, 50))
+        self.loader.setAlignment(Qt.AlignCenter)
+
+        loading = QtGui.QMovie("../assets/loader.gif")
+        self.loader.setMovie(loading)
+        loading.start()
+        self.loader.setLayout(QtWidgets.QHBoxLayout())
 
     def build_analytical_pane(self):
         # Trend graph animation for now
