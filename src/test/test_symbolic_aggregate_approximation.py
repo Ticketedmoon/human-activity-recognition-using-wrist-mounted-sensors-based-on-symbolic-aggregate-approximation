@@ -18,6 +18,16 @@ class Test_Symbolic_Aggregate_Approximation(unittest.TestCase):
         self.assertIsNotNone(sax_obj)
         self.assertIsInstance(sax_obj, Time_series_to_string_via_sax)
 
+    def test_generate(self):
+        sax_obj = SymbolicAggregateApproximation(False)
+        sax_obj.training_exercise_path = "./resources/exercise-datasets/"
+        test_files = ["Walk01.csv", "Run01.csv", "LowResistanceBike01.csv", "HighResistanceBike01.csv"]
+        
+        for test_file in test_files:
+            test = sax_obj.generate(sax_obj.training_exercise_path + test_file)
+            self.assertTrue(isinstance(test, str))
+            self.assertTrue(len(test) > 1000)
+
     # Generate Walk test, string > 15300 characters
     def test_generate_walk(self):
         sax_obj = SymbolicAggregateApproximation(False)

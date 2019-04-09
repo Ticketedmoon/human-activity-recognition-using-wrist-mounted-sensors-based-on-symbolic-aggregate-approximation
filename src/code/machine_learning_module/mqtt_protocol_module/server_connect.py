@@ -50,6 +50,7 @@ class Server:
     def on_message(self, client, userdata, msg):
         if (msg.topic == "sax_check"):
             self.logger.info("Server: Human Activity Simulation by CSV received...")
+            # TODO: Move this simulation to client-side for concurrency control 
             self.is_exercise_simulation_active = True
             initialize_simulation_loop = threading.Thread(target=self.sax_decode_activity, args=[client, msg.payload])
             initialize_simulation_loop.start()
@@ -108,7 +109,6 @@ class Server:
         startLetterIndex, endLetterIndex = 0, 20
         batch_size = endLetterIndex - startLetterIndex
 
-        # Start after 25 seconds
         while(self.is_exercise_simulation_active):
             self.logger.info("Loading next batch of {} simulation images...".format(batch_size))
             self.image_encode_activity(client, sax_string_decoded, startLetterIndex, endLetterIndex)
