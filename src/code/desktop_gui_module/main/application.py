@@ -23,6 +23,7 @@ from movie_player import Movie_Player
 import threading
 import bitmap_module
 import base64
+import time
 
 class Application(Client, QObject):
 
@@ -75,14 +76,16 @@ class Application(Client, QObject):
             self.update_activity_user_interface(prediction)
 
         elif(msg.topic == "clock_reset"):
-            print("Received Clock Reset Notification")
+            self.logger.info("Received Clock Reset Notification...")
             self.exercise_time = 0
             self.label_pane_2.setText("Exercise Time: {}s".format(self.exercise_time))
             self.update_activity_user_interface(("idle", 0))
 
     def closeEvent(self):
         #Your desired functionality here
-        print('Closing Application...')
+        self.logger.warning('Application Closing...')
+        self.client.publish("disconnections", str(self.client_id))
+        self.client.publish("client_connections", str(self.client_id))
         self.prevent_publish_mechanism()
         self.disconnect()
         sys.exit(0)
@@ -315,7 +318,6 @@ class Application(Client, QObject):
         self.label_pane_1.setText("Activity: {}".format(activity_prediction))
         self.label_pane_2.setText("Exercise Time: {}s".format(self.exercise_time))
         self.label_pane_3.setText("Accuracy: {:.2f}%".format(prediction_accuracy))
-        print("Client User Interface Updated")
 
     def submit_ppg_files(self):
         try:

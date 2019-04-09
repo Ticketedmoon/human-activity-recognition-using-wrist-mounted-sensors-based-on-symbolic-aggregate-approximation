@@ -37,7 +37,6 @@ class Client:
             self.logger.info("Bad connection - Returned Code=", rc)
 
     def on_disconnect(self, client, userdata, flags, rc=0):
-        client.publish("client_connections", "Client with ID {" + str(self.client_id) + "} disconnected...")
         self.logger.info("Client with ID {} has been disconnected...".format(self.client_id))
 
     def on_subscribe(self, client, userdata, flags, rc):
@@ -62,9 +61,12 @@ class Client:
         self.client.connect(host=host, port=port, keepalive=keepalive)
 
         if (not self.has_disconnected):
-            self.client.publish("client_connections", "Client with ID {" + str(self.client_id) + "} connected...")
+            # Client Objects and Prediction Subscription
+            self.client.publish("client_connections", str(self.client_id))
             self.client.subscribe("prediction_receive")
             self.logger.info("Client with ID {} subscribing to topic {}".format(self.client_id, "prediction_receive"))
+
+            # Clock reset for UI
             self.client.subscribe("clock_reset")
             self.logger.info("Client with ID {} subscribing to topic {}".format(self.client_id, "clock_reset"))
             self.client.loop_forever()

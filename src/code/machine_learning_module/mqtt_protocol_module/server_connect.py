@@ -9,7 +9,7 @@ import os
 import paho.mqtt.client as mqtt
 import re
 import tensorflow as tf
-
+import time
 
 sys.path.append("../")
 from label_image import Classify_Image
@@ -25,8 +25,16 @@ class Server:
     # Logger
     logger = Logger("../../", "logs/Server")
 
+    # Bitmap Generator
     server_bitmap_generator = BitmapGenerator()
+
+    # Temporary directory for image storage
     temporary_image_directory = "./temp"
+
+    is_exercise_simulation_active = False
+
+    # Dictionary / Hashmap of client Objects to Client Names
+    client_objects = {} 
 
     def on_connect(self, client, userdata, flags, rc):
         topic = "client_connections"
@@ -41,12 +49,19 @@ class Server:
     # The callback for when a PUBLISH message is received from the server.
     def on_message(self, client, userdata, msg):
         if (msg.topic == "sax_check"):
-            self.logger.info("Server: Prediction Resolve Acknowledged")
+            self.logger.info("Server: Human Activity Simulation by CSV received...")
+            self.is_exercise_simulation_active = True
             initialize_simulation_loop = threading.Thread(target=self.sax_decode_activity, args=[client, msg.payload])
             initialize_simulation_loop.start()
+        elif(msg.topic == "disconnections"):
+            self.logger.info("Server: Client With ID {} Disconnected - Stoping Simulation if active... {}".format(self.client_objects[client], self.is_exercise_simulation_active))
+            self.is_exercise_simulation_active = False
+        elif(msg.topic == "client_connections"):
+            client_connection_id = msg.payload.decode('utf-8')
+            self.client_objects[client] = client_connection_id
+            self.logger.info("Server: Client with ID {} Connected...".format(client_connection_id))
         else:
-            message = str(msg.payload)
-            self.logger.info("Server: " + message[2:-1])
+            self.logger.warning("Non-specific topic published to...")
 
     # on_connect
     def on_connect(self, client, userdata, flags, rc):
@@ -63,64 +78,78 @@ class Server:
         pass
 
     def send(self):
-        client = mqtt.Client("Server")
-        client.on_connect = self.on_connect
-        client.on_disconnect = self.on_disconnect
-        client.on_message = self.on_message
-        client.on_subscribe = self.on_subscribe
+        server = mqtt.Client("Server")
+        server.on_connect = self.on_connect
+        server.on_disconnect = self.on_disconnect
+        server.on_message = self.on_message
+        server.on_subscribe = self.on_subscribe
 
         host      = "127.0.0.1"
         port      = 1883
         keepalive = 60
 
         self.logger.info("\nServer: Connect to {}, keepalive {}".format(host, keepalive))
-        client.connect(host=host, port=port, keepalive=keepalive)
+        server.connect(host=host, port=port, keepalive=keepalive)
         
-        client.subscribe("client_connections")
+        server.subscribe("client_connections")
         self.logger.info("Server: Subscribing to topic {client_connections}")
 
-        client.subscribe("sax_check")
+        server.subscribe("disconnections")
+        self.logger.info("Server: Subscribing to topic {disconnections}")
+
+        server.subscribe("sax_check")
         self.logger.info("Server: Subscribing to topic {sax_check}")
 
-        client.loop_forever()
+        server.loop_forever()
 
     def sax_decode_activity(self, client, symbolic_base_64_string_encoded):
         sax_string = base64.decodestring(symbolic_base_64_string_encoded)
         sax_string_decoded = str(sax_string)[2:-1]
-        self.image_encode_activity(client, sax_string_decoded)
+        startLetterIndex, endLetterIndex = 0, 20
+        batch_size = endLetterIndex - startLetterIndex
+
+        # Start after 25 seconds
+        while(self.is_exercise_simulation_active):
+            self.logger.info("Loading next batch of {} simulation images...".format(batch_size))
+            self.image_encode_activity(client, sax_string_decoded, startLetterIndex, endLetterIndex)
+            startLetterIndex += 20
+            endLetterIndex += 20
+        self.logger.info("Human Activity Simulation Playback complete for client with ID {}".format(self.client_objects[client]))
 
     # Image sizes are 100 x 100
     # shift 256 is equivalent of shifting 1-second
-    def image_encode_activity(self, client, sax_string_decoded):
-        self.logger.info("Server: Starting Image Encoding Process... Symbolic Length: {}".format(len(sax_string_decoded)))
+    # TODO: Create Loading Pane for this
+    def image_encode_activity(self, client, sax_string_decoded, startRange, endRange):
+        initialRange = startRange
         try:
-            shift_position = 256
+            shift_position = startRange
             bitmap_size = 100 * 100
-            limit = len(sax_string_decoded) - bitmap_size
-            while(shift_position < limit):
-                substring = sax_string_decoded[shift_position-256:bitmap_size + shift_position]
+            while(startRange < endRange):
+                substring = sax_string_decoded[startRange:bitmap_size + shift_position]
                 self.server_bitmap_generator.generate_single_bitmap(substring)   
-                self.logger.info("Image Built {} - Shift Value: {}".format(shift_position // 256, shift_position))
                 shift_position += 256
-            self.logger.info("Activity classification: Resolved.")
+                startRange += 1
+            self.logger.info("Simulation Images Resolved for range [{} - {}]".format(initialRange, endRange))
 
         finally:
             # Perform activity recognition
-            self.real_time_simulate_activity_recognition(client)
+            tensorRange = endRange - initialRange
+            self.real_time_simulate_activity_recognition(client, tensorRange)
 
-    def real_time_simulate_activity_recognition(self, client):
+    def real_time_simulate_activity_recognition(self, client, tensorRange):
         path = "./temp/"
         total_files = len(os.listdir(path))
         try:
-            self.model_predict(path, client)
+            self.logger.info("Starting Model Prediction with Images in /Temp")
+            self.model_predict(path, client, tensorRange)
         finally:
             # After Simulation Activity Recognition Function Complete => Destroy Temp Folder
             self.logger.warning("Destroying Temporaries...")
             self.destroy_temp_folder()
 
-    def model_predict(self, dir_path, client):
+    def model_predict(self, dir_path, client, tensorRange):
         classifier = Classify_Image(test_dir=dir_path)
-        classifier.initialize_prediction_process(client)
+        classifier.initialize_prediction_process(tensorRange, client)
 
     # TODO: Use this function to dissect how to only load the graph one time - drastically speeding up the server side.
     # Additionally, perhaps all bitmap images for the specified csv should be generated first, and then
