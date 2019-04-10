@@ -341,3 +341,92 @@ being carried out.
 
 **Fig 6.0 - MQTT protocol (Publish / Subscribe)**
 ![MQTT Balsamiq Diagram](images/mqtt-model-concept.png)  
+
+# Blog Post #18 | Machine Learning Model Progress (100x100) | 30/03/2019
+The machine learning model finally gave a satisfactory accuracy evaluation but it was done using image sizes of 100x100 with a shift period of 16 pixels.
+Walk, Run and Low resistance Bike gave a healthy accuracy evaluation and prediction was roughly 80% accurate on new training data. However, with High 
+Resistance Bike, the model often associated it with Low Resistance Bike or Running. We believe this is due to the lack of data compared to the other classes.
+A conceptual diagram has been posted below to showcase the data variations.
+
+If this problem cannot be solved come the project ultimatum, we may simply just strip High Resistance Bike out of the individual classes,
+leaving us with **Walk, Run and Low Resistance Bike**.
+
+# Blog Post #19 | MQTT & Mosquitto - Subscribe/Publish Design Pattern | 05/04/2019
+The publish-Subscribe model suggested by my Supervisor has been incorporated into the project. This model is based off
+MQTT (Message-Queuing-Telemetry-Transport) which I have mentioned in a previous blog post - More Details on MQTT can be found
+here: https://pypi.org/project/paho-mqtt/ or here: http://mqtt.org/.  
+
+The model is as described above but I will place the concept diagram again here for those interested:
+![MQTT Balsamiq Diagram](images/mqtt-model-concept.png)  
+
+The Server is always in a looping state and always listening to the broker for requests on particular topics.
+When a client joins, the instantly connects to the broker and subscribe to particular topics, for example:  
+###### Topic: prediction_receieve
+Additionally, the client also publishes to a topic that the server must subscribe and listen to. When the client activates the **Playback Activity Recognition**
+or **Simulate Activity Recongition** feature, where by they submit a CSV file of PPG signals and the feature can decoded what activity they were performing at that
+given time, the client will post to the server a **Base64** encoded string of SAX (Symbolic Aggregate Approximation) characters.  
+
+##### Why do we send only the SAX encoded string using Base64?
+My consideration of this idea led me to building a thin-client / fat-server architecture. The client side is only required to convert the uploaded CSV file of
+PPG signals into a semantic string of symbolic characters. These string representations shows the heart-rate signals which have noise in them. It is from this noise
+we can learn about what activity a person is doing. So, once the string is generated, we encode it using base64 and publish it over the network to our broker (Mosquitto Broker).
+The broker then propagates this message to any clients that are subscribed to that particular topic | IE Our processing server.  
+
+Once the server obtains the message contained the SAX string, we decode it and now have access to the characters representing the time-series data! 
+
+# Blog Post #20 | Human Activity Recognition PPG signal Playback Feature | 07/04/2019
+In the previous blog post, I mentioned we now were able to process the data on a separate server using MQTT. Well, after a few days of brainstorming and
+solving problems and sub-problems, the **Activity Recognition Playback** feature has now been incorporated into the project. 
+
+##### How does it work?
+A client machine is capable of submitting a CSV file of PPG signals, normally recorded in micro-volts(mV). We convert this CSV file into a string
+of characters representing the heart-rate signals, minus the inertial sensor of course. This string is encoded using base64 and sent to the processing
+server via MQTT. The server reads the data and selects a substring of the data, and performs **batch processing** on the data such that the client does 
+not have to wait a very long time for the playback feature to become apparent. Without this batch processing style for the feature, the user would be 
+waiting for the entire csv to be converted to a set of bitmap images, and then for each image to be fed into the machine learning model (Convolutional Neural Network)
+before publishing back to the client. This has a strong dependency on the size of the csv file they upload so it would be O(N) in some kind of time-complexity.
+But I removed this O(N) time-complexity and modified it to be constant time, such that only 20 images are decoded at a time and fed into the network.  
+
+The result of the images | IE the prediction that the model determines is published back to the relevant client. The server does this by having a mapping (Python Dictionary)
+from each client object to each client ID that connected. The desktop application which acts as the client is entirely asynchronous in relation to the publishing 
+mechanism going on in the background.  
+
+To facilitate this back-end functionality that I implemented, I incorporated more front-end elements into the desktop application. For example:
+1. Inclusion of Activity Animations representing the 4 Activities and an Animation for an 'idle' state.
+2. I have added playback details by-way-of text in the relevant window pane inside the desktop application.
+    - Activity Details which tell what a person is doing (Walk/Run/Low Resistance Bike/High Resistance Bike)
+3. Animations were refactored using image editing tools to correctly fit the window of the application. 
+
+# Blog Post #21 | Desktop Application Update v4.0 | 09/04/2019
+Recent changes among the desktop application design include modifying the **Activity Recognition Playback** functionality to be green in colour with the
+ability to 'disable' once the playback function is happening. We don't want more than one playback to be happening or we could overload the server.
+Each time the server receives an activity playback request, it spins up a new thread to facilitate that client on. The design of the button also now
+includes an icon for an enhanced look.
+
+I have also added a red cross icon animation alongside some text which tells the user if their PPG device is successfully connected.
+Additionally, there is a loading animation that spawns once the activity recognition playback feature is invoked.
+
+Diagram of the initial application state:
+![Desktop Application Version 4.0](images/desktop-app-visual-v4.0.PNG)
+
+Diagram of the application during playback state:
+![Desktop Application Version 4.0](images/desktop-app-visual-playback-v4.0.PNG)
+##### As you can see, the playback button has changed colour to a light-grey, indicating that the activity playback feature is underway.
+##### There also is the loading animation, displayed by the 3 green-dots, which alternate in colour, providing a 'loading' impression.
+##### Also, as you can see the activity animation has changed, as well sa the details associated with that activity.
+
+# Blog Post #22 | Machine Learning Model Update (32 x 32) | 25/03/2019
+With recent adaptions to the project, I've modified the image size to be be 32x32 that is up-scaled to be 128x128. The reason for this change
+was that, previously with the 100x100 image approach, 100x100 is enough characters to determine 40-seconds of the data file uploaded.
+This is not what we want, we want to be able to determine what activity is being performed after only several seconds of interpretation.
+With 32x32, we can try predict what activity is being performed using only 4-seconds of data. If possible, we can also look at 2-seconds of data
+for optimal behaviour, but I doubt we will achieve this. 
+
+# Blog Post #23 | Obtaining the PPG-enabled Arduino   | 11/04/2019
+The arduino kit and PPG device alongside a pre-amp have been obtained. Through interacting and communication with members from DCU's Insight Centre,
+I now have the device in question that can perform heart-rate determination using optical signals. The next steps are to incorporate it into the application
+and have the application recognise when a PPG has been connected. My current thinking is that we will have two states for the application, one where
+the application is in an 'idle' mode where the playback functionality can be accessed and other information can be viewed and another state, namely the
+'Real Time Activity Recognition state', where by the connected ppg device's data will be sent to our MQTT broker and subsequently server, and eventually back to
+the client, to determine there activity. When we say 'Real Time activity recognition', we really mean 'Quasi' real time activity recognition, as we will require
+a certain number of seconds to determine their activity | IE 2, 4 or maybe even 8 seconds of data before activity determination.
