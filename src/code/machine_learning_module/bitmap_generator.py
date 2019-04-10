@@ -18,7 +18,7 @@ class BitmapGenerator:
 
     # Size of each individual training and testing bitmap
     # TODO: Low this to 32 x 32  or 48 x 48 -- 2 Seconds and 4 seconds respectively; 100x100 corresponds to 40 seconds... bad...
-    bitmap_size = 100
+    bitmap_size = 32
 
     # A mapping to track how many images have been generated for each mode (train/test) and each class of that mode.
     image_map = {
@@ -43,9 +43,9 @@ class BitmapGenerator:
         # Symbolic Aggregate Approximation object for conversion to string then to bitmap.
         self.sax_obj = SymbolicAggregateApproximation(False)
         # Training subjects
-        self.train_subjects = [1, 3, 4, 5, 6]
+        self.train_subjects = [3]
         # Test Subject #2 - Because we can guarantee all activities are from the same subject.
-        self.test_subjects = [2]
+        self.test_subjects = [6]
         # Colour of bitmaps when generated
         self.colour = colour
         # Logger
@@ -70,6 +70,7 @@ class BitmapGenerator:
     # Method which applies the necessary logic to generate the bitmap image for a subject for all activities performed.
     def generate_bitmaps_for_subject(self, mode, subject):
         sax_activity_representations = self.sax_obj.generate_all_activities_as_string_representation(subject)
+        print("mode {} - subject {}".format(mode, subject))
         for index, activity_key in enumerate(self.image_map[mode]):
             activity_repr = sax_activity_representations[index]
             self.generate_all(activity_key, activity_repr, subject, mode)
@@ -181,5 +182,5 @@ class BitmapGenerator:
         self.server_image_counter = 0
 
 if __name__ == "__main__":
-    x = BitmapGenerator()
-    x.build()
+    generator = BitmapGenerator()
+    generator.build()

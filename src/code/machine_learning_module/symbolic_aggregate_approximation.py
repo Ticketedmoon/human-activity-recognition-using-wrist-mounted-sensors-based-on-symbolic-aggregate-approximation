@@ -18,6 +18,7 @@ class SymbolicAggregateApproximation:
         if (logger):
             self.logger = Logger("../", "logs/Symbolic")
             self.logger.info("Symbolic Aggregate Approximation Object Created...")
+
         self.sax_obj = Time_series_to_string_via_sax()
 
     # General Abstract Generate method; unsure of the activity; useful for server.
@@ -28,24 +29,33 @@ class SymbolicAggregateApproximation:
         return[self.generate_walk(subjectNo), self.generate_run(subjectNo), self.generate_low_bike(subjectNo), self.generate_high_bike(subjectNo)]
 
     def generate_walk(self, subjectNo):
-        walk_path = "{}/Walk0{}.csv".format(self.training_exercise_path, subjectNo)
-        exercise_results = self.sax_obj.generate_string_from_time_series(walk_path, self.letter_size, 1)
-        return exercise_results
-
+        try:
+            walk_path = "{}/Walk-subject-{}.csv".format(self.training_exercise_path, subjectNo)
+            exercise_results = self.sax_obj.generate_string_from_time_series(walk_path, self.letter_size, 1)
+            return exercise_results
+        except:
+            return ""
     def generate_run(self, subjectNo):
-        run_path = "{}/Run0{}.csv".format(self.training_exercise_path, subjectNo)
-        exercise_results = self.sax_obj.generate_string_from_time_series(run_path, self.letter_size, 1)
-        return exercise_results
-
+        try:
+            run_path = "{}/Run-subject-{}.csv".format(self.training_exercise_path, subjectNo)
+            exercise_results = self.sax_obj.generate_string_from_time_series(run_path, self.letter_size, 1)
+            return exercise_results
+        except:
+            return ""
     def generate_low_bike(self, subjectNo):
-        low_bike_path = "{}/LowResistanceBike0{}.csv".format(self.training_exercise_path, subjectNo)
-        exercise_results = self.sax_obj.generate_string_from_time_series(low_bike_path, self.letter_size, 1)
-        return exercise_results
-
+        try:
+            low_bike_path = "{}/LowResistanceBike-subject-{}.csv".format(self.training_exercise_path, subjectNo)
+            exercise_results = self.sax_obj.generate_string_from_time_series(low_bike_path, self.letter_size, 1)
+            return exercise_results
+        except:
+            return ""
     def generate_high_bike(self, subjectNo):
-        high_bike_path = "{}/HighResistanceBike0{}.csv".format(self.training_exercise_path, subjectNo)
-        exercise_results = self.sax_obj.generate_string_from_time_series(high_bike_path, self.letter_size, 1)
-        return exercise_results
+        try:
+            high_bike_path = "{}/HighResistanceBike-subject-{}.csv".format(self.training_exercise_path, subjectNo)
+            exercise_results = self.sax_obj.generate_string_from_time_series(high_bike_path, self.letter_size, 1)
+            return exercise_results
+        except:
+            return ""
 
-def main():
+if __name__ == "__main__":
     sax_obj = SymbolicAggregateApproximation(True)

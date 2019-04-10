@@ -7,9 +7,9 @@ from sax_module.interval_sax_letter_conversion import int_letter_conversion
 class Time_series_to_string_via_sax:
 
     def generate(self, file_path):
-        walk_data = pd.read_csv(file_path, index_col=0, parse_dates=True, skiprows=[0])
-        walk_stats = pd.Series(walk_data.values.squeeze())
-        numeric_data = pd.to_numeric(walk_stats, errors='coerce')
+        data = pd.read_csv(file_path, index_col=0, parse_dates=True, skiprows=[0])
+        stats = pd.Series(data.values.squeeze())
+        numeric_data = pd.to_numeric(stats, errors='coerce')
         return numeric_data
 
     def apply_letter_window(self, ts_data, window_size):
