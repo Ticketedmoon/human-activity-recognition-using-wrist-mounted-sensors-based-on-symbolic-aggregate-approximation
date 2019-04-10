@@ -25,12 +25,12 @@ import time, os, re, base64
 import threading
 import sys
 
-sys.path.append("../../")
+sys.path.append("../")
 from logger_module.Logger import Logger
 
 class Classify_Image:
 
-    logger = Logger("../../", "logs/Classify_Image")
+    logger = Logger("../", "logs/Classify_Image")
 
     def __init__(self, default_image="tensorflow/examples/label_image/data/grace_hopper.jpg",
         graph_path="C:/tmp/output_graph.pb", 

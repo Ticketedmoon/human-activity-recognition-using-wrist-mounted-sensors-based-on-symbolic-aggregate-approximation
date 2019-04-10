@@ -12,18 +12,16 @@ import tensorflow as tf
 import time
 
 sys.path.append("../")
-from label_image import Classify_Image
-from bitmap_generator import BitmapGenerator
-
-sys.path.append("../")
 from logger_module.Logger import Logger
 
-client_id = socket.gethostname()
+sys.path.append("../machine_learning_module")
+from label_image import Classify_Image
+from bitmap_generator import BitmapGenerator
 
 class Server:
 
     # Logger
-    logger = Logger("../../", "logs/Server")
+    logger = Logger("../", "logs/Server")
 
     # Bitmap Generator
     server_bitmap_generator = BitmapGenerator()
@@ -31,17 +29,11 @@ class Server:
     # Temporary directory for image storage
     temporary_image_directory = "./temp"
 
+    # Flag for simulation playback
     is_exercise_simulation_active = False
 
     # Dictionary / Hashmap of client Objects to Client Names
     client_objects = {} 
-
-    def on_connect(self, client, userdata, flags, rc):
-        topic = "client_connections"
-        msg = "Server connected to broker for serving HAR application"
-
-        self.logger.info("Server: Publish to {} msg {}".format(topic, msg))
-        client.publish(topic, msg, qos=2)
 
     def on_publish(self, client, userdata, mid) :
          self.logger.info("Server: Message Published")
@@ -64,13 +56,6 @@ class Server:
         else:
             self.logger.warning("Non-specific topic published to...")
 
-    # on_connect
-    def on_connect(self, client, userdata, flags, rc):
-        if (rc == 0):
-            self.logger.info("Server: Broker Connected Successful")
-        else:
-            self.logger.warning("Bad connection - Returned Code=", rc)
-
     def on_disconnect(self, client, userdata, flags, rc=0):
         self.logger.info("Disconnected result code: ", rc)
 
@@ -80,7 +65,6 @@ class Server:
 
     def send(self):
         server = mqtt.Client("Server")
-        server.on_connect = self.on_connect
         server.on_disconnect = self.on_disconnect
         server.on_message = self.on_message
         server.on_subscribe = self.on_subscribe

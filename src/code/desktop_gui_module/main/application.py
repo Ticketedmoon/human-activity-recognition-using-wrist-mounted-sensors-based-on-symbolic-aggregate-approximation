@@ -15,7 +15,7 @@ from PyQt5.QtGui import *
 from tkinter import filedialog
 from tkinter import *
 
-sys.path.append('../../machine_learning_module/')
+sys.path.append('../../')
 
 from mqtt_protocol_module.client_connect import Client
 from movie_player import Movie_Player

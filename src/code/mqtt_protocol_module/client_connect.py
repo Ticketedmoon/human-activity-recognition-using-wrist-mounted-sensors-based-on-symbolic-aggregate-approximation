@@ -6,10 +6,10 @@ import paho.mqtt.client as mqtt
 
 # ../ from Desktop Application
 # ../../ from MQTT-Protocol Module
-sys.path.append("../../")
+sys.path.append("../")
 from logger_module.Logger import Logger
 
-sys.path.append("../")
+sys.path.append("../../machine_learning_module")
 from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 
 class Client:

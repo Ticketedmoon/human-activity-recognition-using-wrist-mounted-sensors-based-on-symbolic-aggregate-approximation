@@ -16,7 +16,6 @@ class Movie_Player(QtWidgets.QLabel):
 
         # Default activity to display
         self.movie = QtGui.QMovie("../assets/idle.gif", QtCore.QByteArray(), self)
-        self.movie.setSpeed(50)
         self.setMovie(self.movie)
 
         self.set_animation("idle")
@@ -25,8 +24,12 @@ class Movie_Player(QtWidgets.QLabel):
     def set_animation(self, activity):
         if (activity != self.currentActivity):
             try:
+                if (activity != "highresistancebike"):
+                    self.movie.setSpeed(50)
+                else:
+                    self.movie.setSpeed(100)
+            finally:
                 self.movie.stop()
                 self.movie.setFileName("../assets/{}.gif".format(activity))
-            finally:
                 self.movie.start()
                 self.currentActivity = activity
