@@ -21,7 +21,7 @@ class Test_Symbolic_Aggregate_Approximation(unittest.TestCase):
     def test_generate(self):
         sax_obj = SymbolicAggregateApproximation(False)
         sax_obj.training_exercise_path = "./resources/exercise-datasets/"
-        test_files = ["Walk01.csv", "Run01.csv", "LowResistanceBike01.csv", "HighResistanceBike01.csv"]
+        test_files = ["Walk-subject-1.csv", "Run-subject-1.csv", "LowResistanceBike-subject-1.csv", "HighResistanceBike-subject-1.csv"]
         
         for test_file in test_files:
             test = sax_obj.generate(sax_obj.training_exercise_path + test_file)
@@ -33,28 +33,28 @@ class Test_Symbolic_Aggregate_Approximation(unittest.TestCase):
         sax_obj = SymbolicAggregateApproximation(False)
         sax_obj.training_exercise_path = "./resources/exercise-datasets/"
         test_results = sax_obj.generate_walk(1)
-        self.assertTrue(len(test_results) > 15300)
+        self.assertTrue(len(test_results) > 1300)
 
     # Generate Run test, string > 15300 characters
     def test_generate_run(self):
         sax_obj = SymbolicAggregateApproximation(False)
         sax_obj.training_exercise_path = "./resources/exercise-datasets/"
         test_results = sax_obj.generate_run(1)
-        self.assertTrue(len(test_results) > 15300)
+        self.assertTrue(len(test_results) > 1300)
 
     # Generate Low Resistance Bike test, string > 15300 characters
     def test_generate_low_bike(self):
         sax_obj = SymbolicAggregateApproximation(False)
         sax_obj.training_exercise_path = "./resources/exercise-datasets/"
         test_results = sax_obj.generate_low_bike(1)
-        self.assertTrue(len(test_results) > 15300)
+        self.assertTrue(len(test_results) > 1300)
 
     # Generate High Resistance Bike test, string > 15300 characters
     def test_generate_high_bike(self):
         sax_obj = SymbolicAggregateApproximation(False)
         sax_obj.training_exercise_path = "./resources/exercise-datasets/"
         test_results = sax_obj.generate_high_bike(1)
-        self.assertTrue(len(test_results) > 15300)
+        self.assertTrue(len(test_results) > 1300)
 
 if __name__ == "__main__":
     unittest.main()
