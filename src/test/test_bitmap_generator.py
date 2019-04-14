@@ -22,8 +22,9 @@ class Test_Bitmap_Generation(unittest.TestCase):
     def test_build(self):
         generator = BitmapGenerator(logger_path="./code/", testMode=True)
         generator.generate_bitmaps = MagicMock()
+        size = len(generator.train_subjects) + len(generator.test_subjects)
         generator.build()
-        assert generator.generate_bitmaps.call_count == 6
+        assert generator.generate_bitmaps.call_count == size
 
     def test_generate_bitmaps(self):
         generator = BitmapGenerator(logger_path="./code/", testMode=True)

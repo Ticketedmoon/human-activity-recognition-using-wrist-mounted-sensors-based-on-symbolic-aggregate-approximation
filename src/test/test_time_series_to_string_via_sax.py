@@ -23,13 +23,13 @@ class Test_Time_Series_To_String_Via_Sax(unittest.TestCase):
 
     def test_generate(self):
         time_series_obj = Time_series_to_string_via_sax()
-        test_path = "./resources/exercise-datasets/Walk01.csv"
+        test_path = "./resources/exercise-datasets/Walk-subject-1.csv"
         df = time_series_obj.generate(test_path)
         self.assertTrue(isinstance(df, pd.Series))
 
     def test_apply_letter_window(self):
         time_series_obj = Time_series_to_string_via_sax()
-        test_path = "./resources/exercise-datasets/Walk01.csv"
+        test_path = "./resources/exercise-datasets/Walk-subject-1.csv"
         data = time_series_obj.generate(test_path)
         windowed_data = time_series_obj.apply_letter_window(data, 1)
         self.assertTrue(isinstance(windowed_data, pd.Series))
@@ -38,7 +38,7 @@ class Test_Time_Series_To_String_Via_Sax(unittest.TestCase):
 
     def test_normalise_data(self):
         time_series_obj = Time_series_to_string_via_sax()
-        test_path = "./resources/exercise-datasets/Walk01.csv"
+        test_path = "./resources/exercise-datasets/Walk-subject-1.csv"
         data = time_series_obj.generate(test_path)
         windowed_data = time_series_obj.apply_letter_window(data, 1)
         normalised_data = time_series_obj.normalise_data(windowed_data)
@@ -49,7 +49,7 @@ class Test_Time_Series_To_String_Via_Sax(unittest.TestCase):
 
     def test_ts_to_string(self):
         time_series_obj = Time_series_to_string_via_sax()
-        test_path = "./resources/exercise-datasets/Walk01.csv"
+        test_path = "./resources/exercise-datasets/Walk-subject-1.csv"
         sax_string = time_series_obj.generate_string_from_time_series(test_path, 20, 1)
         self.assertTrue(len(sax_string) > 15000)
         condition = ('a' in sax_string and 'b' in sax_string and 'c' in sax_string
