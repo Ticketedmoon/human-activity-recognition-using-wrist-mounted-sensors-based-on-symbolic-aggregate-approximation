@@ -198,10 +198,10 @@
             </blockquote>
             
             <p><strong>8-bit Grey-scale bitmap</strong> <br />
-            <img src="images/grey-scale_bitmap.png" alt="grey-scale-bitmap" />  </p>
+            <img src="{% static 'application/resources/blog/images/grey-scale_bitmap.png' %}" alt="grey-scale-bitmap" />  </p>
             
             <p><strong>24-bit RGB bitmap</strong> <br />
-            <img src="images/example-rgb-image.png" alt="rgb-bitmap" /></p>
+            <img src="{% static 'application/resources/blog/images/example-rgb-image.png' %}" alt="rgb-bitmap" /></p>
             
             <h1 id="blogpost11furtheroptionalparameters22022019">Blog Post #11 | Further Optional Parameters | 22/02/2019</h1>
             
@@ -234,7 +234,7 @@
             <h5 id="modelaccuracyandmodelperformance">Model Accuracy and Model Performance</h5>
             
             <p><strong>Fig 1.0 - Early Stage Model - Accuracy: 51% - Tweaking at a minimum of model parameters</strong>
-            <img src="images/early-stage-accuracy-machine-learning-model_(relu" alt="Initial Model Performance" />.PNG)  </p>
+            <img src="{% static 'application/resources/blog/images/early-stage-accuracy-machine-learning-model_(relu.PNG' %}" alt="Initial Model Performance"/> </p>
             
             <p>At this point, the model has not been tuned at all, it simply has been trained using our training images and tested via the test set.
             Some of the details of the network configuration:</p>
@@ -248,7 +248,7 @@
             </ul>
             
             <p><strong>Fig 1.1 - Best Model Accuracy Achieved: 74% - Tweaked - 25 Epochs, 12,000 images</strong>
-            <img src="images/sigmoid-accuracy-machine-learning-model_v3_(Best_Accuracy-16px_shift" alt="Best Model Performance" />.PNG)  </p>
+            <img src="{% static 'application/resources/blog/images/sigmoid-accuracy-machine-learning-model_v3_(Best_Accuracy-16px_shift.PNG' %}" alt="Best Model Performance" />  </p>
             
             <p>Some of the details of the network configuration:</p>
             
@@ -261,7 +261,7 @@
             </ul>
             
             <p><strong>Fig 1.2 - Cross Validation (More Realistic) Model - Accuracy: 62% - 5 Epochs - 28,000 images</strong>
-            <img src="images/cross-subject-validation-62%-accuracy.PNG" alt="Cross-Validated Model Performance" />  </p>
+            <img src="{% static 'application/resources/blog/images/cross-subject-validation-62%-accuracy.PNG' %}" alt="Cross-Validated Model Performance" />  </p>
             
             <p>Neural network configuration details are the same as the 'Best Model' described above. However, the test set used has become
             more realistic. Rather than taking 20% of the each class of image and using that as a test set, we have decided to take an entire
@@ -296,7 +296,7 @@
             necessary SSL certificate to protect data and information on the website via encryption.</p>
             
             <p><strong>Fig 2.0 - Top of Home Page</strong>
-            <img src="images/website-home.png" alt="Top of Home Page" />  </p>
+            <img src="{% static 'application/resources/blog/images/website-home.png' %}" alt="Top of Home Page" />  </p>
             
             <p>A brief overview of the websites aims and what the software should achieve. Arduino based software with a mission to recognize 
             human activity through machine learning.</p>
@@ -304,7 +304,7 @@
             <hr />
             
             <p><strong>Fig 2.1 - Bottom of Home Page</strong> 
-            <img src="images/website-home-(1" alt="Bottom of Home Page" />.png)  </p>
+            <img src="{% static 'application/resources/blog/images/website-home-(1).png' %}" alt="Bottom of Home Page" />.png)  </p>
             
             <p>A bit about myself as well as a link to my websites and other online profiles/portfolios. Additionally, there is a link
             to my Trello board which was set-up at a later date for following the projects progress.</p>
@@ -317,14 +317,14 @@
             other folks comments through the front-end UI.</p>
             
             <p><strong>Fig 3.0 - Top of Discussion Page</strong>
-            <img src="images/Discussion-page.png" alt="Top of Discussion Page" />  </p>
+            <img src="{% static 'application/resources/blog/images/Discussion-page.png' %}" alt="Top of Discussion Page" />  </p>
             
             <p>View other users comments about Human Activity Recognition</p>
             
             <hr />
             
             <p><strong>Fig 3.1 - Bottom of Discussion Page</strong>
-            <img src="images/Discussion-page-(1" alt="Bottom of Discussion Page" />.png)  </p>
+            <img src="{% static 'application/resources/blog/images/Discussion-page-(1).png' %}" alt="Bottom of Discussion Page" />.png)  </p>
             
             <p>The ability to create your own comment and join the discussion.</p>
             
@@ -335,7 +335,7 @@
             the trello project board helped keep me focused on what task was to be ticked off next.  </p>
             
             <p><strong>Fig 4.0 - Trello Project Board</strong>
-            <img src="images/project-progress.png" alt="Trello Board" />  </p>
+            <img src="{% static 'application/resources/blog/images/project-progress.png' %}" alt="Trello Board" />  </p>
             
             <h1 id="blogpost16desktopapplicationdesignprocess22032019">Blog Post #16 | Desktop Application Design Process | 22/03/2019</h1>
             
@@ -350,17 +350,17 @@
             when allowing users to download the project from the online platform: https://www.projectactivityrecognition.ml/</p>
             
             <p><strong>Fig 5.0 - Desktop Application Initial Iteration</strong>
-            <img src="images/desktop-app-visual.PNG" alt="Desktop App Iteration #1" />  </p>
+            <img src="{% static 'application/resources/blog/images/desktop-app-visual.PNG' %}" alt="Desktop App Iteration #1" />  </p>
             
             <p>The initial iteration of the application is somewhat bland, but the idea is there.</p>
             
             <p><strong>Fig 5.1 - Desktop Application Second Iteration</strong>
-            <img src="images/desktop-app-visual-v2.0.PNG" alt="Desktop App Iteration #2" />  </p>
+            <img src="{% static 'application/resources/blog/images/desktop-app-visual-v2.0.PNG' %}" alt="Desktop App Iteration #2" />  </p>
             
             <p>The next iteration removed the placeholder calender object in the 2nd window-pane and modified some design aspects.</p>
             
             <p><strong>Fig 5.2 -Desktop Application Third Iteration</strong>
-            <img src="images/desktop-app-visual-v3.0.PNG" alt="Desktop App Iteration #3" />  </p>
+            <img src="{% static 'application/resources/blog/images/desktop-app-visual-v3.0.PNG' %}" alt="Desktop App Iteration #3" />  </p>
             
             <p>This iteration added the menu bar common in many desktop applications. Additionally the <code>Simulate Activity Recognition</code> button
             found in the 4th window-pane works correctly. Once selected, the file explorer will be brought up on Windows or Linux allowing you
@@ -396,7 +396,7 @@
             being carried out.  </p>
             
             <p><strong>Fig 6.0 - MQTT protocol (Publish / Subscribe)</strong>
-            <img src="images/mqtt-model-concept.png" alt="MQTT Balsamiq Diagram" />  </p>
+            <img src="{% static 'application/resources/blog/images/mqtt-model-concept.png' %}" alt="MQTT Balsamiq Diagram" />  </p>
             
             <h1 id="blogpost18machinelearningmodelprogress100x10030032019">Blog Post #18 | Machine Learning Model Progress (100x100) | 30/03/2019</h1>
             
@@ -415,7 +415,7 @@
             here: https://pypi.org/project/paho-mqtt/ or here: http://mqtt.org/.  </p>
             
             <p>The model is as described above but I will place the concept diagram again here for those interested:
-            <img src="images/mqtt-model-concept.png" alt="MQTT Balsamiq Diagram" />  </p>
+            <img src="{% static 'application/resources/blog/images/mqtt-model-concept.png' %}" alt="MQTT Balsamiq Diagram" />  </p>
             
             <p>The Server is always in a looping state and always listening to the broker for requests on particular topics.
             When a client joins, the instantly connects to the broker and subscribe to particular topics, for example:  </p>
@@ -480,10 +480,10 @@
             Additionally, there is a loading animation that spawns once the activity recognition playback feature is invoked.</p>
             
             <p>Diagram of the initial application state:
-            <img src="images/desktop-app-visual-v4.0.PNG" alt="Desktop Application Version 4.0" /></p>
+            <img src="{% static 'application/resources/blog/images/desktop-app-visual-v4.0.PNG' %}" alt="Desktop Application Version 4.0" /></p>
             
             <p>Diagram of the application during playback state:
-            <img src="images/desktop-app-visual-playback-v4.0.PNG" alt="Desktop Application Version 4.0" /></p>
+            <img src="{% static 'application/resources/blog/images/desktop-app-visual-playback-v4.0.PNG' %}" alt="Desktop Application Version 4.0" /></p>
             
             <h5 id="asyoucanseetheplaybackbuttonhaschangedcolourtoalightgreyindicatingthattheactivityplaybackfeatureisunderway">As you can see, the playback button has changed colour to a light-grey, indicating that the activity playback feature is underway.</h5>
             
