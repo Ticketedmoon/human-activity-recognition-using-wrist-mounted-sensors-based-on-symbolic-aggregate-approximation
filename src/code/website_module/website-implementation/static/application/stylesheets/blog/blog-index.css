@@ -19,6 +19,25 @@ body {
 .blog-body {
     background-color: #555;
     color: white;
+    padding: 5em;
+}
+
+.blog-post-title {
+    padding: 0em 1em 1em 1em;
+    color: orange;
+}
+
+.blog-post {
+    padding: 0em 1em 1em 1em;
+    font-family: calibri;
+    font-size: 1.2em;
+    text-align: justify;
+}
+
+.blog-header {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 1.2em;
+    padding: 1em;
 }
 
 a {
