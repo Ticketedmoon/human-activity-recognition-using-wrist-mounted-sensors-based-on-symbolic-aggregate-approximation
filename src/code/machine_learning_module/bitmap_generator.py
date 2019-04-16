@@ -42,8 +42,8 @@ class BitmapGenerator:
     def __init__(self, colour="greyscale", logger_path="../", testMode=False):
         # Symbolic Aggregate Approximation object for conversion to string then to bitmap.
         self.sax_obj = SymbolicAggregateApproximation(False)
-        # Training subjects
-        self.train_subjects = [3]
+        # Training subjects - [3] results in good Walk/HighBike Generalization. 
+        self.train_subjects = [1, 2, 3, 4, 5, 7, 8, 9]
         # Test Subject #2 - Because we can guarantee all activities are from the same subject.
         self.test_subjects = [6]
         # Colour of bitmaps when generated
@@ -81,7 +81,7 @@ class BitmapGenerator:
         # Each image will have some portion of the previous image within it.
         # This counter can dictate how similar or dissimilar each successive image generated is.
         # The higher this value, the more images, but the more similar they will be.
-        shift = 16
+        shift = 64
         
         for position in range(0, len(sax_string), shift):
             pos_in_string = position // shift

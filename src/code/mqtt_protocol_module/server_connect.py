@@ -110,7 +110,7 @@ class Server:
         initialRange = startRange
         try:
             shift_position = startRange
-            bitmap_size = 100 * 100
+            bitmap_size = 32 * 32
             while(startRange < endRange):
                 substring = sax_string_decoded[startRange:bitmap_size + shift_position]
                 self.server_bitmap_generator.generate_single_bitmap(substring)   
