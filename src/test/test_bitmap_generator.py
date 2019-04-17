@@ -47,7 +47,8 @@ class Test_Bitmap_Generation(unittest.TestCase):
     def test_generate_all(self):
         generator = BitmapGenerator(logger_path="./code/", testMode=True)
         generator.generate = MagicMock()
-        test_string = "aabbcc" * 8 # 48 length string
+        shift = 64
+        test_string = "abc" * shift # 48 length string
         generator.generate_all("Walk", test_string, 0, "test")
         self.assertTrue(generator.generate.call_count == 3)
 

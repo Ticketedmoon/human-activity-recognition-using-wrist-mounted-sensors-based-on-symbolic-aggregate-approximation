@@ -26,7 +26,7 @@ class Arduino:
                     self.samples.append(float(data_row_sample))
                     self.microvolts.append(float(voltage_reading))
                     drawnow(self.makeFig)
-                    #plt.pause(.000001)                     #Pause Briefly. Important to keep drawnow from crashing
+                    # plt.pause(.000001)                     #Pause Briefly. Important to keep drawnow from crashing
                     data_row_sample += 1
 
                     if(data_row_sample > 25):                            #If you have 50 or more points, delete the first one from the array

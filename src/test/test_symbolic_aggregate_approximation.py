@@ -26,35 +26,35 @@ class Test_Symbolic_Aggregate_Approximation(unittest.TestCase):
         for test_file in test_files:
             test = sax_obj.generate(sax_obj.training_exercise_path + test_file)
             self.assertTrue(isinstance(test, str))
-            self.assertTrue(len(test) > 15000)
+            self.assertTrue(len(test) > 10000)
 
     # Generate Walk test, string > 15300 characters
     def test_generate_walk(self):
         sax_obj = SymbolicAggregateApproximation(False)
         sax_obj.training_exercise_path = "./resources/exercise-datasets/"
         test_results = sax_obj.generate_walk(3)
-        self.assertTrue(len(test_results) > 15000)
+        self.assertTrue(len(test_results) > 10000)
 
     # Generate Run test, string > 15300 characters
     def test_generate_run(self):
         sax_obj = SymbolicAggregateApproximation(False)
         sax_obj.training_exercise_path = "./resources/exercise-datasets/"
         test_results = sax_obj.generate_run(3)
-        self.assertTrue(len(test_results) > 15000)
+        self.assertTrue(len(test_results) > 10000)
 
     # Generate Low Resistance Bike test, string > 15300 characters
     def test_generate_low_bike(self):
         sax_obj = SymbolicAggregateApproximation(False)
         sax_obj.training_exercise_path = "./resources/exercise-datasets/"
         test_results = sax_obj.generate_low_bike(3)
-        self.assertTrue(len(test_results) > 15000)
+        self.assertTrue(len(test_results) > 10000)
 
     # Generate High Resistance Bike test, string > 15300 characters
     def test_generate_high_bike(self):
         sax_obj = SymbolicAggregateApproximation(False)
         sax_obj.training_exercise_path = "./resources/exercise-datasets/"
         test_results = sax_obj.generate_high_bike(3)
-        self.assertTrue(len(test_results) > 15000)
+        self.assertTrue(len(test_results) > 10000)
 
 if __name__ == "__main__":
     unittest.main()

@@ -43,5 +43,8 @@ env
 # Temp Directory
 temp/
 
+# Any PPG recordings
+voltages.csv
+
 # Logs don't need to be versioned
 *.log

@@ -11,6 +11,7 @@ from PyQt5.Qt import *
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import *
+from test_graph_qt import FenetrePrincipale
 
 from tkinter import filedialog
 from tkinter import *
@@ -19,6 +20,7 @@ sys.path.append('../../')
 
 from mqtt_protocol_module.client_connect import Client
 from movie_player import Movie_Player
+from canvas import Canvas
 
 import threading
 import bitmap_module
@@ -60,8 +62,9 @@ class Application(Client, QObject):
         # Connect the trigger signal to a slot.
         self.trigger.connect(self.movie_screen.set_animation)
     
-        self.download_thread = threading.Thread(target=self.send)
-        self.download_thread.start()
+        # TODO: uncomment tehse
+        #self.download_thread = threading.Thread(target=self.send)
+        #self.download_thread.start()
     
     # The callback for when a PUBLISH message is received from the server.
     # Used by MQTT Client class
@@ -287,9 +290,11 @@ class Application(Client, QObject):
         self.trend.setGeometry(QtCore.QRect(0, 0, 500, 250))
         self.trend.setAlignment(Qt.AlignCenter)
         self.trend.setStyleSheet("background-color: rgb(255, 255, 255);")
-        movie = QtGui.QMovie("../assets/trend.gif")
-        self.trend.setMovie(movie)
-        movie.start()
+        
+        self.canvas = FenetrePrincipale(self.widget)
+        # movie = QtGui.QMovie("../assets/trend.gif")
+        # self.trend.setMovie(movie)
+        # movie.start()
         self.trend.setLayout(QtWidgets.QHBoxLayout())
 
     def launch(self, primaryWindow):
