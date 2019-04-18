@@ -49,6 +49,7 @@ class Application():
         #Your desired functionality here
         self.logger.warning('Application Closing...')
         self.activity_controller_pane.resolve()
+        self.graph_pane.stop_graph()
         self.activity_display_pane.stop_display()
         sys.exit(0)
 
@@ -89,15 +90,15 @@ class Application():
         self.setup_content_panes(primaryWindow)
 
         self.verticalLayout.addWidget(self.frame)
-        
+        self.verticalLayout.addWidget(self.frame_2)
+
         # Refactored Code
         self.activity_display_pane = Activity_Display_Pane(self.frame, self.horizontalLayout, self.logger)
         self.graph_pane = Graph_Pane(self.frame, self.horizontalLayout, self.logger)
-        self.activity_controller_pane = Activity_Controller_Pane(self.frame, self.horizontalLayout_2, self.logger, self.activity_display_pane)
+        self.activity_controller_pane = Activity_Controller_Pane(self.frame_2, self.horizontalLayout_2, self.logger, self.activity_display_pane)
         self.research_pane = Research_Window(self.frame_2, self.horizontalLayout_2, self.logger)
 
         # Display all
-        self.verticalLayout.addWidget(self.frame_2)
         primaryWindow.setCentralWidget(self.centralwidget)
         QtCore.QMetaObject.connectSlotsByName(primaryWindow)
 

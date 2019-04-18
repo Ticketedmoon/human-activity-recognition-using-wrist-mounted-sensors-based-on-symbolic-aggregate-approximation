@@ -131,7 +131,7 @@ class Activity_Display_Pane(Client, QObject):
         progress = self.activity_shift / self.document_length_for_playback
         self.progressBar.setValue(int(progress))
         self.progressBar.setFormat('{:.2f}%'.format(float(progress)))
-        print(progress)
+        self.logger.info(progress)
 
     def draw_activity_text(self):
         self.label_pane_1.setGeometry(QtCore.QRect(15, 10, 125, 15))

@@ -1,48 +1,79 @@
 import sys
+import serial
+import numpy
+import time
+import threading
+
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from drawnow import *
 
-import matplotlib
-import matplotlib.pyplot as plt
-matplotlib.use('Qt5Agg')
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
+from matplotlib.animation import TimedAnimation
+from matplotlib.lines import Line2D
 
-from mpl_toolkits.axes_grid1 import make_axes_locatable
+import random
 
-class Canvas(FigureCanvas):
+import matplotlib.pyplot as plt
+plt.style.use('seaborn-whitegrid')
 
-    def __init__(self, parent = None, width =2, height = 2, dpi =100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        FigureCanvas.__init__(self, fig)
-        self.setParent(parent)
-    
-    def create_figure(self):
-        # Create figure (transparent background)
-        self.figure = plt.figure()
-        # self.figure.patch.set_facecolor('None')
+class Canvas():
+
+    stop_real_time_graph = False
+
+    def __init__(self, layout):
+
+        self.figure = Figure(figsize=(5,5), dpi=100)
+        self.figure.set_size_inches(1.5, 1.5, forward=True)
         self.canvas = FigureCanvas(self.figure)
-        self.canvas.setStyleSheet("background-color:transparent;")
+        self.samples, self.microvolts = [], []
 
-        # Adding one subplot for image
-        self.axe0 = self.figure.add_subplot(111)
-        self.axe0.get_xaxis().set_visible(False)
-        self.axe0.get_yaxis().set_visible(False)
-        # plt.tight_layout()
+        self.ax1 = self.figure.add_subplot(111)
+        self.ax1.set_xlabel('Samples')
+        self.ax1.set_ylabel('Microvolts(mV)')
+        self.line = Line2D(self.samples, self.microvolts, color='blue')
+        self.ax1.add_line(self.line)
+        self.ax1.set_ylim(1700, 1900)
+        self.ax1.set_xlim(0, 25)
 
-        # Data for init image
-        self.imageInit = [[255] * 320 for i in range(240)]
-        self.imageInit[0][0] = 0
+        layout.addWidget(self.canvas)
 
-        # Init image and add colorbar
-        self.image = self.axe0.imshow(self.imageInit, interpolation='none')
-        divider = make_axes_locatable(self.axe0)
-        cax = divider.new_vertical(size="5%", pad=0.05, pack_start=True)
-        self.colorbar = self.figure.add_axes(cax)
-        self.figure.colorbar(self.image, cax=cax, orientation='horizontal')
+        self.download_thread = threading.Thread(target=self.read_from_ppg)
+        self.download_thread.start()
 
-        plt.subplots_adjust(left=0, bottom=0.05, right=1, top=1, wspace=0, hspace=0)
+    def plot(self):
+        ''' plot Data '''
+        self.line.set_data(self.samples, self.microvolts)
+        self.ax1.relim()
+        self.ax1.autoscale_view()
 
-        self.canvas.draw()
+        self.figure.canvas.draw()
+        self.figure.canvas.flush_events()
+
+    def read_from_ppg(self):
+        with serial.Serial('COM3', 19200, bytesize=serial.SEVENBITS, timeout=0) as ser, open("voltages.csv", 'w') as text_file:
+            text_file.write("{}, {}\n".format("Samples", "Microvolts(mV)"))
+            data_row_sample = 0
+            while not self.stop_real_time_graph:
+                voltage_reading = str(ser.readline().decode(encoding='utf-8', errors='strict')).strip("\n").strip("\r\n")
+                if (voltage_reading != "" and voltage_reading.isdigit() and float(voltage_reading) > 1000):
+                    data = [str(data_row_sample), voltage_reading]
+                    text_file.write("{}, {}\n".format(data_row_sample, voltage_reading))
+                    text_file.flush()
+                    self.samples.append(float(data_row_sample))
+                    self.microvolts.append(float(voltage_reading))
+                    
+                    self.plot()
+                    plt.pause(0.05)
+                    data_row_sample += 1
+
+                    if(data_row_sample > 25):                            #If you have 25 or more points, delete the first one from the array
+                        self.samples.pop(0)                       #This allows us to just see the last 50 data points
+                        self.microvolts.pop(0)
+                        self.ax1.set_xlim(min(self.samples), max(self.samples))
+
+                    ser.flushInput()
+                    ser.flushOutput()
