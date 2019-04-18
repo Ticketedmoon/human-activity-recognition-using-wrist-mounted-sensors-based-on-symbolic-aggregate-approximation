@@ -48,7 +48,6 @@ class Client:
 
     def disconnect(self):
         self.client.disconnect()
-        sys.exit()
 
     def send(self) :
         self.client.on_disconnect = self.on_disconnect
