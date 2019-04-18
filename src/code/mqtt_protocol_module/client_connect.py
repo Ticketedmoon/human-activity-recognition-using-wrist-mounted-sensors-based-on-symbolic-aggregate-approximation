@@ -78,6 +78,7 @@ class Client:
         self.document_length_for_playback = len(symbolic_data)
         encoded_symbolic_data = base64.b64encode(bytes(symbolic_data, 'utf-8'))
         self.client.publish("sax_check", encoded_symbolic_data)
+        self.logger.info("Client with ID {} has published Activity String data with length {} to Broker...".format(self.client_id, self.document_length_for_playback))
 
 if __name__ == "__main__":
     client = Client()

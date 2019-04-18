@@ -9,27 +9,21 @@ from test_graph_qt import FenetrePrincipale
 from tkinter import filedialog
 from tkinter import *
 
-sys.path.append('../../')
-
 from activity_controller_pane import Activity_Controller_Pane
+from activity_display_pane import Activity_Display_Pane
 from research_window import Research_Window
 from graph_pane import Graph_Pane
-
-from mqtt_protocol_module.client_connect import Client
-from movie_player import Movie_Player
 from canvas import Canvas
 
-import threading
-import bitmap_module
-import base64
-import time
+sys.path.append('../../')
 
-class Application(Client, QObject):
+from logger_module.Logger import Logger
+
+class Application():
+
+    logger = Logger("../../", "logs/DesktopGUI")
 
     def __init__(self, primaryWindow):
-        super().__init__()
-        QtWidgets.QMainWindow.__init__(self)
-
         # Frame setup / widgets -> refactor
         self.centralwidget = QtWidgets.QWidget(primaryWindow)
 
@@ -56,9 +50,7 @@ class Application(Client, QObject):
     def closeEvent(self):
         #Your desired functionality here
         self.logger.warning('Application Closing...')
-        self.client.publish("disconnections", str(self.client_id))
-        self.prevent_publish_mechanism()
-        self.disconnect()
+        self.activity_display_pane.stop_display()
         sys.exit(0)
 
     def setup_window_framework(self, PrimaryWindow):
@@ -100,8 +92,9 @@ class Application(Client, QObject):
         self.verticalLayout.addWidget(self.frame)
         
         # Refactored Code
+        self.activity_display_pane = Activity_Display_Pane(self.frame, self.horizontalLayout, self.logger)
         self.graph_pane = Graph_Pane(self.frame, self.horizontalLayout, self.logger)
-        self.activity_controller_pane = Activity_Controller_Pane(self.frame, self.horizontalLayout, self.logger)
+        self.activity_controller_pane = Activity_Controller_Pane(self.frame, self.horizontalLayout_2, self.logger, self.activity_display_pane)
         self.research_pane = Research_Window(self.frame_2, self.horizontalLayout_2, self.logger)
 
         # Display all
