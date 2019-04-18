@@ -33,3 +33,6 @@ class Graph_Pane:
     def stop_graph(self):
         self.logger.warning("Stopping Real Time Graph...")
         self.canvas.stop_real_time_graph = True
+
+    def check_arduino_connection(self):
+        return self.canvas.is_arduino_connected

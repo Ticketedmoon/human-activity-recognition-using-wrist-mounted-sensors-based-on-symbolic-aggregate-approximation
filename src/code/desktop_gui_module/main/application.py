@@ -95,7 +95,7 @@ class Application():
         # Refactored Code
         self.activity_display_pane = Activity_Display_Pane(self.frame, self.horizontalLayout, self.logger)
         self.graph_pane = Graph_Pane(self.frame, self.horizontalLayout, self.logger)
-        self.activity_controller_pane = Activity_Controller_Pane(self.frame_2, self.horizontalLayout_2, self.logger, self.activity_display_pane)
+        self.activity_controller_pane = Activity_Controller_Pane(self.frame_2, self.horizontalLayout_2, self.logger, self.activity_display_pane, self.graph_pane)
         self.research_pane = Research_Window(self.frame_2, self.horizontalLayout_2, self.logger)
 
         # Display all

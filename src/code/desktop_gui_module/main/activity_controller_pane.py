@@ -18,9 +18,12 @@ class Activity_Controller_Pane():
 
     loading = None
 
-    def __init__(self, frame, layout, logger, display):
+    def __init__(self, frame, layout, logger, display, graph_control):
         # Controller has access to display
         self.display = display
+
+        # Controller has access to graph
+        self.graph_control = graph_control
 
         # Logger Initialize
         self.logger = logger
@@ -111,16 +114,8 @@ class Activity_Controller_Pane():
 
     def is_arduino_connected(self):
         self.logger.info("Scanning for active Arduino Connection... {5 Second Delay}")
-        try:
-            ser = serial.Serial()
-            ser.braudrate = 19200
-            ser.port = "COM3"
-            ser.open()
-        except serial.SerialException as e:
-            print("Arduino Connection not found on port {}".format(ser.port))
 
-        if ser.isOpen():
-            print("Arduino Connection found on port {}".format(ser.port))
+        if self.graph_control.check_arduino_connection():
             green_symbol = QtGui.QMovie("../assets/ppg_connected.gif")
             self.connection_icon.setMovie(green_symbol)
             self.connection_icon.setAlignment(Qt.AlignRight)
