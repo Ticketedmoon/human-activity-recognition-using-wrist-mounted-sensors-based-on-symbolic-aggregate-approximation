@@ -9,7 +9,7 @@ class Research_Window:
     def __init__(self, frame, layout, logger):
         self.logger = logger
         self.widget_4 = QtWidgets.QWidget(frame)
-        self.widget_4.setStyleSheet("background-color: rgb(100, 100, 100);")
+        self.widget_4.setStyleSheet("background-color: rgb(200, 200, 200);")
         self.widget_4.setObjectName("widget_4")
         layout.addWidget(self.widget_4)
         self.build()

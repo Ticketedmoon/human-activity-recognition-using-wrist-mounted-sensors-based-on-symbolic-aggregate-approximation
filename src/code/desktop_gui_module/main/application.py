@@ -4,7 +4,6 @@ from PyQt5.Qt import *
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import *
-from test_graph_qt import FenetrePrincipale
 
 from tkinter import filedialog
 from tkinter import *
@@ -13,7 +12,6 @@ from activity_controller_pane import Activity_Controller_Pane
 from activity_display_pane import Activity_Display_Pane
 from research_window import Research_Window
 from graph_pane import Graph_Pane
-from canvas import Canvas
 
 sys.path.append('../../')
 
@@ -50,6 +48,7 @@ class Application():
     def closeEvent(self):
         #Your desired functionality here
         self.logger.warning('Application Closing...')
+        self.activity_controller_pane.resolve()
         self.activity_display_pane.stop_display()
         sys.exit(0)
 

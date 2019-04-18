@@ -3,6 +3,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import *
 
+from test_graph_qt import FenetrePrincipale
+from canvas import Canvas
+
 class Graph_Pane:
 
     def __init__(self, frame, layout, logger):
@@ -20,8 +23,14 @@ class Graph_Pane:
         self.trend.setGeometry(QtCore.QRect(0, 0, 500, 250))
         self.trend.setAlignment(Qt.AlignCenter)
         self.trend.setStyleSheet("background-color: rgb(255, 255, 255);")
-        # self.canvas = FenetrePrincipale(self.widget)
-        movie = QtGui.QMovie("../assets/trend.gif")
-        self.trend.setMovie(movie)
-        movie.start()
-        self.trend.setLayout(QtWidgets.QHBoxLayout())
+        self.canvas = Canvas(self.trend)
+        self.canvas.create_figure()
+        # self.build_placeholder()
+        
+        
+    def build_placeholder(self):
+        if self.trend != None:
+            movie = QtGui.QMovie("../assets/trend.gif")
+            self.trend.setMovie(movie)
+            movie.start()
+            self.trend.setLayout(QtWidgets.QHBoxLayout())

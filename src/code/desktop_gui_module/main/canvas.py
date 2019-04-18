@@ -13,7 +13,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 class Canvas(FigureCanvas):
 
-    def __init__(self, parent = None, width =5, height = 5, dpi =100):
+    def __init__(self, parent = None, width =2, height = 2, dpi =100):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
         FigureCanvas.__init__(self, fig)

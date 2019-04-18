@@ -1,11 +1,14 @@
 import sys
 import threading
+import serial
+import time
 
 from PyQt5.Qt import *
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import *
 
+from repeated_timer import Repeated_Timer
 from tkinter import filedialog
 from tkinter import *
 
@@ -64,26 +67,9 @@ class Activity_Controller_Pane():
         self.ppg_connection = QtWidgets.QLabel(self.widget_5)
         self.ppg_connection.setGeometry(QtCore.QRect(15, 5, 161, 20))
         self.ppg_connection.setObjectName("ppg_connection")
-        self.ppg_connection.setText("Arduino PPG Connected?")
         self.ppg_connection.setFont(font)
 
-        # Red dot widget container
-        self.widget_6 = QtWidgets.QWidget(self.widget_3)
-        self.widget_6.setGeometry(QtCore.QRect(5, 205, 50, 31))
-        self.widget_6.setAutoFillBackground(False)
-        self.widget_6.setObjectName("widget_6")
-
-        # red dot
-        self.red_dot = QtWidgets.QLabel(self.widget_6)
-        self.red_dot.setGeometry(QtCore.QRect(5, 8, 40, 40))
-        
-        red_cross = QtGui.QMovie("../assets/red-cross.gif")
-        self.red_dot.setMovie(red_cross)
-        self.red_dot.setAlignment(Qt.AlignRight)
-        red_cross.start()
-
-        self.red_dot.setLayout(QtWidgets.QHBoxLayout())
-        layout.addWidget(self.widget_3)
+        self.create_ppg_connection_box_area(self.widget_3, layout)
 
         # loading icon widget container
         self.widget_7 = QtWidgets.QWidget(self.widget_3)
@@ -98,6 +84,55 @@ class Activity_Controller_Pane():
         self.loading = QtGui.QMovie("../assets/loader.gif")
         self.loader.setMovie(self.loading)
         self.loader.setLayout(QtWidgets.QHBoxLayout())
+
+    def create_ppg_connection_box_area(self, widget, layout):
+         # Red dot widget container
+        self.widget_6 = QtWidgets.QWidget(widget)
+        self.widget_6.setGeometry(QtCore.QRect(5, 205, 50, 31))
+        self.widget_6.setAutoFillBackground(False)
+        self.widget_6.setObjectName("widget_6")
+
+        # Connection Icon
+        self.connection_icon = QtWidgets.QLabel(self.widget_6)
+        self.connection_icon.setGeometry(QtCore.QRect(5, 8, 40, 40))
+
+        # Call initially for instantaneous UI clarity
+        self.is_arduino_connected()
+
+        # Check every X seconds for Arduino connection/disconnection
+        self.rt = Repeated_Timer(5, self.is_arduino_connected) # it auto-starts, no need of rt.start()
+
+        self.connection_icon.setLayout(QtWidgets.QHBoxLayout())
+        layout.addWidget(widget)
+
+    def resolve(self):
+        if (self.rt != None):
+            self.rt.stop()
+
+    def is_arduino_connected(self):
+        self.logger.info("Scanning for active Arduino Connection... {5 Second Delay}")
+        try:
+            ser = serial.Serial()
+            ser.braudrate = 19200
+            ser.port = "COM3"
+            ser.open()
+        except serial.SerialException as e:
+            print("Arduino Connection not found on port {}".format(ser.port))
+
+        if ser.isOpen():
+            print("Arduino Connection found on port {}".format(ser.port))
+            green_symbol = QtGui.QMovie("../assets/ppg_connected.gif")
+            self.connection_icon.setMovie(green_symbol)
+            self.connection_icon.setAlignment(Qt.AlignRight)
+            self.ppg_connection.setText("Arduino PPG Connected")
+            green_symbol.start()
+
+        else: 
+            red_cross = QtGui.QMovie("../assets/red-cross.gif")
+            self.connection_icon.setMovie(red_cross)
+            self.connection_icon.setAlignment(Qt.AlignRight)
+            self.ppg_connection.setText("Arduino PPG Not Connected")
+            red_cross.start()
 
     def submit_ppg_files(self):
         try:

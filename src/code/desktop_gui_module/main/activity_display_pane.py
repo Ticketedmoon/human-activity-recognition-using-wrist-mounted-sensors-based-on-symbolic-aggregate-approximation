@@ -58,7 +58,7 @@ class Activity_Display_Pane(Client, QObject):
 
         # TODO: Fix Later - These need to be stopped somehow
         self.download_thread = threading.Thread(target=self.send)
-        self.download_thread.start()
+        # self.download_thread.start()
 
         self.draw_activity_text()
 
