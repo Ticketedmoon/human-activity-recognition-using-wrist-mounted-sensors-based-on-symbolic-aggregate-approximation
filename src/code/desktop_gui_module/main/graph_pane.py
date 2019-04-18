@@ -13,7 +13,7 @@ class Graph_Pane:
         self.logger = logger
         
         # Build graph layout
-        self.canvas = Canvas(layout)
+        self.canvas = Canvas(layout, logger)
 
     def build(self, layout):
         pass

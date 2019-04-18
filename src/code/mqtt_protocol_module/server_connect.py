@@ -49,6 +49,8 @@ class Server:
         elif(msg.topic == "disconnections"):
             self.logger.info("Server: Client With ID {} Disconnected - Stoping Simulation if active... {}".format(self.client_objects[client], self.is_exercise_simulation_active))
             self.is_exercise_simulation_active = False
+            self.classifier.discontinue_client_connection()
+
         elif(msg.topic == "client_connections"):
             client_connection_id = msg.payload.decode('utf-8')
             self.client_objects[client] = client_connection_id
@@ -68,6 +70,10 @@ class Server:
         server.on_disconnect = self.on_disconnect
         server.on_message = self.on_message
         server.on_subscribe = self.on_subscribe
+        
+        # Build Classifier all cases will use
+        self.dir_path = "./temp/"
+        self.classifier = Classify_Image(test_dir=self.dir_path)
 
         host      = "127.0.0.1"
         port      = 1883
@@ -124,19 +130,17 @@ class Server:
             self.real_time_simulate_activity_recognition(client, tensorRange)
 
     def real_time_simulate_activity_recognition(self, client, tensorRange):
-        path = "./temp/"
-        total_files = len(os.listdir(path))
+        total_files = len(os.listdir(self.dir_path))
         try:
-            self.logger.info("Starting Model Prediction with Images in /Temp")
-            self.model_predict(path, client, tensorRange)
+            self.logger.info("Starting Model Prediction with Images in {}".format(self.dir_path))
+            self.model_predict(client, tensorRange)
         finally:
             # After Simulation Activity Recognition Function Complete => Destroy Temp Folder
             self.logger.warning("Destroying Temporaries...")
             self.destroy_temp_folder()
 
-    def model_predict(self, dir_path, client, tensorRange):
-        classifier = Classify_Image(test_dir=dir_path)
-        classifier.initialize_prediction_process(tensorRange, client)
+    def model_predict(self, client, tensorRange):
+        self.classifier.initialize_prediction_process(tensorRange, client)
 
     # TODO: Use this function to dissect how to only load the graph one time - drastically speeding up the server side.
     # Additionally, perhaps all bitmap images for the specified csv should be generated first, and then

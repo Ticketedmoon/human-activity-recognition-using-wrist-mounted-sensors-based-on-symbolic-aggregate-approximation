@@ -19,6 +19,7 @@ class Activity_Controller_Pane():
     loading = None
 
     def __init__(self, frame, layout, logger, display, graph_control):
+        super().__init__()
         # Controller has access to display
         self.display = display
 
@@ -42,11 +43,12 @@ class Activity_Controller_Pane():
         font.setPointSize(8.5)
 
         self.progressBar = QtWidgets.QProgressBar(self.widget_3)
-        self.progressBar.setGeometry(QtCore.QRect(30, 80, 231, 23))
+        self.progressBar.setGeometry(QtCore.QRect(30, 80, 212.5, 23))
         self.progressBar.setStyleSheet("background-color: rgb(0, 70, 150); color: white;")
         self.progressBar.setFont(font)
         self.progressBar.setObjectName("progressBar")
 
+        # Playback/Simulate Button
         self.simulate_button = QtWidgets.QPushButton(self.widget_3)
         self.simulate_button.setGeometry(QtCore.QRect(30, 20, 180, 23))
 
@@ -60,6 +62,36 @@ class Activity_Controller_Pane():
         self.simulate_button.setObjectName("simulate_button")
         self.simulate_button.setText("Activity Recognition Playback")
         self.simulate_button.clicked.connect(self.submit_ppg_files)
+
+        # Cancel Simulation in-progress button
+        self.cancel_simulation_button = QtWidgets.QPushButton(self.widget_3)
+        self.cancel_simulation_button.setGeometry(QtCore.QRect(30, 120, 180, 23))
+        
+        self.cancel_simulation_button.setFont(font)
+        self.cancel_simulation_button.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.cancel_simulation_button.setAcceptDrops(False)
+        self.cancel_simulation_button.setStyleSheet("background-color: rgb(220, 30, 30); color: white;")
+        self.cancel_simulation_button.setIcon(QIcon(QPixmap("../assets/cancel_playback.png")))
+        self.cancel_simulation_button.resize(180, 40)
+
+        self.cancel_simulation_button.setObjectName("cancel_simulation_button")
+        self.cancel_simulation_button.setText("Cancel Recognition Playback")
+        self.cancel_simulation_button.clicked.connect(self.cancel_button_sequence_start)
+        self.update_playback_button_state(self.cancel_simulation_button, False, "background-color: rgb(200, 200, 200); color: black;")
+
+        # Real Time Mode Initialize button
+        self.real_time_mode_button = QtWidgets.QPushButton(self.widget_3)
+        self.real_time_mode_button.setGeometry(QtCore.QRect(260, 200, 180, 23))
+        
+        self.real_time_mode_button.setFont(font)
+        self.real_time_mode_button.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.real_time_mode_button.setAcceptDrops(False)
+        self.real_time_mode_button.setStyleSheet("background-color: rgb(0, 128, 128); color: white;")
+        self.real_time_mode_button.setIcon(QIcon(QPixmap("../assets/real_time.png")))
+        self.real_time_mode_button.resize(180, 40)
+
+        self.real_time_mode_button.setObjectName("real_time_mode_button")
+        self.real_time_mode_button.setText("Real Time Recognition Initialize")
 
         self.widget_5 = QtWidgets.QWidget(self.widget_3)
         self.widget_5.setGeometry(QtCore.QRect(45, 207, 171, 31))
@@ -103,18 +135,31 @@ class Activity_Controller_Pane():
         self.is_arduino_connected()
 
         # Check every X seconds for Arduino connection/disconnection
-        self.rt = Repeated_Timer(5, self.is_arduino_connected) # it auto-starts, no need of rt.start()
+        self.arduino_connection_timer = Repeated_Timer(5, self.is_arduino_connected) # it auto-starts, no need of arduino_connection_timer.start()
 
         self.connection_icon.setLayout(QtWidgets.QHBoxLayout())
         layout.addWidget(widget)
 
+    def cancel_button_sequence_start(self):
+        if (self.loading != None):
+            self.loading.stop()
+            self.loader.setMovie(None)
+
+        self.loading = QtGui.QMovie("../assets/loader.gif")
+        self.loader.setMovie(self.loading)
+        
+        self.display.stop_display()
+        self.display.reset_display_parameters()
+        self.display.connect_to_broker()
+
+        self.update_playback_button_state(self.simulate_button, True, "background-color: rgb(0, 180, 30); color: white;")
+        self.update_playback_button_state(self.cancel_simulation_button, False, "background-color: rgb(200, 200, 200); color: black;")
+
     def resolve(self):
-        if (self.rt != None):
-            self.rt.stop()
+        if (self.arduino_connection_timer.is_running):
+            self.arduino_connection_timer.stop()
 
     def is_arduino_connected(self):
-        self.logger.info("Scanning for active Arduino Connection... {5 Second Delay}")
-
         if self.graph_control.check_arduino_connection():
             green_symbol = QtGui.QMovie("../assets/ppg_connected.gif")
             self.connection_icon.setMovie(green_symbol)
@@ -135,15 +180,15 @@ class Activity_Controller_Pane():
             file_path = filedialog.askopenfilename(initialdir = "/",title = "Select file", filetypes = (("timestamp & PPG recordings CSV","*.csv"), ("all files","*.*")))
             if (file_path != ""):
                 self.logger.debug("Simulating Activity Recognition for file: {" + str(file_path) + "}")
-                simulate_thread = threading.Thread(target=self.display.convert_and_send, args=[file_path])
-                simulate_thread.start()
+                self.display.send_activity_string_data_to_broker(file_path)               
 
                 if (self.loading is not None):
                     self.loading.start()
-                    self.update_playback_button_state(False, "background-color: rgb(200, 200, 200); color: black;")
+                    self.update_playback_button_state(self.simulate_button, False,"background-color: rgb(200, 200, 200); color: black;")
+                    self.update_playback_button_state(self.cancel_simulation_button, True, "background-color: rgb(220, 30, 30); color: white;")
         except Exception as error:
             self.logger.error("Error: " + repr(error))    
 
-    def update_playback_button_state(self, enabled=True, stylesheet="background-color: rgb(0, 180, 30); color: white"):
-        self.simulate_button.setEnabled(enabled) 
-        self.simulate_button.setStyleSheet(stylesheet)
+    def update_playback_button_state(self, button, enabled=True, stylesheet="background-color: rgb(0, 180, 30); color: white"):
+        button.setEnabled(enabled) 
+        button.setStyleSheet(stylesheet)

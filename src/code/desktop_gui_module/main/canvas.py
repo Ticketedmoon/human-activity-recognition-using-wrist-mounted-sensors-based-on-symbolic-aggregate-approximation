@@ -25,24 +25,29 @@ class Canvas():
     stop_real_time_graph = False
     is_arduino_connected = False
 
-    def __init__(self, layout):
+    def __init__(self, layout, logger):
 
+        self.logger = logger
         self.figure = Figure(figsize=(4,4), dpi=90)
         self.figure.set_size_inches(1, 1, forward=True)
         self.canvas = FigureCanvas(self.figure)
-        self.samples, self.microvolts = [], []
 
         self.ax1 = self.figure.add_subplot(111)
         self.ax1.set_ylabel('Microvolts(mV)')
-        self.line = Line2D(self.samples, self.microvolts, color='blue', lw=1)
-        self.ax1.add_line(self.line)
-        self.ax1.set_ylim(1700, 1900)
-        self.ax1.set_xlim(0, 25)
 
         layout.addWidget(self.canvas)
 
         self.graph_thread = threading.Thread(target=self.read_from_ppg)
         self.graph_thread.start()
+
+    def reset_graph_axis(self):
+        self.ax1.clear()
+        self.samples, self.microvolts = [], []
+        self.line = Line2D(self.samples, self.microvolts, linestyle="-", color='teal', lw=1.85)
+        self.ax1.add_line(self.line)
+        self.ax1.set_ylim(1600, 1900)
+        self.ax1.set_xlim(0, 25)
+        self.figure.canvas.draw()
 
     def plot(self):
         ''' plot Data '''
@@ -59,7 +64,8 @@ class Canvas():
                 text_file.write("{}, {}\n".format("Samples", "Microvolts(mV)"))
                 data_row_sample = 0
                 self.is_arduino_connected = True
-                print("Arduino Connection found on port {}".format(ser.port))
+                self.logger.info("Arduino Connection found on port {}".format(ser.port))
+                self.reset_graph_axis()
                 while not self.stop_real_time_graph:
                     voltage_reading = str(ser.readline().decode(encoding='utf-8', errors='strict')).strip("\n").strip("\r\n")
                     if (voltage_reading != "" and voltage_reading.isdigit() and float(voltage_reading) > 1000):
@@ -81,7 +87,14 @@ class Canvas():
                         ser.flushInput()
                         ser.flushOutput()
         except:
-            self.is_arduino_connected = False
-            print("PPG Not Connected - Sleeping for 5 seconds and retrying...")
-            time.sleep(5)
-            self.read_from_ppg()
+            if (not self.stop_real_time_graph):
+                # Clear Graph Data
+                self.reset_graph_axis()
+                # Ensure boolean flag is not set
+                self.is_arduino_connected = False
+                # log to file/console
+                self.logger.info("Scanning for active Arduino Connection... {5 Second Delay}")
+                # Sleep for X seconds checking for reconnection of Arduino
+                time.sleep(5)
+                # Try to read again
+                self.read_from_ppg()

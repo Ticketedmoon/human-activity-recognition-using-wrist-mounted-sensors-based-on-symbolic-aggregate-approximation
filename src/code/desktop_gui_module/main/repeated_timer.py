@@ -1,4 +1,5 @@
 from threading import Timer
+from PyQt5 import QtGui, QtCore
 
 class Repeated_Timer(object):
     def __init__(self, interval, function, *args, **kwargs):
@@ -17,10 +18,13 @@ class Repeated_Timer(object):
 
     def start(self):
         if not self.is_running:
-            self._timer = Timer(self.interval, self._run)
-            self._timer.start()
+            #self._timer = QtCore.QTimer(self.interval, self._run)
+            self._timer = QtCore.QTimer()
+            self._timer.timeout.connect(self._run)
+            self._timer.start(self.interval * 1000)
+            #self._timer.start()
             self.is_running = True
 
     def stop(self):
-        self._timer.cancel()
+        self._timer.stop()
         self.is_running = False

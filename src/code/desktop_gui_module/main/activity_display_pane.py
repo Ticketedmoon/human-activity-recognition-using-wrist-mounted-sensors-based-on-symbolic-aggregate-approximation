@@ -1,5 +1,6 @@
 import sys
 import threading
+from concurrent.futures import ProcessPoolExecutor
 
 from PyQt5.Qt import *
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -33,6 +34,7 @@ class Activity_Display_Pane(Client, QObject):
         super().__init__()
         QtWidgets.QMainWindow.__init__(self)
 
+        # Logger
         self.logger = logger
     
         # Join Client topic
@@ -43,6 +45,7 @@ class Activity_Display_Pane(Client, QObject):
         self.widget_2.setStyleSheet("background-color: rgb(0, 140, 180);")
         self.widget_2.setObjectName("widget_2")
 
+        # Add to layout
         layout.addWidget(self.widget_2)
 
         # Accuracy, Exercise Time, Activity Class
@@ -53,23 +56,37 @@ class Activity_Display_Pane(Client, QObject):
         # Put default movie here
         self.movie_screen = Movie_Player(frame)
 
+        # Set up Executor thread(s)
+        self.broker_connection_thread = threading.Thread(target=self.send)
+
         # Connect the trigger signal to a slot.
         self.trigger.connect(self.movie_screen.set_animation)
-
-        self.connect_to_broker = threading.Thread(target=self.send)
-        self.connect_to_broker.start()
-
+        self.connect_to_broker()
         self.draw_activity_text()
 
     def stop_display(self):
         self.client.publish("disconnections", str(self.client_id))
         self.prevent_publish_mechanism()
         self.disconnect()
-        sys.exit(0)
+
+    def connect_to_broker(self):
+        try:
+            self.reset_publish_mechanism()
+            self.broker_connection_thread.start()
+        except RuntimeError: # Occurs if thread is dead
+            self.broker_connection_thread = threading.Thread(target=self.send) # Create new instance if thread is dead
+            self.broker_connection_thread.start() # Start thread
+
+    def send_activity_string_data_to_broker(self, file_path):
+        try:
+            self.simulate_thread = threading.Thread(target=self.convert_and_send, args=[file_path])
+            self.simulate_thread.start()
+        except RuntimeError: # Occurs if thread is dead
+            self.simulate_thread = threading.Thread(target=self.convert_and_send, args=[file_path])
+            self.simulate_thread.start() # Start thread
 
     def display_activity_animation(self, activity):
         self.logger.info("Activity Detected {} - sending to animation player...".format(activity))
-        
         # Emit the signal.
         self.trigger.emit(activity)
 
@@ -92,10 +109,12 @@ class Activity_Display_Pane(Client, QObject):
 
         elif(msg.topic == "clock_reset"):
             self.logger.info("Received Clock Reset Notification...")
-            self.exercise_time = 0
-            self.label_pane_2.setText("Exercise Time: {}s".format(self.exercise_time))
-            self.update_activity_user_interface(("idle", 0))
-            self.update_playback_button_state()
+            self.reset_display_parameters()
+
+    def reset_display_parameters(self):
+        self.exercise_time = 0
+        self.label_pane_2.setText("Exercise Time: {}s".format(self.exercise_time))
+        self.update_activity_user_interface(("idle", 0))
 
     # Helper Function - Maybe move to new class (Helper)
     def replaceMultiple(self, mainString, toBeReplaces, newString):
@@ -128,8 +147,9 @@ class Activity_Display_Pane(Client, QObject):
         self.label_pane_3.setText("Accuracy: {:.2f}%".format(prediction_accuracy))
 
         progress = self.activity_shift / self.document_length_for_playback
-        self.progressBar.setValue(int(progress))
-        self.progressBar.setFormat('{:.2f}%'.format(float(progress)))
+        # TODO: Progress Bar updates with playback feature - Should be in controller pane or not - think about this
+        # self.progressBar.setValue(int(progress))
+        # self.progressBar.setFormat('{:.2f}%'.format(float(progress)))
         self.logger.info(progress)
 
     def draw_activity_text(self):
@@ -159,4 +179,4 @@ class Activity_Display_Pane(Client, QObject):
         self.label_pane_3.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.label_pane_3.setStyleSheet("color: rgb(255, 255, 255)")
         self.label_pane_3.setObjectName("label")
-        self.label_pane_3.setText("Accuracy: {}%".format("???"))
+        self.label_pane_3.setText("Accuracy: {}%".format("0.00"))

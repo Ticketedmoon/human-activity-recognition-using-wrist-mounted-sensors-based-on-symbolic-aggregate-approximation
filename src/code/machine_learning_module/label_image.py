@@ -105,11 +105,13 @@ class Classify_Image:
         output_name = "import/" + self.output_layer
         input_operation = self.graph.get_operation_by_name(input_name)
         output_operation = self.graph.get_operation_by_name(output_name)
-        self.publish_simulation_prediction_to_client(tensorRange, input_operation, output_operation, client)
+        self.client = client
+        self.publish_simulation_prediction_to_client(tensorRange, input_operation, output_operation)
 
-  #        client.publish("clock_reset", "Reset")
+    def discontinue_client_connection(self):
+      self.client = None
 
-    def publish_simulation_prediction_to_client(self, tensorRange, input_operation, output_operation, client):
+    def publish_simulation_prediction_to_client(self, tensorRange, input_operation, output_operation):
         if self.test_dir != None:
           tensors = self.build_tensors_in_range(self.test_dir, tensorRange, self.input_height, self.input_width, self.input_mean, self.input_std)
         
@@ -124,11 +126,14 @@ class Classify_Image:
             labels = self.load_labels(self.label_path)
             prediction_label, prediction_accuracy = labels[top_k[0]], results[top_k[0]]
 
-            if (client != None):
-              prediction = str([prediction_label, prediction_accuracy])
-              encoded_prediction = base64.b64encode(bytes(prediction, 'utf-8'))
-              client.publish("prediction_receive", encoded_prediction)
-              time.sleep(0.25)
+            if (self.client != None):
+                prediction = str([prediction_label, prediction_accuracy])
+                encoded_prediction = base64.b64encode(bytes(prediction, 'utf-8'))
+                self.client.publish("prediction_receive", encoded_prediction)
+                time.sleep(0.25)
+            else:
+                self.logger.warning("Server: Prediction Process Interrupted...")
+                return
 
 
     # TODO: make this more flexible via the file_name formatting.

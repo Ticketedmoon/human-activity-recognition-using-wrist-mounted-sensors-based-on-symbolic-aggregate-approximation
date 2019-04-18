@@ -32,6 +32,9 @@ class Client:
     def prevent_publish_mechanism(self):
         self.has_disconnected = True
 
+    def reset_publish_mechanism(self):
+        self.has_disconnected = False
+
     # on_connect
     def on_connect(self, client, userdata, flags, rc):
         if (rc == 0):
