@@ -56,9 +56,8 @@ class Activity_Display_Pane(Client, QObject):
         # Connect the trigger signal to a slot.
         self.trigger.connect(self.movie_screen.set_animation)
 
-        # TODO: Fix Later - These need to be stopped somehow
-        self.download_thread = threading.Thread(target=self.send)
-        # self.download_thread.start()
+        self.connect_to_broker = threading.Thread(target=self.send)
+        self.connect_to_broker.start()
 
         self.draw_activity_text()
 
