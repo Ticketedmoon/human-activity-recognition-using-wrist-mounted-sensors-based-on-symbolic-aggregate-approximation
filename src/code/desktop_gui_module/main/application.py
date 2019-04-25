@@ -5,9 +5,20 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import *
 
+from PyQt5.QtCore import QSize
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QInputDialog
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QTabBar
+from PyQt5.QtWidgets import QTabWidget
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QWidget
+
 from tkinter import filedialog
 from tkinter import *
 
+from tab_bar_plus import TabBarPlus
 from activity_controller_pane import Activity_Controller_Pane
 from activity_display_pane import Activity_Display_Pane
 from research_window import Research_Window
@@ -17,30 +28,63 @@ sys.path.append('../../')
 
 from logger_module.Logger import Logger
 
-class Application():
+class Application(QMainWindow):
 
     logger = Logger("../../", "logs/DesktopGUI")
 
     def __init__(self, primaryWindow):
+        super(Application, self).__init__()
+
+        # Build default window properties
+        self.build_default_window_properties(primaryWindow)
+        self.setup_window_framework(primaryWindow)
+
+        # Build Tab View
+        self.view = TabBarPlus(self.tab_frame_a, self.tab_frame_b, self.tab_frame_c, self.tab_frame_d,
+                        self.layout_a, self.layout_b, self.layout_c, self.layout_d, self.logger)
+        primaryWindow.setCentralWidget(self.view) 
+
+        # Set up menu bar
+        self.setup_menu_bar(primaryWindow)
+        
+        # Connect slots, default for primary window
+        QtCore.QMetaObject.connectSlotsByName(primaryWindow)
+
+    def build_default_window_properties(self, primaryWindow):
         # Frame setup / widgets -> refactor
         self.centralwidget = QtWidgets.QWidget(primaryWindow)
 
-        self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame.setObjectName("frame")
+        self.tab_frame_a = QtWidgets.QFrame(self.centralwidget)
+        self.tab_frame_a.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.tab_frame_a.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.tab_frame_a.setObjectName("tab_frame_a")
 
-        self.frame_2 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_2.setObjectName("frame_2")
+        self.tab_frame_b = QtWidgets.QFrame(self.centralwidget)
+        self.tab_frame_b.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.tab_frame_b.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.tab_frame_b.setObjectName("tab_frame_b")
+
+        self.tab_frame_c = QtWidgets.QFrame(self.centralwidget)
+        self.tab_frame_c.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.tab_frame_c.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.tab_frame_c.setObjectName("tab_frame_c")
+        
+        self.tab_frame_d = QtWidgets.QFrame(self.centralwidget)
+        self.tab_frame_d.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.tab_frame_d.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.tab_frame_d.setObjectName("tab_frame_d")
 
         # Layouts
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.frame)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.frame_2)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.layout_a = QGridLayout(self.tab_frame_a)
+        self.layout_a.setColumnStretch(1, 0)
+
+        self.layout_b = QtWidgets.QHBoxLayout(self.tab_frame_b)
+        self.layout_c = QtWidgets.QHBoxLayout(self.tab_frame_c)
+        self.layout_d = QtWidgets.QHBoxLayout(self.tab_frame_d)
+        self.layout_a.setObjectName("layout_a")
+        self.layout_b.setObjectName("layout_b")
+        self.layout_c.setObjectName("layout_c")
+        self.layout_d.setObjectName("layout_d")
         
         # Close Event
         app.aboutToQuit.connect(self.closeEvent)
@@ -48,9 +92,7 @@ class Application():
     def closeEvent(self):
         #Your desired functionality here
         self.logger.warning('Application Closing...')
-        self.activity_controller_pane.resolve()
-        self.graph_pane.stop_graph()
-        self.activity_display_pane.stop_display()
+        self.view.shut_down()
         sys.exit(0)
 
     def setup_window_framework(self, PrimaryWindow):
@@ -63,53 +105,23 @@ class Application():
     def setup_menu_bar(self, PrimaryWindow):
         # Menu Bar
         self.menuBar = PrimaryWindow.menuBar() 
-        self.menuBar.setStyleSheet("background-color: rgb(255, 255, 255)")       
+        self.menuBar.setStyleSheet("background-color: rgb(225, 225, 225)")       
         file_menu = self.menuBar.addMenu('&File')
         file_menu = self.menuBar.addMenu('&Edit')
         file_menu = self.menuBar.addMenu('&Settings')
         file_menu = self.menuBar.addMenu('&Help')
 
-    def setup_content_panes(self, PrimaryWindow):
-
-        self.centralwidget = QtWidgets.QWidget(PrimaryWindow)
-        self.centralwidget.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.centralwidget.setObjectName("centralwidget")
-
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
-        self.verticalLayout.setObjectName("verticalLayout")
-
-        self.frame.setStyleSheet("")
-        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame.setObjectName("frame")
-
-    def launch(self, primaryWindow):
-        # TODO: Refactor these
-        self.setup_window_framework(primaryWindow)
-        self.setup_menu_bar(primaryWindow)
-        self.setup_content_panes(primaryWindow)
-
-        self.verticalLayout.addWidget(self.frame)
-        self.verticalLayout.addWidget(self.frame_2)
-
-        # Refactored Code
-        self.activity_display_pane = Activity_Display_Pane(self.frame, self.horizontalLayout, self.logger)
-        self.graph_pane = Graph_Pane(self.frame, self.horizontalLayout, self.logger)
-        self.activity_controller_pane = Activity_Controller_Pane(self.frame_2, self.horizontalLayout_2, self.logger, self.activity_display_pane, self.graph_pane)
-        self.research_pane = Research_Window(self.frame_2, self.horizontalLayout_2, self.logger)
-
-        # Display all
-        primaryWindow.setCentralWidget(self.centralwidget)
-        QtCore.QMetaObject.connectSlotsByName(primaryWindow)
+    def build_overview(self, primaryWindow):
+        pass
+        # Overview Tab?
+        # self.activity_display_pane = Activity_Display_Pane(self.frame, self.horizontalLayout, self.logger)
+        # self.graph_pane = Graph_Pane(self.frame, self.horizontalLayout, self.logger)
+        # self.activity_controller_pane = Activity_Controller_Pane(self.frame_2, self.horizontalLayout_2, self.logger, self.activity_display_pane, self.graph_pane)
+        # self.research_pane = Research_Window(self.frame_2, self.horizontalLayout_2, self.logger)
 
 if __name__ == "__main__":
-
-    # Set up Window
     app = QtWidgets.QApplication(sys.argv)
     primaryWindow = QtWidgets.QMainWindow()
     application = Application(primaryWindow)
-    application.launch(primaryWindow)    
     primaryWindow.show()
-
-    # TODO: Ensure all threads have ended when program closes.
     sys.exit(app.exec_())

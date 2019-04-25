@@ -14,12 +14,13 @@ from tkinter import *
 
 sys.path.append('../../')
 
-class Activity_Controller_Pane():
+class Activity_Controller_Pane(QtWidgets.QWidget):
 
     loading = None
 
     def __init__(self, frame, layout, logger, display, graph_control):
-        super().__init__()
+        QtWidgets.QWidget.__init__(self)
+
         # Controller has access to display
         self.display = display
 
@@ -28,6 +29,10 @@ class Activity_Controller_Pane():
 
         # Logger Initialize
         self.logger = logger
+
+        # !Important for access
+        self.layout = layout
+        self.frame = frame
 
         self.widget_3 = QtWidgets.QWidget(frame)
         self.widget_3.setAutoFillBackground(False)

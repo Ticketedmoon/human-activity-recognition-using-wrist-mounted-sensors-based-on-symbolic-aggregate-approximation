@@ -13,7 +13,7 @@ from tkinter import *
 from movie_player import Movie_Player
 import base64
 
-class Activity_Display_Pane(Client, QObject):
+class Activity_Display_Pane(Client, QtWidgets.QWidget):
 
     # Dynamic GUI variables
     activity_shift = 0
@@ -31,8 +31,8 @@ class Activity_Display_Pane(Client, QObject):
     trigger = pyqtSignal(str)
 
     def __init__(self, frame, layout, logger):
-        super().__init__()
-        QtWidgets.QMainWindow.__init__(self)
+        super(Activity_Display_Pane, self).__init__()
+        QtWidgets.QWidget.__init__(self)
 
         # Logger
         self.logger = logger
@@ -45,16 +45,19 @@ class Activity_Display_Pane(Client, QObject):
         self.widget_2.setStyleSheet("background-color: rgb(0, 140, 180);")
         self.widget_2.setObjectName("widget_2")
 
-        # Add to layout
+        # !Important for access
+        self.layout = layout
+        self.frame = frame
+
         layout.addWidget(self.widget_2)
 
         # Accuracy, Exercise Time, Activity Class
         self.label_pane_1 = QtWidgets.QLabel(self.widget_2)
         self.label_pane_2 = QtWidgets.QLabel(self.widget_2)
-        self.label_pane_3 = QtWidgets.QLabel(self.widget_2)  
+        self.label_pane_3 = QtWidgets.QLabel(self.widget_2)
 
         # Put default movie here
-        self.movie_screen = Movie_Player(frame)
+        self.movie_screen = Movie_Player(self.widget_2)
 
         # Set up Executor thread(s)
         self.broker_connection_thread = threading.Thread(target=self.send)

@@ -45,7 +45,7 @@ class Canvas():
         self.samples, self.microvolts = [], []
         self.line = Line2D(self.samples, self.microvolts, linestyle="-", color='teal', lw=1.85)
         self.ax1.add_line(self.line)
-        self.ax1.set_ylim(1600, 1900)
+        self.ax1.set_ylim(1700, 1800)
         self.ax1.set_xlim(0, 25)
         self.figure.canvas.draw()
 

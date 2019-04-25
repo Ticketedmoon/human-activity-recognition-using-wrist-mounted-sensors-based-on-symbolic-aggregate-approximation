@@ -17,7 +17,6 @@ class Movie_Player(QtWidgets.QLabel):
         # Default activity to display
         self.movie = QtGui.QMovie("../assets/idle.gif", QtCore.QByteArray(), self)
         self.setMovie(self.movie)
-
         self.set_animation("idle")
 
     @pyqtSlot('QString')

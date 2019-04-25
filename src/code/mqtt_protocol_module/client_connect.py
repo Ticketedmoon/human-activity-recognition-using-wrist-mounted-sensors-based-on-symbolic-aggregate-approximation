@@ -21,6 +21,7 @@ class Client:
     document_length_for_playback = 1
 
     def __init__(self):
+        super(Client, self).__init__()
         self.client_id = socket.gethostname()
         self.client = mqtt.Client(self.client_id)
         self.symbol_converter = SymbolicAggregateApproximation(False)

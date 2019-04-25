@@ -6,14 +6,26 @@ from PyQt5.QtGui import *
 from test_graph_qt import FenetrePrincipale
 from canvas import Canvas
 
-class Graph_Pane:
+class Graph_Pane(QtWidgets.QWidget):
+
+    canvas = None
 
     def __init__(self, frame, layout, logger):
+        super(Graph_Pane, self).__init__()
+        QtWidgets.QWidget.__init__(self)
+
         # Set up logger for this class
+        print("creating graph")
         self.logger = logger
+
+        # !Important for access
+        self.layout = layout
+        self.frame = frame
         
         # Build graph layout
-        self.canvas = Canvas(layout, logger)
+        if self.canvas is None:
+            print("creating canvas")
+            self.canvas = Canvas(layout, logger)
 
     def build(self, layout):
         pass

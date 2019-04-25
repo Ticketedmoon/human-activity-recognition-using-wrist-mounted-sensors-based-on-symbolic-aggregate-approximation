@@ -3,15 +3,22 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import *
 
-class Research_Window:
+class Research_Window(QtWidgets.QWidget):
 
     # Takes frame_2 -> belongs to lower frame
     def __init__(self, frame, layout, logger):
+        super(Research_Window, self).__init__()
+        QtWidgets.QWidget.__init__(self)
+
         self.logger = logger
         self.widget_4 = QtWidgets.QWidget(frame)
         self.widget_4.setStyleSheet("background-color: rgb(200, 200, 200);")
         self.widget_4.setObjectName("widget_4")
         layout.addWidget(self.widget_4)
+        
+        # !Important for access
+        self.layout = layout
+        self.frame = frame
         self.build()
 
     # Research Pane
