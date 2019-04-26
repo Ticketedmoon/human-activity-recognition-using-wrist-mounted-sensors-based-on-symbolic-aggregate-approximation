@@ -47,6 +47,9 @@ class Application(QMainWindow):
         # Set up menu bar
         self.setup_menu_bar(primaryWindow)
         
+        # Close Event
+        app.aboutToQuit.connect(self.closeEvent)
+
         # Connect slots, default for primary window
         QtCore.QMetaObject.connectSlotsByName(primaryWindow)
 
@@ -78,16 +81,16 @@ class Application(QMainWindow):
         self.layout_a = QGridLayout(self.tab_frame_a)
         self.layout_a.setColumnStretch(1, 0)
 
-        self.layout_b = QtWidgets.QHBoxLayout(self.tab_frame_b)
+        self.layout_b = QGridLayout(self.tab_frame_b)
+        self.layout_b.setColumnStretch(1, 0)
+        self.layout_b.setRowStretch(0, 1)
+
         self.layout_c = QtWidgets.QHBoxLayout(self.tab_frame_c)
         self.layout_d = QtWidgets.QHBoxLayout(self.tab_frame_d)
         self.layout_a.setObjectName("layout_a")
         self.layout_b.setObjectName("layout_b")
         self.layout_c.setObjectName("layout_c")
         self.layout_d.setObjectName("layout_d")
-        
-        # Close Event
-        app.aboutToQuit.connect(self.closeEvent)
 
     def closeEvent(self):
         #Your desired functionality here

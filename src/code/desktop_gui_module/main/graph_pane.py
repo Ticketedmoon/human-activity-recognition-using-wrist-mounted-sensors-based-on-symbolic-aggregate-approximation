@@ -15,7 +15,6 @@ class Graph_Pane(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self)
 
         # Set up logger for this class
-        print("creating graph")
         self.logger = logger
 
         # !Important for access
@@ -24,7 +23,6 @@ class Graph_Pane(QtWidgets.QWidget):
         
         # Build graph layout
         if self.canvas is None:
-            print("creating canvas")
             self.canvas = Canvas(layout, logger)
 
     def build(self, layout):

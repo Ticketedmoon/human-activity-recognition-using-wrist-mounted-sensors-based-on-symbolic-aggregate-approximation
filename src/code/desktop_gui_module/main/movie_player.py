@@ -24,9 +24,9 @@ class Movie_Player(QtWidgets.QLabel):
         if (activity != self.currentActivity):
             try:
                 if (activity != "highresistancebike"):
-                    self.movie.setSpeed(50)
+                    self.movie.setSpeed(75)
                 else:
-                    self.movie.setSpeed(100)
+                    self.movie.setSpeed(125)
             finally:
                 self.movie.stop()
                 self.movie.setFileName("../assets/{}.gif".format(activity))
