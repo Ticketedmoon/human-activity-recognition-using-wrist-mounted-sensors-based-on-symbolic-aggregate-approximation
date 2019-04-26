@@ -9,10 +9,13 @@ import paho.mqtt.client as mqtt
 sys.path.append("../")
 from logger_module.Logger import Logger
 
+sys.path.append("../../mqtt_protocol_module")
+from client_controller import Client_Controller
+
 sys.path.append("../../machine_learning_module")
 from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 
-class Client:
+class Client(Client_Controller):
 
     # Logger
     logger = Logger("../../", "logs/Client")
@@ -20,12 +23,13 @@ class Client:
     # Document length currently being read
     document_length_for_playback = 1
 
-    def __init__(self):
-        super(Client, self).__init__()
-        self.client_id = socket.gethostname()
-        self.client = mqtt.Client(self.client_id)
-        self.symbol_converter = SymbolicAggregateApproximation(False)
-        self.has_disconnected = False
+    def __init__(self, client_object=None):
+        if client_object is None:
+            super(Client, self).__init__()
+            self.symbol_converter = SymbolicAggregateApproximation(False)
+            self.has_disconnected = False
+        else:
+            self = client_object
 
     def on_publish(self, client, userdata, mid) :
         self.logger.info("Client with ID {} has published message with ID {} Published".format(self.client_id, mid))

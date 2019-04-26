@@ -30,27 +30,37 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
     # Slots and Signals
     trigger = pyqtSignal(str)
 
-    def __init__(self, frame, layout, logger):
-        super(Activity_Display_Pane, self).__init__()
-        QtWidgets.QWidget.__init__(self)
+    def __init__(self, logger, frame, layout, overview_display=None):
+        if overview_display is None:
+            super(Activity_Display_Pane, self).__init__()
+        else:
+            super(Activity_Display_Pane, self).__init__(overview_display)
 
+        super(QObject, self).__init__()
+        QtWidgets.QWidget.__init__(self)
+        
         # Logger
         self.logger = logger
-    
+        self.overview_display = overview_display
+
         # Join Client topic
+        if self.overview_display is not None:
+            self = self.overview_display
+
         self.client.on_message = self.on_message
+
+        self.layout_widgets(frame, layout)
+
+    def layout_widgets(self, frame, layout):
+        self.layout = layout
+        self.frame = frame
 
         # Widget Adds
         self.widget_2 = QtWidgets.QWidget(frame)
         self.widget_2.setStyleSheet("background-color: rgb(0, 140, 180);")
         self.widget_2.setObjectName("widget_2")
-
-        # !Important for access
-        self.layout = layout
-        self.frame = frame
-
+        
         layout.addWidget(self.widget_2)
-
         # Accuracy, Exercise Time, Activity Class
         self.label_pane_1 = QtWidgets.QLabel(self.widget_2)
         self.label_pane_2 = QtWidgets.QLabel(self.widget_2)
@@ -59,18 +69,22 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
         # Put default movie here
         self.movie_screen = Movie_Player(self.widget_2)
 
-        # Set up Executor thread(s)
-        self.broker_connection_thread = threading.Thread(target=self.send)
-
         # Connect the trigger signal to a slot.
         self.trigger.connect(self.movie_screen.set_animation)
-        self.connect_to_broker()
+
+        # Draw activity text
         self.draw_activity_text()
+        self.start_client_connection()
+
+    def start_client_connection(self):
+        self.broker_connection_thread = threading.Thread(target=self.send)
+        self.connect_to_broker()
 
     def stop_display(self):
-        self.client.publish("disconnections", str(self.client_id))
-        self.prevent_publish_mechanism()
-        self.disconnect()
+        if self.overview_display is None:
+            self.client.publish("disconnections", str(self.client_id))
+            self.prevent_publish_mechanism()
+            self.disconnect()
 
     def connect_to_broker(self):
         try:
@@ -93,10 +107,10 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
         # Emit the signal.
         self.trigger.emit(activity)
 
-
     # The callback for when a PUBLISH message is received from the server.
     # Used by MQTT Client class
     def on_message(self, client, userdata, msg):
+        print("MESSAGE RECEIVED!!!!")
         if (msg.topic == "prediction_receive"):
             encoded_prediction = base64.decodestring(msg.payload)
             decoded_prediction = encoded_prediction.decode("utf-8", "ignore")
@@ -153,7 +167,7 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
         # TODO: Progress Bar updates with playback feature - Should be in controller pane or not - think about this
         # self.progressBar.setValue(int(progress))
         # self.progressBar.setFormat('{:.2f}%'.format(float(progress)))
-        self.logger.info(progress)
+        self.logger.info("Progress: " + str(progress))
 
     def draw_activity_text(self):
         self.label_pane_1.setGeometry(QtCore.QRect(15, 10, 125, 15))
@@ -176,7 +190,7 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
         self.label_pane_2.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.label_pane_2.setStyleSheet("color: rgb(255, 255, 255)")
         self.label_pane_2.setObjectName("label")
-        self.label_pane_2.setText("Exercise Time: {}".format(self.exercise_time))
+        self.label_pane_2.setText("Exercise Time: {}s".format(self.exercise_time))
 
         self.label_pane_3.setFont(font)
         self.label_pane_3.setLayoutDirection(QtCore.Qt.LeftToRight)

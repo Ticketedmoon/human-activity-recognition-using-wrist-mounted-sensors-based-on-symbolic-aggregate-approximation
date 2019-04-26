@@ -17,29 +17,31 @@ sys.path.append('../../')
 class Activity_Controller_Pane(QtWidgets.QWidget):
 
     loading = None
+    display = None
 
-    def __init__(self, frame, layout, logger, display, graph_control):
+    def __init__(self, frame, layout, logger, graph_control):
         QtWidgets.QWidget.__init__(self)
-
-        # Controller has access to display
-        self.display = display
 
         # Controller has access to graph
         self.graph_control = graph_control
 
         # Logger Initialize
         self.logger = logger
-
-        # !Important for access
         self.layout = layout
         self.frame = frame
 
-        self.widget_3 = QtWidgets.QWidget(frame)
+        self.prepare_controller_widget()
+        self.build(layout)
+
+    def prepare_controller_widget(self):
+        self.widget_3 = QtWidgets.QWidget(self.frame)
         self.widget_3.setAutoFillBackground(False)
         self.widget_3.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.widget_3.setObjectName("widget_3")
 
-        self.build(layout)
+    def set_display(self, display):
+        # Controller has access to display
+        self.display = display
 
     # TODO: Refactor
     def build(self, layout):

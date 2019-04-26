@@ -40,13 +40,13 @@ class TabBarPlus(QTabWidget):
         # Overview (End)
 
         # Tab 2, Tab 3, Tab 4
-        self.graph_pane_2 = Graph_Pane(tab_frame_c, layout_c, logger)
-        self.activity_controller_pane_2 = Activity_Controller_Pane(tab_frame_b, layout_b, logger, self.graph_pane_2)
-        self.activity_display_pane_2 = Activity_Display_Pane(logger, tab_frame_b, layout_b, self.activity_display_pane)
-        self.activity_controller_pane_2.set_display(self.activity_display_pane_2)
+        # self.graph_pane_2 = Graph_Pane(tab_frame_c, layout_c, logger)
+        # self.activity_controller_pane_2 = Activity_Controller_Pane(tab_frame_b, layout_b, logger, self.graph_pane_2)
+        # self.activity_display_pane_2 = Activity_Display_Pane(logger, tab_frame_b, layout_b, self.activity_display_pane)
+        # self.activity_controller_pane_2.set_display(self.activity_display_pane_2)
 
-        self.research_pane_2 = Research_Window(tab_frame_d, layout_d, logger)
-        self.research_pane_2.build_research_pane(layout_d, tab_frame_d)
+        # self.research_pane_2 = Research_Window(tab_frame_d, layout_d, logger)
+        # self.research_pane_2.build_research_pane(layout_d, tab_frame_d)
         # Tab 2, Tab 3, Tab 4 (End)
 
         self.tab1 = QWidget()
