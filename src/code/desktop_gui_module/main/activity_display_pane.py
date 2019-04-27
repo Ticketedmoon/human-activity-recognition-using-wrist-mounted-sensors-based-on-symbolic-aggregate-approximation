@@ -25,42 +25,33 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
     # Animations
     movie_screen = None
 
+    # Widgets
+    widgets = []
+
     # Define a new signal called 'trigger' that has no arguments.
     # Trigger can only signal via strings
     # Slots and Signals
     trigger = pyqtSignal(str)
 
-    def __init__(self, logger, frame, layout, overview_display=None):
-        if overview_display is None:
-            super(Activity_Display_Pane, self).__init__()
-        else:
-            super(Activity_Display_Pane, self).__init__(overview_display)
-
-        super(QObject, self).__init__()
+    def __init__(self, logger):
+        super(Activity_Display_Pane, self).__init__()
         QtWidgets.QWidget.__init__(self)
         
         # Logger
         self.logger = logger
-        self.overview_display = overview_display
-
+    
         # Join Client topic
-        if self.overview_display is not None:
-            self = self.overview_display
-
         self.client.on_message = self.on_message
 
-        self.layout_widgets(frame, layout)
+        # Connect to Broker
+        self.connect_to_broker()
 
-    def layout_widgets(self, frame, layout):
-        self.layout = layout
-        self.frame = frame
-
+    def layout_widgets(self, layout):
         # Widget Adds
-        self.widget_2 = QtWidgets.QWidget(frame)
+        self.widget_2 = QtWidgets.QWidget()
         self.widget_2.setStyleSheet("background-color: rgb(0, 140, 180);")
         self.widget_2.setObjectName("widget_2")
-        
-        layout.addWidget(self.widget_2)
+
         # Accuracy, Exercise Time, Activity Class
         self.label_pane_1 = QtWidgets.QLabel(self.widget_2)
         self.label_pane_2 = QtWidgets.QLabel(self.widget_2)
@@ -74,21 +65,18 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
 
         # Draw activity text
         self.draw_activity_text()
-        self.start_client_connection()
-
-    def start_client_connection(self):
-        self.broker_connection_thread = threading.Thread(target=self.send)
-        self.connect_to_broker()
+        self.widgets.append(self.widget_2)
+        layout.addWidget(self.widget_2)
 
     def stop_display(self):
-        if self.overview_display is None:
-            self.client.publish("disconnections", str(self.client_id))
-            self.prevent_publish_mechanism()
-            self.disconnect()
+        self.client.publish("disconnections", str(self.client_id))
+        self.disconnect()
+        self.prevent_publish_mechanism()
 
     def connect_to_broker(self):
         try:
             self.reset_publish_mechanism()
+            self.broker_connection_thread = threading.Thread(target=self.send)
             self.broker_connection_thread.start()
         except RuntimeError: # Occurs if thread is dead
             self.broker_connection_thread = threading.Thread(target=self.send) # Create new instance if thread is dead
@@ -104,13 +92,13 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
 
     def display_activity_animation(self, activity):
         self.logger.info("Activity Detected {} - sending to animation player...".format(activity))
+
         # Emit the signal.
         self.trigger.emit(activity)
 
     # The callback for when a PUBLISH message is received from the server.
     # Used by MQTT Client class
     def on_message(self, client, userdata, msg):
-        print("MESSAGE RECEIVED!!!!")
         if (msg.topic == "prediction_receive"):
             encoded_prediction = base64.decodestring(msg.payload)
             decoded_prediction = encoded_prediction.decode("utf-8", "ignore")

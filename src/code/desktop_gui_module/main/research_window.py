@@ -10,27 +10,25 @@ from PyQt5.QtCore import QSize
 
 class Research_Window(QtWidgets.QWidget):
 
+    """ Font Properties """
+    font = QtGui.QFont()
+    font.setFamily("calibri")
+    font.setBold(False)
+
     # Takes frame_2 -> belongs to lower frame
-    def __init__(self, frame, layout, logger):
+    def __init__(self, logger):
         super(Research_Window, self).__init__()
         QtWidgets.QWidget.__init__(self)
-        self.layout = layout
-        self.frame = frame
         self.logger = logger
 
-    def build_overview_research_pane(self, layout, frame):
-        self.widget_4 = QtWidgets.QLabel(frame)
+        self.widget_4 = QtWidgets.QLabel()
         self.widget_4.setAlignment(Qt.AlignCenter)
         self.widget_4.setOpenExternalLinks(True)
 
-        font = QtGui.QFont()
-        font.setFamily("calibri")
-        font.setPointSize(10)
-        font.setBold(False)
-        font.setWeight(50)
+        self.font.setPointSize(10)
+        self.font.setWeight(50)
 
-        self.widget_4.setFont(font)
-
+        self.widget_4.setFont(self.font)
         self.widget_4.setText("<span style=\"color: darkgreen;\">Project Research Areas</span>" + '<br><br>' +
 
                               "Follow my Progress: - <a href=\"https://www.projectactivityrecognition.ml/blog\">https://www.projectactivityrecognition.ml/blog</a>" + '<br><br>' +
@@ -44,22 +42,16 @@ class Research_Window(QtWidgets.QWidget):
                               "Supervised By: Tomas Ward (<a href=\"https://www.insight-centre.org/users/tomas-ward\">https://www.insight-centre.org/users/tomas-ward</a>)" + '<br>')
         self.widget_4.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.widget_4.setObjectName("widget_4")
-        layout.addWidget(self.widget_4)
 
-    def build_research_pane(self, layout, frame):
-        self.widget_4 = QtWidgets.QLabel(frame)
-        self.widget_4.setAlignment(Qt.AlignCenter)
-        self.widget_4.setOpenExternalLinks(True)
+        self.widget_5 = QtWidgets.QLabel()
+        self.widget_5.setAlignment(Qt.AlignCenter)
+        self.widget_5.setOpenExternalLinks(True)
 
-        font = QtGui.QFont()
-        font.setFamily("calibri")
-        font.setPointSize(14)
-        font.setBold(False)
-        font.setWeight(30)
+        self.font.setPointSize(14)
+        self.font.setWeight(30)
 
-        self.widget_4.setFont(font)
-
-        self.widget_4.setText("<span style=\"color: darkgreen;\">Project Research Areas</span>" + '<br><br>' +
+        self.widget_5.setFont(self.font)
+        self.widget_5.setText("<span style=\"color: darkgreen;\">Project Research Areas</span>" + '<br><br>' +
 
                               "Follow my Progress: - <a href=\"https://www.projectactivityrecognition.ml/blog\">https://www.projectactivityrecognition.ml/blog</a>" + '<br><br>' +
 
@@ -70,6 +62,11 @@ class Research_Window(QtWidgets.QWidget):
 
                               "Developed By: Shane Creedon (<a href=\"https://www.skybreak.cf\">https://www.skybreak.cf</a>)" + '<br>' +
                               "Supervised By: Tomas Ward (<a href=\"https://www.insight-centre.org/users/tomas-ward\">https://www.insight-centre.org/users/tomas-ward</a>)" + '<br>')
-        self.widget_4.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.widget_4.setObjectName("widget_4")
+        self.widget_5.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.widget_5.setObjectName("widget_4")
+
+    def build_overview_research_pane(self, layout):
         layout.addWidget(self.widget_4)
+
+    def build_research_pane(self, layout):
+        layout.addWidget(self.widget_5)

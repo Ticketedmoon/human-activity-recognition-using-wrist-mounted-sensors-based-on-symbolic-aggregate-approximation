@@ -8,30 +8,17 @@ from canvas import Canvas
 
 class Graph_Pane(QtWidgets.QWidget):
 
-    canvas = None
-
-    def __init__(self, frame, layout, logger):
+    def __init__(self, layout, logger):
         super(Graph_Pane, self).__init__()
         QtWidgets.QWidget.__init__(self)
-
-        # Set up logger for this class
         self.logger = logger
+        self.graph = Canvas(layout, self.logger) # Widget is added from Canvas
 
-        # !Important for access
-        self.layout = layout
-        self.frame = frame
-        
-        # Build graph layout
-        if self.canvas is None:
-            self.canvas = Canvas(layout, logger)
-
-    def build(self, layout):
+    # TODO: Fix
+    def layout_widgets(self, layout):
         pass
-        # self.canvas.read_from_ppg()
-        # self.trend.move(125, 0)
-        # self.trend.setAlignment(Qt.AlignCenter)
-        # self.build_placeholder()
-        
+        #self.graph.layout_widgets(layout)
+
     # Trend graph animation Placeholder.
     def build_placeholder(self):
         if self.trend != None:
@@ -42,7 +29,7 @@ class Graph_Pane(QtWidgets.QWidget):
 
     def stop_graph(self):
         self.logger.warning("Stopping Real Time Graph...")
-        self.canvas.stop_real_time_graph = True
+        self.graph.stop_real_time_graph = True
 
     def check_arduino_connection(self):
-        return self.canvas.is_arduino_connected
+        return self.graph.is_arduino_connected

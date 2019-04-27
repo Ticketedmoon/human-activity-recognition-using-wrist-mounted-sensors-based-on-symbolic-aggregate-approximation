@@ -38,10 +38,11 @@ class Application(QMainWindow):
         # Build default window properties
         self.build_default_window_properties(primaryWindow)
         self.setup_window_framework(primaryWindow)
+        self.build_frames(self.centralwidget)
 
         # Build Tab View
-        self.view = TabBarPlus(self.tab_frame_a, self.tab_frame_b, self.tab_frame_c, self.tab_frame_d,
-                        self.layout_a, self.layout_b, self.layout_c, self.layout_d, self.logger)
+        self.view = TabBarPlus(self.layout_a, self.layout_b, self.layout_c, self.layout_d, self.logger)
+        self.view.currentChanged.connect(self.onChange) #changed!
         primaryWindow.setCentralWidget(self.view) 
 
         # Set up menu bar
@@ -57,25 +58,7 @@ class Application(QMainWindow):
         # Frame setup / widgets -> refactor
         self.centralwidget = QtWidgets.QWidget(primaryWindow)
 
-        self.tab_frame_a = QtWidgets.QFrame(self.centralwidget)
-        self.tab_frame_a.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.tab_frame_a.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.tab_frame_a.setObjectName("tab_frame_a")
-
-        self.tab_frame_b = QtWidgets.QFrame(self.centralwidget)
-        self.tab_frame_b.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.tab_frame_b.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.tab_frame_b.setObjectName("tab_frame_b")
-
-        self.tab_frame_c = QtWidgets.QFrame(self.centralwidget)
-        self.tab_frame_c.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.tab_frame_c.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.tab_frame_c.setObjectName("tab_frame_c")
-        
-        self.tab_frame_d = QtWidgets.QFrame(self.centralwidget)
-        self.tab_frame_d.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.tab_frame_d.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.tab_frame_d.setObjectName("tab_frame_d")
+        self.build_frames(self.centralwidget)
 
         # Layouts
         self.layout_a = QGridLayout(self.tab_frame_a)
@@ -86,11 +69,37 @@ class Application(QMainWindow):
         self.layout_b.setRowStretch(0, 1)
 
         self.layout_c = QtWidgets.QHBoxLayout(self.tab_frame_c)
+
         self.layout_d = QtWidgets.QHBoxLayout(self.tab_frame_d)
+
         self.layout_a.setObjectName("layout_a")
         self.layout_b.setObjectName("layout_b")
         self.layout_c.setObjectName("layout_c")
         self.layout_d.setObjectName("layout_d")
+    
+    def onChange(self, tab_index): # Changed Tab Listener
+        pass
+    
+    def build_frames(self, centralwidget):
+        self.tab_frame_a = QtWidgets.QFrame(centralwidget)
+        self.tab_frame_a.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.tab_frame_a.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.tab_frame_a.setObjectName("tab_frame_a")
+
+        self.tab_frame_b = QtWidgets.QFrame(centralwidget)
+        self.tab_frame_b.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.tab_frame_b.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.tab_frame_b.setObjectName("tab_frame_b")
+
+        self.tab_frame_c = QtWidgets.QFrame(centralwidget)
+        self.tab_frame_c.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.tab_frame_c.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.tab_frame_c.setObjectName("tab_frame_c")
+        
+        self.tab_frame_d = QtWidgets.QFrame(centralwidget)
+        self.tab_frame_d.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.tab_frame_d.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.tab_frame_d.setObjectName("tab_frame_d")
 
     def closeEvent(self):
         #Your desired functionality here
@@ -113,14 +122,6 @@ class Application(QMainWindow):
         file_menu = self.menuBar.addMenu('&Edit')
         file_menu = self.menuBar.addMenu('&Settings')
         file_menu = self.menuBar.addMenu('&Help')
-
-    def build_overview(self, primaryWindow):
-        pass
-        # Overview Tab?
-        # self.activity_display_pane = Activity_Display_Pane(self.frame, self.horizontalLayout, self.logger)
-        # self.graph_pane = Graph_Pane(self.frame, self.horizontalLayout, self.logger)
-        # self.activity_controller_pane = Activity_Controller_Pane(self.frame_2, self.horizontalLayout_2, self.logger, self.activity_display_pane, self.graph_pane)
-        # self.research_pane = Research_Window(self.frame_2, self.horizontalLayout_2, self.logger)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

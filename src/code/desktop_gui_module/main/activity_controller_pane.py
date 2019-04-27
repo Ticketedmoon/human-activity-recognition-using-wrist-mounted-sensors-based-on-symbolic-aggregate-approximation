@@ -16,35 +16,40 @@ sys.path.append('../../')
 
 class Activity_Controller_Pane(QtWidgets.QWidget):
 
-    loading = None
     display = None
 
-    def __init__(self, frame, layout, logger, graph_control):
-        QtWidgets.QWidget.__init__(self)
+    loading_widgets = []
+    playback_buttons = []
+    stop_play_back_buttons = []
+    ppg_connection_widgets = []
+    ppg_connection_icons = []
+    loaders = []
 
-        # Controller has access to graph
-        self.graph_control = graph_control
+    def __init__(self, logger, graph_control):
+        super(Activity_Controller_Pane, self).__init__()
+        QtWidgets.QWidget.__init__(self)
 
         # Logger Initialize
         self.logger = logger
-        self.layout = layout
-        self.frame = frame
 
-        self.prepare_controller_widget()
-        self.build(layout)
+        # Controller has access to graph
+        self.graph_control = graph_control
+        
+    def layout_widgets(self, layout):
 
-    def prepare_controller_widget(self):
-        self.widget_3 = QtWidgets.QWidget(self.frame)
-        self.widget_3.setAutoFillBackground(False)
+        self.widget_3 = QtWidgets.QWidget()
         self.widget_3.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.widget_3.setObjectName("widget_3")
+        self.widget_3.setObjectName("widget_controller")
+        layout.addWidget(self.widget_3)
+
+        self.build()
 
     def set_display(self, display):
         # Controller has access to display
         self.display = display
 
     # TODO: Refactor
-    def build(self, layout):
+    def build(self):
         font = QtGui.QFont()
         font.setFamily("Calibri")
         font.setPointSize(8.5)
@@ -69,6 +74,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.simulate_button.setObjectName("simulate_button")
         self.simulate_button.setText("Activity Recognition Playback")
         self.simulate_button.clicked.connect(self.submit_ppg_files)
+        self.playback_buttons.append(self.simulate_button)
 
         # Cancel Simulation in-progress button
         self.cancel_simulation_button = QtWidgets.QPushButton(self.widget_3)
@@ -84,7 +90,8 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.cancel_simulation_button.setObjectName("cancel_simulation_button")
         self.cancel_simulation_button.setText("Cancel Recognition Playback")
         self.cancel_simulation_button.clicked.connect(self.cancel_button_sequence_start)
-        self.update_playback_button_state(self.cancel_simulation_button, False, "background-color: rgb(200, 200, 200); color: black;")
+        self.stop_play_back_buttons.append(self.cancel_simulation_button)
+        self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
 
         # Real Time Mode Initialize button
         self.real_time_mode_button = QtWidgets.QPushButton(self.widget_3)
@@ -110,8 +117,9 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.ppg_connection.setGeometry(QtCore.QRect(15, 5, 161, 20))
         self.ppg_connection.setObjectName("ppg_connection")
         self.ppg_connection.setFont(font)
+        self.ppg_connection_widgets.append(self.ppg_connection)
 
-        self.create_ppg_connection_box_area(self.widget_3, layout)
+        self.create_ppg_connection_box_area(self.widget_3)
 
         # loading icon widget container
         self.widget_7 = QtWidgets.QWidget(self.widget_3)
@@ -119,15 +127,17 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.widget_7.setAutoFillBackground(False)
         self.widget_7.setObjectName("widget_7")
 
+        self.loading = QtGui.QMovie("../assets/loader.gif")
         self.loader = QtWidgets.QLabel(self.widget_7)
         self.loader.setGeometry(QtCore.QRect(0, 0, 100, 75))
         self.loader.setAlignment(Qt.AlignCenter)
-
-        self.loading = QtGui.QMovie("../assets/loader.gif")
         self.loader.setMovie(self.loading)
         self.loader.setLayout(QtWidgets.QHBoxLayout())
+        self.loaders.append(self.loader)
 
-    def create_ppg_connection_box_area(self, widget, layout):
+        self.loading_widgets.append(self.loading)
+
+    def create_ppg_connection_box_area(self, widget):
          # Red dot widget container
         self.widget_6 = QtWidgets.QWidget(widget)
         self.widget_6.setGeometry(QtCore.QRect(5, 205, 50, 31))
@@ -145,22 +155,26 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.arduino_connection_timer = Repeated_Timer(5, self.is_arduino_connected) # it auto-starts, no need of arduino_connection_timer.start()
 
         self.connection_icon.setLayout(QtWidgets.QHBoxLayout())
-        layout.addWidget(widget)
+        self.ppg_connection_icons.append(self.connection_icon)
 
     def cancel_button_sequence_start(self):
         if (self.loading != None):
-            self.loading.stop()
-            self.loader.setMovie(None)
+            for loading_widget in self.loading_widgets:
+                loading_widget.stop()            
+            for loader in self.loaders:
+                loader.setMovie(None)
 
-        self.loading = QtGui.QMovie("../assets/loader.gif")
-        self.loader.setMovie(self.loading)
-        
+        for i in range(len(self.loaders)):
+            loading_widget = QtGui.QMovie("../assets/loader.gif")
+            self.loading_widgets[i] = loading_widget
+            self.loaders[i].setMovie(loading_widget)
+
         self.display.stop_display()
         self.display.reset_display_parameters()
         self.display.connect_to_broker()
 
-        self.update_playback_button_state(self.simulate_button, True, "background-color: rgb(0, 180, 30); color: white;")
-        self.update_playback_button_state(self.cancel_simulation_button, False, "background-color: rgb(200, 200, 200); color: black;")
+        self.update_playback_button_state(self.playback_buttons, True, "background-color: rgb(0, 180, 30); color: white;")
+        self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
 
     def resolve(self):
         if (self.arduino_connection_timer.is_running):
@@ -168,18 +182,21 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
 
     def is_arduino_connected(self):
         if self.graph_control.check_arduino_connection():
-            green_symbol = QtGui.QMovie("../assets/ppg_connected.gif")
-            self.connection_icon.setMovie(green_symbol)
-            self.connection_icon.setAlignment(Qt.AlignRight)
-            self.ppg_connection.setText("Arduino PPG Connected")
-            green_symbol.start()
-
+            for connection_icon in self.ppg_connection_icons:
+                green_symbol = QtGui.QMovie("../assets/ppg_connected.gif")
+                connection_icon.setMovie(green_symbol)
+                connection_icon.setAlignment(Qt.AlignRight)
+                green_symbol.start()
+            for connection_widget in self.ppg_connection_widgets:
+                connection_widget.setText("Arduino PPG Connected")
         else: 
-            red_cross = QtGui.QMovie("../assets/red-cross.gif")
-            self.connection_icon.setMovie(red_cross)
-            self.connection_icon.setAlignment(Qt.AlignRight)
-            self.ppg_connection.setText("Arduino PPG Not Connected")
-            red_cross.start()
+            for connection_icon in self.ppg_connection_icons:
+                red_cross = QtGui.QMovie("../assets/red-cross.gif")
+                connection_icon.setMovie(red_cross)
+                connection_icon.setAlignment(Qt.AlignRight)
+                red_cross.start()
+            for connection_widget in self.ppg_connection_widgets:
+                connection_widget.setText("Arduino PPG Not Connected")
 
     def submit_ppg_files(self):
         try:
@@ -189,13 +206,15 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
                 self.logger.debug("Simulating Activity Recognition for file: {" + str(file_path) + "}")
                 self.display.send_activity_string_data_to_broker(file_path)               
 
-                if (self.loading is not None):
-                    self.loading.start()
-                    self.update_playback_button_state(self.simulate_button, False,"background-color: rgb(200, 200, 200); color: black;")
-                    self.update_playback_button_state(self.cancel_simulation_button, True, "background-color: rgb(220, 30, 30); color: white;")
+                if (len(self.loaders) > 0):
+                    for loading_widget in self.loading_widgets:
+                        loading_widget.start()
+                    self.update_playback_button_state(self.playback_buttons, False,"background-color: rgb(200, 200, 200); color: black;")
+                    self.update_playback_button_state(self.stop_play_back_buttons, True, "background-color: rgb(220, 30, 30); color: white;")
         except Exception as error:
             self.logger.error("Error: " + repr(error))    
 
-    def update_playback_button_state(self, button, enabled=True, stylesheet="background-color: rgb(0, 180, 30); color: white"):
-        button.setEnabled(enabled) 
-        button.setStyleSheet(stylesheet)
+    def update_playback_button_state(self, buttons, enabled=True, stylesheet="background-color: rgb(0, 180, 30); color: white"):
+        for button in buttons:
+            button.setEnabled(enabled) 
+            button.setStyleSheet(stylesheet)

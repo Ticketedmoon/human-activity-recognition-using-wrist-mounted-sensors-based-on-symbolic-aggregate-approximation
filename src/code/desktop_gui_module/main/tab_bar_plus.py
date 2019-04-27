@@ -20,34 +20,29 @@ from activity_display_pane import Activity_Display_Pane
 from research_window import Research_Window
 from graph_pane import Graph_Pane
 
-# self.activity_display_pane = Activity_Display_Pane(self.frame, self.horizontalLayout, self.logger)
-# self.graph_pane = Graph_Pane(self.frame, self.horizontalLayout, self.logger)
-# self.activity_controller_pane = Activity_Controller_Pane(self.frame_2, self.horizontalLayout_2, self.logger, self.activity_display_pane, self.graph_pane)
 class TabBarPlus(QTabWidget):
 
-    def __init__(self, tab_frame_a, tab_frame_b, tab_frame_c, tab_frame_d, layout_a, layout_b, layout_c, layout_d, logger):
+    def __init__(self, layout_a, layout_b, layout_c, layout_d, logger):
         super(TabBarPlus, self).__init__()
         self.logger = logger
 
-        # Overview
-        self.activity_display_pane = Activity_Display_Pane(logger, tab_frame_a, layout_a)
-        self.graph_pane = Graph_Pane(tab_frame_a, layout_a, logger)
-        self.activity_controller_pane = Activity_Controller_Pane(tab_frame_a, layout_a, logger, self.graph_pane)
+        # Build all pane objects
+        self.activity_display_pane = Activity_Display_Pane(logger)
+        self.activity_display_pane.layout_widgets(layout_a)
+        
+        self.graph_pane = Graph_Pane(layout_a, logger)
+        self.graph_pane.layout_widgets(layout_a)
+
+        self.activity_controller_pane = Activity_Controller_Pane(logger, self.graph_pane)
         self.activity_controller_pane.set_display(self.activity_display_pane)
+        self.activity_controller_pane.layout_widgets(layout_a)
 
-        self.research_pane = Research_Window(tab_frame_a, layout_a, logger)
-        self.research_pane.build_overview_research_pane(layout_a, tab_frame_a)
-        # Overview (End)
+        self.research_pane = Research_Window(logger)
+        self.research_pane.build_overview_research_pane(layout_a)
 
-        # Tab 2, Tab 3, Tab 4
-        # self.graph_pane_2 = Graph_Pane(tab_frame_c, layout_c, logger)
-        # self.activity_controller_pane_2 = Activity_Controller_Pane(tab_frame_b, layout_b, logger, self.graph_pane_2)
-        # self.activity_display_pane_2 = Activity_Display_Pane(logger, tab_frame_b, layout_b, self.activity_display_pane)
-        # self.activity_controller_pane_2.set_display(self.activity_display_pane_2)
-
-        # self.research_pane_2 = Research_Window(tab_frame_d, layout_d, logger)
-        # self.research_pane_2.build_research_pane(layout_d, tab_frame_d)
-        # Tab 2, Tab 3, Tab 4 (End)
+        self.build_activity_display(layout_b)
+        self.graph_pane_2 = Graph_Pane(layout_c, logger)
+        self.build_research_pane(layout_d)
 
         self.tab1 = QWidget()
         self.tab2 = QWidget()
@@ -64,37 +59,56 @@ class TabBarPlus(QTabWidget):
         self.tab3UI(layout_c)
         self.tab4UI(layout_d)
 
+    # Overview Tab
     def tab1UI(self, layout):
-        # Overview Tab?
-        # layout.addWidget(self.graph_pane, 0, 0)
-        # layout.addWidget(self.research_pane, 0, 1)
-        # layout.addWidget(self.activity_display_pane, 1, 0)
-        # layout.addWidget(self.activity_controller_pane, 1, 1)
         self.setTabText(0, "Overview")
         self.tab1.setLayout(layout)
 
+    # Display Recognition Tab
     def tab2UI(self, layout):
-        #layout.addWidget(self.activity_controller_pane, 0, 0)
-        #layout.addWidget(self.activity_display_pane, 0, 1)
         self.setTabText(1, "Activity Recognition View")
         self.tab2.setLayout(layout)
 
+    # Graph View Time
     def tab3UI(self, layout):
         self.setTabText(2, "Real-Time Graph View")
         self.tab3.setLayout(layout)
             
+    # Research Tab
     def tab4UI(self, layout):
         # layout.addStretch()
         self.setTabText(3, "Research View")
         self.tab4.setLayout(layout)
 
+    # Overview widgets
+    def build_overview(self, layout):
+        # Display Pane
+        self.activity_display_pane.layout_widgets(layout)
+
+        # Graph Pane
+        self.graph_pane.layout_widgets(layout)
+        
+        # Controller
+        self.activity_controller_pane.layout_widgets(layout)        
+
+        # Research Pane
+        self.research_pane.build_overview_research_pane(layout)
+
+    # Tab 2, Tab 3, Tab 4
+    def build_activity_display(self, layout):
+        self.activity_controller_pane.layout_widgets(layout)
+        self.activity_display_pane.layout_widgets(layout)
+
+    def build_graph(self, layout):
+        self.graph_pane.layout_widgets(layout)
+
+    def build_research_pane(self, layout):
+        self.research_pane.build_research_pane(layout)
+
     def shut_down(self):
         self.activity_controller_pane.resolve()
-        self.activity_controller_pane_2.resolve()
         self.activity_display_pane.stop_display()
-        self.activity_display_pane_2.stop_display()
         self.graph_pane.stop_graph()
-        self.graph_pane_2.stop_graph()
 
     def build_overview_layout(self):
         self.top_frame_overview = QtWidgets.QFrame(self)

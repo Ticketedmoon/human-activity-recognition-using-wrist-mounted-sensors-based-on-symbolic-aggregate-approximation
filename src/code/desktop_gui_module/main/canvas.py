@@ -6,6 +6,7 @@ import threading
 
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from drawnow import *
 
@@ -20,32 +21,32 @@ import random
 import matplotlib.pyplot as plt
 plt.style.use('seaborn-whitegrid')
 
-class Canvas():
+class Canvas(QtWidgets.QWidget):
 
     stop_real_time_graph = False
     is_arduino_connected = False
 
     def __init__(self, layout, logger):
-
+        super(Canvas, self).__init__()
         self.logger = logger
         self.figure = Figure(figsize=(4,4), dpi=90)
         self.figure.set_size_inches(1, 1, forward=True)
-        self.canvas = FigureCanvas(self.figure)
-
         self.ax1 = self.figure.add_subplot(111)
-        self.ax1.set_ylabel('Microvolts(mV)')
-
+        self.canvas = FigureCanvas(self.figure)
         layout.addWidget(self.canvas)
 
         self.graph_thread = threading.Thread(target=self.read_from_ppg)
         self.graph_thread.start()
+
+    def layout_widgets(self, layout):
+        layout.addWidget(self.canvas)
 
     def reset_graph_axis(self):
         self.ax1.clear()
         self.samples, self.microvolts = [], []
         self.line = Line2D(self.samples, self.microvolts, linestyle="-", color='teal', lw=1.85)
         self.ax1.add_line(self.line)
-        self.ax1.set_ylim(1700, 1800)
+        self.ax1.set_ylim(1600, 1900)
         self.ax1.set_xlim(0, 25)
         self.figure.canvas.draw()
 
