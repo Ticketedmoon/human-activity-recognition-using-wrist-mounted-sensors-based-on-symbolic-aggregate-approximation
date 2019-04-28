@@ -40,6 +40,7 @@ class TabBarPlus(QTabWidget):
         self.research_pane = Research_Window(logger)
         self.research_pane.build_overview_research_pane(layout_a)
 
+        # Tab B, C, D
         self.build_activity_display(layout_b)
         self.graph_pane_2 = Graph_Pane(layout_c, logger)
         self.build_research_pane(layout_d)
@@ -109,6 +110,7 @@ class TabBarPlus(QTabWidget):
         self.activity_controller_pane.resolve()
         self.activity_display_pane.stop_display()
         self.graph_pane.stop_graph()
+        self.graph_pane_2.stop_graph()
 
     def build_overview_layout(self):
         self.top_frame_overview = QtWidgets.QFrame(self)

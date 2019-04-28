@@ -4,6 +4,7 @@ import serial
 import time
 
 from PyQt5.Qt import *
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import *
@@ -17,10 +18,12 @@ sys.path.append('../../')
 class Activity_Controller_Pane(QtWidgets.QWidget):
 
     display = None
+    real_time_recognition_alive = False
 
     loading_widgets = []
     playback_buttons = []
     stop_play_back_buttons = []
+    real_time_playback_buttons = []
     ppg_connection_widgets = []
     ppg_connection_icons = []
     loaders = []
@@ -34,6 +37,15 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
 
         # Controller has access to graph
         self.graph_control = graph_control
+
+        # Warning Message box
+        self.msg = QtWidgets.QMessageBox()
+        self.msg.setIcon(QtWidgets.QMessageBox.Critical)
+        self.msg.setWindowIcon(QtGui.QIcon("../assets/desktop-icon.png"))
+
+        self.msg.setText("Arduino PPG has not been connected - An active connection stream is required for real-time activity recognition")
+        self.msg.setWindowTitle("Arduino PPG Connection Warning")
+        self.msg.setStandardButtons(QtWidgets.QMessageBox.Retry | QtWidgets.QMessageBox.Cancel)
         
     def layout_widgets(self, layout):
 
@@ -90,13 +102,14 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.cancel_simulation_button.setObjectName("cancel_simulation_button")
         self.cancel_simulation_button.setText("Cancel Recognition Playback")
         self.cancel_simulation_button.clicked.connect(self.cancel_button_sequence_start)
+
         self.stop_play_back_buttons.append(self.cancel_simulation_button)
         self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
 
         # Real Time Mode Initialize button
         self.real_time_mode_button = QtWidgets.QPushButton(self.widget_3)
         self.real_time_mode_button.setGeometry(QtCore.QRect(260, 200, 180, 23))
-        
+
         self.real_time_mode_button.setFont(font)
         self.real_time_mode_button.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.real_time_mode_button.setAcceptDrops(False)
@@ -106,6 +119,8 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
 
         self.real_time_mode_button.setObjectName("real_time_mode_button")
         self.real_time_mode_button.setText("Real Time Recognition Initialize")
+        self.real_time_mode_button.clicked.connect(self.engage_real_time_activity_recognition)
+        self.real_time_playback_buttons.append(self.real_time_mode_button)
 
         self.widget_5 = QtWidgets.QWidget(self.widget_3)
         self.widget_5.setGeometry(QtCore.QRect(45, 207, 171, 31))
@@ -176,6 +191,45 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.update_playback_button_state(self.playback_buttons, True, "background-color: rgb(0, 180, 30); color: white;")
         self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
 
+    def engage_real_time_activity_recognition(self):
+        if self.graph_control.check_arduino_connection():
+            # If PPG is connected via Arduino port on COM3
+            # Change button state colour to be 'active' as opposed to the blue inactive state
+            # Disable all other buttons 
+            # Start real-time activity recognition
+            if not self.real_time_recognition_alive:
+                self.real_time_recognition_alive = True
+                self.update_playback_button_state(self.playback_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
+                self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
+                self.update_playback_button_state(self.real_time_playback_buttons, True, "background-color: rgb(220, 30, 30); color: white;")
+                self.read_from_ppg_with_double_buffer()
+        else:
+            # Pop up dialog box that the Arduino PPG is not connected
+            choice = self.msg.exec_()
+            if choice == QtWidgets.QMessageBox.Retry:
+                # Try to engage real time activity recognition again.
+                self.engage_real_time_activity_recognition()
+
+        if self.real_time_recognition_alive:
+            self.real_time_recognition_alive = False
+            self.update_playback_button_state(self.playback_buttons, True, "background-color: rgb(0, 180, 30); color: white;")
+            self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
+            self.update_playback_button_state(self.real_time_playback_buttons, True, "background-color: rgb(0, 128, 128); color: white;")
+
+    def read_from_ppg_with_double_buffer(self):
+        # Step #1: Read from active PPG device
+
+        # Step #2: Send each individual sample over in a stream, perhaps some arbitrary amount per second, IE 256 samples/s
+        # - MQTT will require a unique topic for real-time recognition as the processing is different in texture.
+
+        # Step #3: Store data in an unbounded buffer server-side (double buffering?)
+
+        # step #4: Once buffer contains enough data to build an image (1024 - 3x32), build the image and then predict
+        # After each image creation, remove previous image and remove 1 character from the buffer such that we shift along it. (Similar to the window sliding idea)
+
+        # Step #5: Return prediction to client, client should automatically update if published to correct topic.
+        # Note: Some of the parameters will need to be changed IE The exercise time
+        pass
     def resolve(self):
         if (self.arduino_connection_timer.is_running):
             self.arduino_connection_timer.stop()
