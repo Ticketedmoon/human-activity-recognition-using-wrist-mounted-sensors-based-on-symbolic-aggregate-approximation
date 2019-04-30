@@ -29,6 +29,7 @@ class Canvas(QtWidgets.QWidget):
     def __init__(self, layout, logger):
         super(Canvas, self).__init__()
         self.logger = logger
+        self.samples, self.microvolts = [], []
         self.figure = Figure(figsize=(4,4), dpi=90)
         self.figure.set_size_inches(1, 1, forward=True)
         self.ax1 = self.figure.add_subplot(111)

@@ -42,15 +42,20 @@ class Server:
     def on_message(self, client, userdata, msg):
         if (msg.topic == "sax_check"):
             self.logger.info("Server: Human Activity Simulation by CSV received...")
-            # TODO: Move this simulation to client-side for concurrency control 
             self.is_exercise_simulation_active = True
             initialize_simulation_loop = threading.Thread(target=self.sax_decode_activity, args=[client, msg.payload])
             initialize_simulation_loop.start()
+        elif (msg.topic == "real_time_check"):
+            # Step #1: Message payload should be an array of 1024 letters, simply just decode, build an image and return prediction,
+            print(msg.payload)
+            time.sleep(4)
+            initialize_simulation_loop = threading.Thread(target=self.sax_decode_activity, args=[client, msg.payload])
+            initialize_simulation_loop.start()
+            pass
         elif(msg.topic == "disconnections"):
             self.logger.info("Server: Client With ID {} Disconnected - Stoping Simulation if active... {}".format(self.client_objects[client], self.is_exercise_simulation_active))
             self.is_exercise_simulation_active = False
             self.classifier.discontinue_client_connection()
-
         elif(msg.topic == "client_connections"):
             client_connection_id = msg.payload.decode('utf-8')
             self.client_objects[client] = client_connection_id
@@ -90,6 +95,9 @@ class Server:
 
         server.subscribe("sax_check")
         self.logger.info("Server: Subscribing to topic {sax_check}")
+
+        server.subscribe("real_time_check")
+        self.logger.info("Server: Subscribing to topic {real_time_check}")
 
         server.loop_forever()
 

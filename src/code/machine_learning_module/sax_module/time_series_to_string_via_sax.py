@@ -1,5 +1,5 @@
 import pandas as pd
-import numpy as np
+import numpy as np 
 
 from sax_module.norm_sax_letter_conversion import norm_letter_conversion
 from sax_module.interval_sax_letter_conversion import int_letter_conversion
@@ -52,6 +52,9 @@ class Time_series_to_string_via_sax:
 
     def generate_string_from_time_series(self, file_path_to_ts, letter_boundary_size, horizontal_window_size):
         data = self.generate(file_path_to_ts)
+        return self.build_string_from_numpy_data(data, letter_boundary_size, horizontal_window_size)
+    
+    def build_string_from_numpy_data(self, data, letter_boundary_size, horizontal_window_size):
         windowed_data = self.apply_letter_window(data, horizontal_window_size)
         norm_data = self.normalise_data(windowed_data)
         options = norm_letter_conversion(letter_boundary_size)

@@ -80,10 +80,20 @@ class Client(Client_Controller):
 
     def convert_and_send(self, csv_path):
         symbolic_data = self.symbol_converter.generate(csv_path)
-        self.document_length_for_playback = len(symbolic_data)
-        encoded_symbolic_data = base64.b64encode(bytes(symbolic_data, 'utf-8'))
-        self.client.publish("sax_check", encoded_symbolic_data)
-        self.logger.info("Client with ID {} has published Activity String data with length {} to Broker...".format(self.client_id, self.document_length_for_playback))
+        self.send_activity_string_to_broker(symbolic_data)
+
+    def convert_and_send_real_time(self, datastream):
+        symbolic_data = self.symbol_converter.generate_real_time(datastream)
+        self.send_activity_string_to_broker(symbolic_data, "real_time_check")
+
+    def send_activity_string_to_broker(self, data, topic="sax_check"):
+        if data is not None:
+            self.document_length_for_playback = len(data)
+            encoded_symbolic_data = base64.b64encode(bytes(data, 'utf-8'))
+            self.client.publish(topic, encoded_symbolic_data)
+            self.logger.info("Client with ID {} has published Activity String data with length {} to Broker...".format(self.client_id, self.document_length_for_playback))
+        else:
+            self.logger.warning("Data conversion to string failed... Is there enough data in the csv submitted? Size {}".format(self.document_length_for_playback))
 
 if __name__ == "__main__":
     client = Client()

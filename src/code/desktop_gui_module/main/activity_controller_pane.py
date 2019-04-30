@@ -2,6 +2,7 @@ import sys
 import threading
 import serial
 import time
+import numpy as np
 
 from functools import partial
 from PyQt5.Qt import *
@@ -20,6 +21,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
 
     display = None
     real_time_recognition_alive = False
+    image_size = 32 * 32
 
     loading_widgets = []
     playback_buttons = []
@@ -120,7 +122,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
 
         self.real_time_mode_button.setObjectName("real_time_mode_button")
         self.real_time_mode_button.setText("Real Time Recognition Initialize")
-        self.real_time_mode_button.clicked.connect(partial(self.engage_real_time_activity_recognition, True))
+        self.real_time_mode_button.clicked.connect(partial(self.engage_real_time_activity_recognition))
         self.real_time_playback_buttons.append(self.real_time_mode_button)
 
         self.widget_5 = QtWidgets.QWidget(self.widget_3)
@@ -199,10 +201,15 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
             # Disable all other buttons 
             # Start real-time activity recognition
             if not self.real_time_recognition_alive:
+                self.real_time_recognition_alive = True
                 self.update_playback_button_state(self.playback_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
                 self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
                 self.update_playback_button_state(self.real_time_playback_buttons, True, "background-color: rgb(220, 30, 30); color: white;")
-                self.read_from_ppg_with_double_buffer()
+
+                self.real_time_recognition_thread = threading.Thread(target=self.read_from_ppg_with_double_buffer)
+                self.real_time_recognition_thread.start()
+            else:
+                self.real_time_recognition_alive = False
         else:
             # Pop up dialog box that the Arduino PPG is not connected
             choice = self.msg.exec_()
@@ -210,19 +217,31 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
                 # Try to engage real time activity recognition again.
                 self.engage_real_time_activity_recognition()
 
-        if self.real_time_recognition_alive:
+    def read_from_ppg_with_double_buffer(self):
+        # Step #1: Read from active PPG device
+        try:
+            image_properties = []
+            while(self.real_time_recognition_alive):
+                if len(image_properties) == self.image_size:
+                    data_read_from_ppg = np.array(image_properties)
+                    image_properties.pop(0)
+                    # Convert data to Pandas series object
+                    self.display.convert_and_send_real_time(data_read_from_ppg)
+                else:
+                    image_properties.append(self.graph_control.get_microvolt_reading())                
+                time.sleep(0.001)
+        finally:
+            # Stop Real Time Recognition
             self.real_time_recognition_alive = False
+            # Update button states
             self.update_playback_button_state(self.playback_buttons, True, "background-color: rgb(0, 180, 30); color: white;")
             self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
             self.update_playback_button_state(self.real_time_playback_buttons, True, "background-color: rgb(0, 128, 128); color: white;")
-        
-        else:
-            self.real_time_recognition_alive = True
+            # log to file/console
+            self.logger.warning("Real-Time Activity Recognition Function Active Finished...")
+            
 
-    def read_from_ppg_with_double_buffer(self):
-        # Step #1: Read from active PPG device
-
-        # Step #2: Send each individual sample over in a stream, perhaps some arbitrary amount per second, IE 256 samples/s
+        # Step #2: Send each individual microvolt sample over in a stream, perhaps some arbitrary amount per second, IE 256 samples/s
         # - MQTT will require a unique topic for real-time recognition as the processing is different in texture.
 
         # Step #3: Store data in an unbounded buffer server-side (double buffering?)
@@ -237,6 +256,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
     def resolve(self):
         if (self.arduino_connection_timer.is_running):
             self.arduino_connection_timer.stop()
+        self.real_time_recognition_alive = False
 
     def is_arduino_connected(self):
         if self.graph_control.check_arduino_connection():

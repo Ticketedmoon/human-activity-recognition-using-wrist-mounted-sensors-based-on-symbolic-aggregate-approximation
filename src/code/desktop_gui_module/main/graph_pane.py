@@ -27,6 +27,17 @@ class Graph_Pane(QtWidgets.QWidget):
             movie.start()
             self.trend.setLayout(QtWidgets.QHBoxLayout())
 
+    def get_samples(self):
+        return self.graph.samples
+
+    def get_microvolts(self):
+        return self.graph.microvolts
+
+    def get_microvolt_reading(self):
+        if len(self.graph.microvolts) > 0:
+            return self.graph.microvolts[0]
+        return 0
+
     def stop_graph(self):
         self.logger.warning("Stopping Real Time Graph...")
         self.graph.stop_real_time_graph = True

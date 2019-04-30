@@ -1,4 +1,6 @@
 import sys
+import numpy as np
+import pandas as pd
 
 # Train Mode
 sys.path.append("../")
@@ -25,6 +27,11 @@ class SymbolicAggregateApproximation:
     # General Abstract Generate method; unsure of the activity; useful for server.
     def generate(self, filename):
         return self.sax_obj.generate_string_from_time_series(filename, self.letter_size, self.horizontal_window_property)
+
+    def generate_real_time(self, data_store):
+        data = np.array(data_store) 
+        series = pd.Series(data)
+        return self.sax_obj.build_string_from_numpy_data(series, self.letter_size, self.horizontal_window_property)
 
     def generate_all_activities_as_string_representation(self, subjectNo):
         return[self.generate_walk(subjectNo), self.generate_run(subjectNo), self.generate_low_bike(subjectNo), self.generate_high_bike(subjectNo)]
