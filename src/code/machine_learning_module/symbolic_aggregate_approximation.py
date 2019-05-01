@@ -15,7 +15,7 @@ class SymbolicAggregateApproximation:
 
     training_exercise_path = "../../resources/exercise-datasets"
     letter_size = 20
-    horizontal_window_property = 5
+    horizontal_window_property = 1
 
     def __init__(self, logger=True):
         if (logger):

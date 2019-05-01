@@ -108,6 +108,42 @@ class Classify_Image:
         self.client = client
         self.publish_simulation_prediction_to_client(tensorRange, input_operation, output_operation)
 
+    def predict_single_image(self, client=None):
+        # Step #1
+        input_name = "import/" + self.input_layer
+        output_name = "import/" + self.output_layer
+        input_operation = self.graph.get_operation_by_name(input_name)
+        output_operation = self.graph.get_operation_by_name(output_name)
+        self.client = client
+
+        # Step #2
+        file_name = "{}/activity-{}.jpeg".format(self.test_dir, 0)
+        t = self.read_tensor_from_image_file(
+            file_name,
+            input_height=self.input_height,
+            input_width=self.input_width,
+            input_mean=self.input_mean,
+            input_std=self.input_std)
+
+        # Step #3
+        with tf.Session(graph=self.graph) as sess:
+          results = sess.run(output_operation.outputs[0], {
+              input_operation.outputs[0]: t
+          })
+          results = np.squeeze(results)
+
+          top_k = results.argsort()[-5:][::-1]
+          labels = self.load_labels(self.label_path)
+          prediction_label, prediction_accuracy = labels[top_k[0]], results[top_k[0]]
+
+          if (self.client != None):
+              prediction = str([prediction_label, prediction_accuracy])
+              encoded_prediction = base64.b64encode(bytes(prediction, 'utf-8'))
+              self.client.publish("prediction_receive", encoded_prediction)
+          else:
+              self.logger.warning("Server: Real Time Prediction Process Interrupted...")
+              return
+
     def discontinue_client_connection(self):
       self.client = None
 
@@ -134,7 +170,6 @@ class Classify_Image:
             else:
                 self.logger.warning("Server: Prediction Process Interrupted...")
                 return
-
 
     # TODO: make this more flexible via the file_name formatting.
     def build_tensors_in_range(self, test_image_dir, tensorRange, input_height, input_width, input_mean, input_std):

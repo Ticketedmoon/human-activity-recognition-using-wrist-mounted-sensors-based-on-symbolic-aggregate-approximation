@@ -31,6 +31,7 @@ class Server:
 
     # Flag for simulation playback
     is_exercise_simulation_active = False
+    real_time_playback_is_active = False
 
     # Dictionary / Hashmap of client Objects to Client Names
     client_objects = {} 
@@ -48,18 +49,24 @@ class Server:
             self.is_exercise_simulation_active = True
             sax_string = base64.decodestring(msg.payload)
             sax_string_decoded = str(sax_string)[2:-1]
-            initialize_simulation_loop = threading.Thread(target=self.sax_decode_activity, args=[client, start_playback_mode_loop])
+            initialize_simulation_loop = threading.Thread(target=self.start_playback_mode_loop, args=[client, sax_string_decoded])
             initialize_simulation_loop.start()
         elif (msg.topic == "real_time_check"):
             # Start the thread that will loop and take from the buffer
-            pass
+            message = msg.payload.decode('utf-8')
+            if (message == "start_real_time_recognition_for_client"):
+                self.real_time_playback_is_active = True
+                initialize_real_time_loop = threading.Thread(target=self.start_real_time_mode_loop, args=[client])
+                initialize_real_time_loop.start()
+            elif (message == "stop_real_time_recognition_for_client"):
+                self.real_time_playback_is_active = False
         elif (msg.topic == "real_time_input_feed"):
             # Simply add the message data/payload to the buffer
             sax_string = base64.decodestring(msg.payload)
             sax_string_decoded = str(sax_string)[2:-1]
-            if client in client_input_buffer.keys():
-                client_input_buffer[client] = []
-            client_input_buffer[client].append(sax_string_decoded)
+            if client not in self.client_input_buffer.keys():
+                self.client_input_buffer[client] = []
+            self.client_input_buffer[client].append(sax_string_decoded)
 
         elif(msg.topic == "disconnections"):
             self.logger.info("Server: Client With ID {} Disconnected - Stoping Simulation if active... {}".format(self.client_objects[client], self.is_exercise_simulation_active))
@@ -130,15 +137,29 @@ class Server:
 
     # Real Time Mode
     def start_real_time_mode_loop(self, client):
-        buffer = self.client_input_buffer[client]
-        while len(buffer) > 0:
-            # 1. Pop first item from buffer
-            activity_item = buffer.pop(0)
-            # 2. Build image from it
-            self.server_bitmap_generator.generate_single_bitmap(activity_item)
-            # 3. Return prediction
-            # TODO: make this method below
-            self.classifier.predict_single_image()
+        try:
+            while len(self.client_input_buffer.keys()) == 0:
+                self.logger.warning("Waiting for client buffer to append...")
+                time.sleep(3)
+
+            while self.real_time_playback_is_active:
+                # 1. Pop first item from buffer
+                if len(self.client_input_buffer[client]) > 0:
+                    activity_item = self.client_input_buffer[client].pop(0)
+                    # 2. Build image from it
+                    self.server_bitmap_generator.generate_single_bitmap_real_time(activity_item)
+                    # 3. Return prediction
+                    #self.classifier.predict_single_image(client)
+                else:
+                    # TODO: Might be a problem clearing temp folder here...
+                    self.logger.warning("[2] Waiting for client buffer to append...")
+                    #self.destroy_temp_folder()
+                    time.sleep(3)
+        finally:
+            # Clear buffer after usage to save memory
+            self.logger.warning("clearing client real-time buffer cache")
+            self.client_input_buffer[client].clear()
+            self.destroy_temp_folder()
 
     # Image sizes are 100 x 100
     # shift 256 is equivalent of shifting 1-second

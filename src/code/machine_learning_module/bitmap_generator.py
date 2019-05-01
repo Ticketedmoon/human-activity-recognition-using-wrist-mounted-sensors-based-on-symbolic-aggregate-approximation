@@ -177,6 +177,36 @@ class BitmapGenerator:
         except Exception as e:
             pass
 
+    def generate_single_bitmap_real_time(self, symbolic_string):
+        
+        # Image size: 100x100
+        image = Bitmap(self.bitmap_size, self.bitmap_size)
+
+        # Try and Except - Except needed when iterations extend passed the SAX string length. 
+        try:
+            for row in range(self.bitmap_size):
+                for col in range(self.bitmap_size):
+                    # We set each pixel in the bitmap based on the mapping function, from the bitmap_module.
+                    letter_choice = (row * self.bitmap_size) + col
+                    if (self.colour == "rgb"):
+                        pixel_colour = rgb_letter_to_colour(symbolic_string[letter_choice])
+                    else:
+                        pixel_colour = greyscale_letter_to_colour(symbolic_string[letter_choice])
+
+                    image.setPixel(row, col, pixel_colour)
+
+            save_location = "./temp/activity-{}".format(0)
+            image.write(save_location + ".bmp")
+
+            # Convert to JPEG - Must be JPEG for inception model.
+            img = Image.open(save_location + ".bmp")
+            new_img = img.resize( (128, 128), Image.ANTIALIAS )
+
+            new_img.save(save_location + ".jpeg", 'jpeg')
+            os.remove(save_location + ".bmp")
+        except Exception as e:
+            pass
+
     # Simple reset method for the server image counter.
     def reset_activity_counter(self):
         self.server_image_counter = 0

@@ -14,7 +14,7 @@ class Time_series_to_string_via_sax:
 
     def apply_letter_window(self, ts_data, window_size):
         average_window_values = []
-        for i in range(0, len(ts_data)-window_size, window_size):
+        for i in range(0, len(ts_data), window_size):
             windowed_data = ts_data[i:i+window_size]
             avg_win_val = sum(windowed_data.values) / window_size
             average_window_values.append(avg_win_val)

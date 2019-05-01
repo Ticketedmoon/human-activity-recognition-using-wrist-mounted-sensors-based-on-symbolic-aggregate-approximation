@@ -23,13 +23,17 @@ class Client(Client_Controller):
     # Document length currently being read
     document_length_for_playback = 1
 
+    # Client Real-Time Flag
+    client_requesting_real_time_activity_recognition_access = False
+
     def __init__(self):
         super(Client, self).__init__()
         self.symbol_converter = SymbolicAggregateApproximation(False)
         self.has_disconnected = False
 
     def on_publish(self, client, userdata, mid) :
-        self.logger.info("Client with ID {} has published message with ID {} Published".format(self.client_id, mid))
+        # self.logger.info("Client with ID {} has published message with ID {} Published".format(self.client_id, mid))
+        pass
         
     def prevent_publish_mechanism(self):
         self.has_disconnected = True
@@ -51,7 +55,11 @@ class Client(Client_Controller):
         # Do nothing
         pass
 
+    def stop_real_time_connection(self):
+        self.client.publish("real_time_check", "stop_real_time_recognition_for_client")
+
     def disconnect(self):
+        self.stop_real_time_connection()
         self.client.disconnect()
 
     def send(self) :
@@ -84,14 +92,19 @@ class Client(Client_Controller):
 
     def convert_and_send_real_time(self, datastream):
         symbolic_data = self.symbol_converter.generate_real_time(datastream)
-        self.send_activity_string_to_broker(symbolic_data, "real_time_check")
+        self.send_activity_string_to_broker(symbolic_data, "real_time_input_feed")
+
+        if not self.client_requesting_real_time_activity_recognition_access:
+            self.client_requesting_real_time_activity_recognition_access = True
+            self.logger.info("starting Real Time Activity Recognition...")
+            self.client.publish("real_time_check", "start_real_time_recognition_for_client")
 
     def send_activity_string_to_broker(self, data, topic="sax_check"):
         if data is not None:
             self.document_length_for_playback = len(data)
             encoded_symbolic_data = base64.b64encode(bytes(data, 'utf-8'))
             self.client.publish(topic, encoded_symbolic_data)
-            self.logger.info("Client with ID {} has published Activity String data with length {} to Broker...".format(self.client_id, self.document_length_for_playback))
+            # self.logger.info("Client with ID {} has published Activity String data with length {} to Broker...".format(self.client_id, self.document_length_for_playback))
         else:
             self.logger.warning("Data conversion to string failed... Is there enough data in the csv submitted? Size {}".format(self.document_length_for_playback))
 

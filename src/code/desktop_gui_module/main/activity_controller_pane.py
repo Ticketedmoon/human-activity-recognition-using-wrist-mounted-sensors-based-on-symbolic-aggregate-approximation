@@ -210,6 +210,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
                 self.real_time_recognition_thread.start()
             else:
                 self.real_time_recognition_alive = False
+                self.display.stop_real_time_connection()
         else:
             # Pop up dialog box that the Arduino PPG is not connected
             choice = self.msg.exec_()
@@ -224,9 +225,9 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
             while(self.real_time_recognition_alive):
                 if len(image_properties) == self.image_size:
                     data_read_from_ppg = np.array(image_properties)
-                    image_properties.pop(0)
                     # Convert data to Pandas series object
                     self.display.convert_and_send_real_time(data_read_from_ppg)
+                    image_properties.pop(0)
                 else:
                     image_properties.append(self.graph_control.get_microvolt_reading())                
                 time.sleep(0.001)
