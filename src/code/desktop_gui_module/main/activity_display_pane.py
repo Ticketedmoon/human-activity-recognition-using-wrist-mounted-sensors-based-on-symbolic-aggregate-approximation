@@ -28,6 +28,11 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
     # Widgets
     widgets = []
 
+    # Resources
+    activities = []
+    exercise_times = []
+    prediction_accuracies = []
+
     # Define a new signal called 'trigger' that has no arguments.
     # Trigger can only signal via strings
     # Slots and Signals
@@ -56,6 +61,10 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
         self.label_pane_1 = QtWidgets.QLabel(self.widget_2)
         self.label_pane_2 = QtWidgets.QLabel(self.widget_2)
         self.label_pane_3 = QtWidgets.QLabel(self.widget_2)
+
+        self.activities.append(self.label_pane_1)
+        self.exercise_times.append(self.label_pane_2)
+        self.prediction_accuracies.append(self.label_pane_3)
 
         # Put default movie here
         self.movie_screen = Movie_Player(self.widget_2)
@@ -147,15 +156,23 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
 
         self.display_activity_animation(prediction_message[0])
         prediction_accuracy = (round(float(prediction_message[1]), 4)) * 100
-        self.label_pane_1.setText("Activity: {}".format(activity_prediction))
-        self.label_pane_2.setText("Exercise Time: {}s".format(self.exercise_time))
-        self.label_pane_3.setText("Accuracy: {:.2f}%".format(prediction_accuracy))
+        self.update_display_text(activity_prediction, prediction_accuracy)
 
         progress = self.activity_shift / self.document_length_for_playback
         # TODO: Progress Bar updates with playback feature - Should be in controller pane or not - think about this
         # self.progressBar.setValue(int(progress))
         # self.progressBar.setFormat('{:.2f}%'.format(float(progress)))
         self.logger.info("Progress: " + str(progress))
+
+    def update_display_text(self, activity_prediction, prediction_accuracy):
+        for activity_label in self.activities:
+            activity_label.setText("Activity: {}".format(activity_prediction))
+
+        for exercise_time_label in self.exercise_times:
+            exercise_time_label.setText("Exercise Time: {}s".format(self.exercise_time))
+
+        for accuracy_label in self.prediction_accuracies:
+            accuracy_label.setText("Accuracy: {:.2f}%".format(prediction_accuracy))
 
     def draw_activity_text(self):
         self.label_pane_1.setGeometry(QtCore.QRect(15, 10, 125, 15))
