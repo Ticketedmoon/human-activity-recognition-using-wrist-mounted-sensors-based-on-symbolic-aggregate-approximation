@@ -35,6 +35,9 @@ class Server:
     # Dictionary / Hashmap of client Objects to Client Names
     client_objects = {} 
 
+    # Client to Image mapping
+    client_input_buffer = {}
+
     def on_publish(self, client, userdata, mid) :
          self.logger.info("Server: Message Published")
 
@@ -43,15 +46,21 @@ class Server:
         if (msg.topic == "sax_check"):
             self.logger.info("Server: Human Activity Simulation by CSV received...")
             self.is_exercise_simulation_active = True
-            initialize_simulation_loop = threading.Thread(target=self.sax_decode_activity, args=[client, msg.payload])
+            sax_string = base64.decodestring(msg.payload)
+            sax_string_decoded = str(sax_string)[2:-1]
+            initialize_simulation_loop = threading.Thread(target=self.sax_decode_activity, args=[client, start_playback_mode_loop])
             initialize_simulation_loop.start()
         elif (msg.topic == "real_time_check"):
-            # Step #1: Message payload should be an array of 1024 letters, simply just decode, build an image and return prediction,
-            print(msg.payload)
-            time.sleep(4)
-            initialize_simulation_loop = threading.Thread(target=self.sax_decode_activity, args=[client, msg.payload])
-            initialize_simulation_loop.start()
+            # Start the thread that will loop and take from the buffer
             pass
+        elif (msg.topic == "real_time_input_feed"):
+            # Simply add the message data/payload to the buffer
+            sax_string = base64.decodestring(msg.payload)
+            sax_string_decoded = str(sax_string)[2:-1]
+            if client in client_input_buffer.keys():
+                client_input_buffer[client] = []
+            client_input_buffer[client].append(sax_string_decoded)
+
         elif(msg.topic == "disconnections"):
             self.logger.info("Server: Client With ID {} Disconnected - Stoping Simulation if active... {}".format(self.client_objects[client], self.is_exercise_simulation_active))
             self.is_exercise_simulation_active = False
@@ -99,23 +108,37 @@ class Server:
         server.subscribe("real_time_check")
         self.logger.info("Server: Subscribing to topic {real_time_check}")
 
+        server.subscribe("real_time_input_feed")
+        self.logger.info("Server: Subscribing to topic {real_time_input_feed}")
+
         server.loop_forever()
 
-    def sax_decode_activity(self, client, symbolic_base_64_string_encoded):
-        sax_string = base64.decodestring(symbolic_base_64_string_encoded)
-        sax_string_decoded = str(sax_string)[2:-1]
+    # Playback Mode
+    def start_playback_mode_loop(self, client, decoded_sax_string):
         startLetterIndex, endLetterIndex = 0, 20
         batch_size = endLetterIndex - startLetterIndex
 
         while(self.is_exercise_simulation_active):
             self.logger.info("Loading next batch of {} simulation images...".format(batch_size))
-            self.image_encode_activity(client, sax_string_decoded, startLetterIndex, endLetterIndex)
+            self.image_encode_activity(client, decoded_sax_string, startLetterIndex, endLetterIndex)
             startLetterIndex += 20
             endLetterIndex += 20
             
-        self.logger.info("Human Activity Simulation Playback complete for client with ID {}".format(self.client_objects[client]))
+        self.logger.info("Human Activity Simulation Playback complete for client with ID {}".format(str(self.client_objects[client])))
         # Reset clock
         client.publish("clock_reset", "notify")
+
+    # Real Time Mode
+    def start_real_time_mode_loop(self, client):
+        buffer = self.client_input_buffer[client]
+        while len(buffer) > 0:
+            # 1. Pop first item from buffer
+            activity_item = buffer.pop(0)
+            # 2. Build image from it
+            self.server_bitmap_generator.generate_single_bitmap(activity_item)
+            # 3. Return prediction
+            # TODO: make this method below
+            self.classifier.predict_single_image()
 
     # Image sizes are 100 x 100
     # shift 256 is equivalent of shifting 1-second
@@ -135,9 +158,9 @@ class Server:
         finally:
             # Perform activity recognition
             tensorRange = endRange - initialRange
-            self.real_time_simulate_activity_recognition(client, tensorRange)
+            self.simulate_activity_recognition(client, tensorRange)
 
-    def real_time_simulate_activity_recognition(self, client, tensorRange):
+    def simulate_activity_recognition(self, client, tensorRange):
         total_files = len(os.listdir(self.dir_path))
         try:
             self.logger.info("Starting Model Prediction with Images in {}".format(self.dir_path))
