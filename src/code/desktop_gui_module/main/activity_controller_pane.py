@@ -21,12 +21,15 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
 
     display = None
     real_time_recognition_alive = False
+    recording_mode_active = False
     image_size = 32 * 32
+    recording_file_counter = 0
 
     loading_widgets = []
     playback_buttons = []
     stop_play_back_buttons = []
     real_time_playback_buttons = []
+    recording_buttons = []
     ppg_connection_widgets = []
     broker_connection_widgets = []
     ppg_connection_icons = []
@@ -122,10 +125,27 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.real_time_mode_button.resize(180, 40)
 
         self.real_time_mode_button.setObjectName("real_time_mode_button")
-        self.real_time_mode_button.setText("Real Time Recognition Initialize")
+        self.real_time_mode_button.setText("Real-Time Activity Playback")
         self.real_time_mode_button.clicked.connect(partial(self.engage_real_time_activity_recognition))
         self.real_time_playback_buttons.append(self.real_time_mode_button)
+        
+        # Recording Mode Initialize button
+        self.recording_mode_button = QtWidgets.QPushButton(self.widget_3)
+        self.recording_mode_button.setGeometry(QtCore.QRect(260, 20, 180, 23))
 
+        self.recording_mode_button.setFont(font)
+        self.recording_mode_button.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.recording_mode_button.setAcceptDrops(False)
+        self.recording_mode_button.setStyleSheet("background-color: rgb(220, 120, 20); color: white;")
+        self.recording_mode_button.setIcon(QIcon(QPixmap("../assets/real_time.png")))
+        self.recording_mode_button.resize(180, 40)
+
+        self.recording_mode_button.setObjectName("recording_mode_button")
+        self.recording_mode_button.setText("Recording Mode Activate")
+        self.recording_mode_button.clicked.connect(partial(self.initialize_recording_mode))
+        self.recording_buttons.append(self.recording_mode_button)
+
+        # Bottom Widgets Icons/Connections
         self.widget_5 = QtWidgets.QWidget(self.widget_3)
         self.widget_5.setGeometry(QtCore.QRect(45, 207, 171, 31))
         self.widget_5.setStyleSheet("color: black;")
@@ -155,13 +175,13 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
 
         # loading icon widget container
         self.widget_7 = QtWidgets.QWidget(self.widget_3)
-        self.widget_7.setGeometry(QtCore.QRect(215, 0, 100, 65))
+        self.widget_7.setGeometry(QtCore.QRect(235, 60, 100, 60))
         self.widget_7.setAutoFillBackground(False)
         self.widget_7.setObjectName("widget_7")
 
         self.loading = QtGui.QMovie("../assets/loader.gif")
         self.loader = QtWidgets.QLabel(self.widget_7)
-        self.loader.setGeometry(QtCore.QRect(0, 0, 100, 75))
+        self.loader.setGeometry(QtCore.QRect(0, 0, 100, 60))
         self.loader.setAlignment(Qt.AlignCenter)
         self.loader.setMovie(self.loading)
         self.loader.setLayout(QtWidgets.QHBoxLayout())
@@ -227,6 +247,32 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
 
         self.update_playback_button_state(self.playback_buttons, True, "background-color: rgb(0, 180, 30); color: white;")
         self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
+
+    def initialize_recording_mode(self):
+        # 1. Disable all other buttons
+        # 2. Switch recording mode button to be red + clickable.
+        # 3. Start reading arduino via graph_pane class.
+        # 4. Store PPG recordings in voltages.csv but on specific location on desktop
+        # - Perhaps a path like: C:/Program Files/ActivityRecognitionSoftware/recordings/voltages.csv
+        self.logger.info("Initializing Recording Mode for client: {}".format(self.display.client))
+        if not self.recording_mode_active:
+            self.recording_mode_active = True
+            self.update_playback_button_state(self.playback_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
+            self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
+            self.update_playback_button_state(self.real_time_playback_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
+            self.update_playback_button_state(self.recording_buttons, True, "background-color: rgb(220, 30, 30); color: white;")
+            file_path = str(QFileDialog.getExistingDirectory(self, "Select Directory")) + "/voltages_{}.csv".format(self.recording_file_counter)
+            self.graph_control.stop_graph_temporarily()
+
+            self.recording_thread = threading.Thread(target=self.graph_control.read_from_ppg, args=[file_path])
+            self.recording_thread.start()
+        else:
+            self.recording_mode_active = False
+            self.graph_control.stop_graph_temporarily()
+            self.update_playback_button_state(self.playback_buttons, True, "background-color: rgb(0, 180, 30); color: white;")
+            self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
+            self.update_playback_button_state(self.real_time_playback_buttons, True, "background-color: rgb(0, 128, 128); color: white;")
+            self.update_playback_button_state(self.recording_buttons, True, "background-color: rgb(220, 120, 20); color: white;")
 
     def engage_real_time_activity_recognition(self, debug_mode_active=False):
         if self.graph_control.check_arduino_connection() or debug_mode_active:

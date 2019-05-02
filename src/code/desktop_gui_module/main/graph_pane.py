@@ -67,24 +67,26 @@ class Graph_Pane(QtWidgets.QWidget):
     def check_arduino_connection(self):
         return self.is_arduino_connected
 
-    def update_port(self, port):
-        self.port = port
+    def stop_graph_temporarily(self):
         self.reset_port = True
-
         while(self.graph_thread.is_alive()):
             time.sleep(1)
-
+            
         # Clear Graph Data
         for canvas in self.canvas_frames:
             canvas.reset_graph_axis()
+
+    def update_port(self, port):
+        self.port = port
+        self.stop_graph_temporarily()
 
         self.logger.warning("Arduino Port Thread Dead - Restarting...")
         # Start process again with new port
         self.start_graph_listener()
 
-    def read_from_ppg(self):
+    def read_from_ppg(self, save_path="voltages.csv"):
         try:
-            with serial.Serial(self.port, 19200, bytesize=serial.SEVENBITS, timeout=0) as ser, open("voltages.csv", 'w') as text_file:
+            with serial.Serial(self.port, 19200, bytesize=serial.SEVENBITS, timeout=0) as ser, open(save_path, 'w') as text_file:
                 text_file.write("{}, {}\n".format("Samples", "Microvolts(mV)"))
                 data_row_sample = 0
                 self.is_arduino_connected = True
