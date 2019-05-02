@@ -28,7 +28,9 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
     stop_play_back_buttons = []
     real_time_playback_buttons = []
     ppg_connection_widgets = []
+    broker_connection_widgets = []
     ppg_connection_icons = []
+    broker_connection_icons = []
     loaders = []
 
     def __init__(self, logger, graph_control):
@@ -51,7 +53,6 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.msg.setStandardButtons(QtWidgets.QMessageBox.Retry | QtWidgets.QMessageBox.Cancel)
         
     def layout_widgets(self, layout):
-
         self.widget_3 = QtWidgets.QWidget()
         self.widget_3.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.widget_3.setObjectName("widget_controller")
@@ -111,7 +112,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
 
         # Real Time Mode Initialize button
         self.real_time_mode_button = QtWidgets.QPushButton(self.widget_3)
-        self.real_time_mode_button.setGeometry(QtCore.QRect(260, 200, 180, 23))
+        self.real_time_mode_button.setGeometry(QtCore.QRect(260, 120, 180, 23))
 
         self.real_time_mode_button.setFont(font)
         self.real_time_mode_button.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
@@ -137,7 +138,20 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.ppg_connection.setFont(font)
         self.ppg_connection_widgets.append(self.ppg_connection)
 
+        self.widget_8 = QtWidgets.QWidget(self.widget_3)
+        self.widget_8.setGeometry(QtCore.QRect(235, 207, 200, 31))
+        self.widget_8.setStyleSheet("color: black;")
+        self.widget_8.setObjectName("widget_5")
+        self.widget_8.setFont(font)
+
+        self.broker_connection = QtWidgets.QLabel(self.widget_8)
+        self.broker_connection.setGeometry(QtCore.QRect(55, 5, 161, 20))
+        self.broker_connection.setObjectName("broker_connection")
+        self.broker_connection.setFont(font)
+        self.broker_connection_widgets.append(self.broker_connection)
+
         self.create_ppg_connection_box_area(self.widget_3)
+        self.create_broker_connection_box_area(self.widget_3)
 
         # loading icon widget container
         self.widget_7 = QtWidgets.QWidget(self.widget_3)
@@ -157,23 +171,43 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
 
     def create_ppg_connection_box_area(self, widget):
          # Red dot widget container
-        self.widget_6 = QtWidgets.QWidget(widget)
-        self.widget_6.setGeometry(QtCore.QRect(5, 205, 50, 31))
-        self.widget_6.setAutoFillBackground(False)
-        self.widget_6.setObjectName("widget_6")
+        widget_6 = QtWidgets.QWidget(widget)
+        widget_6.setGeometry(QtCore.QRect(5, 205, 50, 31))
+        widget_6.setAutoFillBackground(False)
+        widget_6.setObjectName("widget_6")
 
         # Connection Icon
-        self.connection_icon = QtWidgets.QLabel(self.widget_6)
-        self.connection_icon.setGeometry(QtCore.QRect(5, 8, 40, 40))
+        connection_icon = QtWidgets.QLabel(widget_6)
+        connection_icon.setGeometry(QtCore.QRect(5, 8, 40, 40))
 
-        # Call initially for instantaneous UI clarity
-        self.is_arduino_connected()
+        connection_icon.setLayout(QtWidgets.QHBoxLayout())
+        self.ppg_connection_icons.append(connection_icon)
 
         # Check every X seconds for Arduino connection/disconnection
         self.arduino_connection_timer = Repeated_Timer(5, self.is_arduino_connected) # it auto-starts, no need of arduino_connection_timer.start()
 
-        self.connection_icon.setLayout(QtWidgets.QHBoxLayout())
-        self.ppg_connection_icons.append(self.connection_icon)
+        # Call initially for instantaneous UI clarity
+        self.is_arduino_connected()
+
+    def create_broker_connection_box_area(self, widget):
+        # Red dot widget container
+        widget_6 = QtWidgets.QWidget(widget)
+        widget_6.setGeometry(QtCore.QRect(235, 205, 50, 31))
+        widget_6.setAutoFillBackground(False)
+        widget_6.setObjectName("widget_6")
+
+        # Connection Icon
+        connection_icon = QtWidgets.QLabel(widget_6)
+        connection_icon.setGeometry(QtCore.QRect(5, 8, 40, 40))
+
+        connection_icon.setLayout(QtWidgets.QHBoxLayout())
+        self.broker_connection_icons.append(connection_icon)
+
+        # Check every X seconds for Arduino connection/disconnection
+        self.broker_connection = Repeated_Timer(5, self.is_broker_connected) # it auto-starts, no need of is_broker_connected.start()
+
+        # Call initially for instantaneous UI clarity
+        self.is_broker_connected()
 
     def cancel_button_sequence_start(self):
         if (self.loading != None):
@@ -218,8 +252,19 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
                 # Try to engage real time activity recognition again.
                 self.engage_real_time_activity_recognition()
 
+    # Step #1: Read from active PPG device
+    
+    # Step #2: Send each individual microvolt sample over in a stream, perhaps some arbitrary amount per second, IE 256 samples/s
+    # - MQTT will require a unique topic for real-time recognition as the processing is different in texture.
+
+    # Step #3: Store data in an unbounded buffer server-side (double buffering?)
+
+    # step #4: Once buffer contains enough data to build an image (1024 - 3x32), build the image and then predict
+    # After each image creation, remove previous image and remove 1 character from the buffer such that we shift along it. (Similar to the window sliding idea)
+
+    # Step #5: Return prediction to client, client should automatically update if published to correct topic.
+    # Note: Some of the parameters will need to be changed IE The exercise time
     def read_from_ppg_with_double_buffer(self):
-        # Step #1: Read from active PPG device
         try:
             image_properties = []
             while(self.real_time_recognition_alive):
@@ -245,19 +290,6 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
             # Reset Display
             self.display.reset_display_parameters()
             
-
-        # Step #2: Send each individual microvolt sample over in a stream, perhaps some arbitrary amount per second, IE 256 samples/s
-        # - MQTT will require a unique topic for real-time recognition as the processing is different in texture.
-
-        # Step #3: Store data in an unbounded buffer server-side (double buffering?)
-
-        # step #4: Once buffer contains enough data to build an image (1024 - 3x32), build the image and then predict
-        # After each image creation, remove previous image and remove 1 character from the buffer such that we shift along it. (Similar to the window sliding idea)
-
-        # Step #5: Return prediction to client, client should automatically update if published to correct topic.
-        # Note: Some of the parameters will need to be changed IE The exercise time
-        pass
-
     def resolve(self):
         if (self.arduino_connection_timer.is_running):
             self.arduino_connection_timer.stop()
@@ -280,6 +312,24 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
                 red_cross.start()
             for connection_widget in self.ppg_connection_widgets:
                 connection_widget.setText("Arduino PPG Not Connected")
+
+    def is_broker_connected(self):
+        if self.display.is_connected_to_broker():
+            for connection_icon in self.broker_connection_icons:
+                green_symbol = QtGui.QMovie("../assets/ppg_connected.gif")
+                connection_icon.setMovie(green_symbol)
+                connection_icon.setAlignment(Qt.AlignRight)
+                green_symbol.start()
+            for connection_widget in self.broker_connection_widgets:
+                connection_widget.setText("Broker Connection Active")
+        else: 
+            for connection_icon in self.broker_connection_icons:
+                red_cross = QtGui.QMovie("../assets/red-cross.gif")
+                connection_icon.setMovie(red_cross)
+                connection_icon.setAlignment(Qt.AlignRight)
+                red_cross.start()
+            for connection_widget in self.broker_connection_widgets:
+                connection_widget.setText("Broker Connection Inactive")
 
     def submit_ppg_files(self):
         try:

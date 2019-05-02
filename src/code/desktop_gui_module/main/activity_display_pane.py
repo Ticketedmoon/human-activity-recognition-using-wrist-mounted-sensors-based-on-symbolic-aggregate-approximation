@@ -108,7 +108,6 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
     # The callback for when a PUBLISH message is received from the server.
     # Used by MQTT Client class
     def on_message(self, client, userdata, msg):
-        print(msg.topic)
         if (msg.topic == "prediction_receive"):
             encoded_prediction = base64.decodestring(msg.payload)
             decoded_prediction = encoded_prediction.decode("utf-8", "ignore")

@@ -26,6 +26,9 @@ class Client(Client_Controller):
     # Client Real-Time Flag
     client_requesting_real_time_activity_recognition_access = False
 
+    # Client connected flag
+    connected_flag = False
+
     def __init__(self):
         super(Client, self).__init__()
         self.symbol_converter = SymbolicAggregateApproximation(False)
@@ -45,15 +48,21 @@ class Client(Client_Controller):
     def on_connect(self, client, userdata, flags, rc):
         if (rc == 0):
             self.logger.info("Connected Successful")
+            self.connected_flag = True
         else:
             self.logger.info("Bad connection - Returned Code=", rc)
+            self.connected_flag = False
 
     def on_disconnect(self, client, userdata, flags, rc=0):
+        self.connected_flag = False
         self.logger.info("Client with ID {} has been disconnected...".format(self.client_id))
 
+    # Do nothing
     def on_subscribe(self, client, userdata, flags, rc):
-        # Do nothing
         pass
+
+    def is_connected_to_broker(self):
+        return self.connected_flag
 
     def stop_real_time_connection(self):
         self.client.publish("real_time_check", "stop_real_time_recognition_for_client")
@@ -76,6 +85,7 @@ class Client(Client_Controller):
         self.client.connect(host=host, port=port, keepalive=keepalive)
 
         if (not self.has_disconnected):
+            self.connected_flag = True
             # Client Objects and Prediction Subscription
             self.client.publish("client_connections", str(self.client_id))
             self.client.subscribe("prediction_receive")
@@ -85,6 +95,10 @@ class Client(Client_Controller):
             self.client.subscribe("clock_reset")
             self.logger.info("Client with ID {} subscribing to topic {}".format(self.client_id, "clock_reset"))
             self.client.loop_forever()
+
+        # If the control flow reaches this point, we know a disconnection between client-broker has occurred.
+        self.connected_flag = False
+
 
     def convert_and_send(self, csv_path):
         symbolic_data = self.symbol_converter.generate(csv_path)
