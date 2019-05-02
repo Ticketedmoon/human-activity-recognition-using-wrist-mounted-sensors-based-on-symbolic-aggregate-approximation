@@ -31,6 +31,7 @@ from logger_module.Logger import Logger
 class Classify_Image:
 
     logger = Logger("../", "logs/Classify_Image")
+    real_time_playback_mode = False
 
     def __init__(self, default_image="tensorflow/examples/label_image/data/grace_hopper.jpg",
         graph_path="C:/tmp/output_graph.pb", 
@@ -49,6 +50,7 @@ class Classify_Image:
         self.output_layer = output_layer
 
         self.graph = self.load_graph(self.graph_path)
+        # self.graph.finalize()
 
     def load_graph(self, model_file):
         graph = tf.Graph()
@@ -108,38 +110,46 @@ class Classify_Image:
         self.client = client
         self.publish_simulation_prediction_to_client(tensorRange, input_operation, output_operation)
 
-    def predict_single_image(self, client=None):
-        # Step #1
-        input_name = "import/" + self.input_layer
-        output_name = "import/" + self.output_layer
-        input_operation = self.graph.get_operation_by_name(input_name)
-        output_operation = self.graph.get_operation_by_name(output_name)
-        self.client = client
-
-        # Step #2
-        file_name = "{}/activity-{}.jpeg".format(self.test_dir, 0)
-        t = self.read_tensor_from_image_file(
-            file_name,
-            input_height=self.input_height,
-            input_width=self.input_width,
-            input_mean=self.input_mean,
-            input_std=self.input_std)
-
+    def real_time_prediction_setup(self, client):
         # Step #3
         with tf.Session(graph=self.graph) as sess:
-          results = sess.run(output_operation.outputs[0], {
-              input_operation.outputs[0]: t
-          })
-          results = np.squeeze(results)
+            self.real_time_playback_mode = True
 
+            # Step #1
+            input_name = "import/" + self.input_layer
+            output_name = "import/" + self.output_layer
+            input_operation = self.graph.get_operation_by_name(input_name)
+            output_operation = self.graph.get_operation_by_name(output_name)
+
+            # Step #2
+            file_name = "{}/activity-{}.jpeg".format(self.test_dir, 0)
+
+            # Step #3
+            while(self.real_time_playback_mode):
+                try:
+                    tensor = self.read_tensor_from_image_file(
+                      file_name,
+                      input_height=self.input_height,
+                      input_width=self.input_width,
+                      input_mean=self.input_mean,
+                      input_std=self.input_std)
+                    results = sess.run(output_operation.outputs[0], {
+                        input_operation.outputs[0]: tensor
+                    })
+                    results = np.squeeze(results)
+                    self.predict_single_image(results, client)
+                except:
+                    self.logger.warning("Real Time Playback Buffer has no tensors ready...")
+                    time.sleep(3)
+
+    def predict_single_image(self, results, client):
           top_k = results.argsort()[-5:][::-1]
           labels = self.load_labels(self.label_path)
           prediction_label, prediction_accuracy = labels[top_k[0]], results[top_k[0]]
-
-          if (self.client != None):
+          if (client != None):
               prediction = str([prediction_label, prediction_accuracy])
               encoded_prediction = base64.b64encode(bytes(prediction, 'utf-8'))
-              self.client.publish("prediction_receive", encoded_prediction)
+              client.publish("prediction_receive", encoded_prediction)
           else:
               self.logger.warning("Server: Real Time Prediction Process Interrupted...")
               return

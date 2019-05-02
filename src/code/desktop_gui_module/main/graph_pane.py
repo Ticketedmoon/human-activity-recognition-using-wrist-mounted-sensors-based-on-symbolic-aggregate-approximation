@@ -48,7 +48,7 @@ class Graph_Pane(QtWidgets.QWidget):
         return self.graph_frame.microvolts
 
     def get_microvolt_reading(self):
-        if len(self.graph.microvolts) > 0:
+        if len(self.graph_frame.microvolts) > 0:
             return self.graph_frame.microvolts[0]
         return 0
 

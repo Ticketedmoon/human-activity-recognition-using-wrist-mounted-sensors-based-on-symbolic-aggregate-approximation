@@ -227,7 +227,9 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
                     data_read_from_ppg = np.array(image_properties)
                     # Convert data to Pandas series object
                     self.display.convert_and_send_real_time(data_read_from_ppg)
-                    image_properties.pop(0)
+
+                    # TODO: Find ideal image property size here
+                    image_properties = image_properties[256:]
                 else:
                     image_properties.append(self.graph_control.get_microvolt_reading())                
                 time.sleep(0.001)
@@ -240,6 +242,8 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
             self.update_playback_button_state(self.real_time_playback_buttons, True, "background-color: rgb(0, 128, 128); color: white;")
             # log to file/console
             self.logger.warning("Real-Time Activity Recognition Function Active Finished...")
+            # Reset Display
+            self.display.reset_display_parameters()
             
 
         # Step #2: Send each individual microvolt sample over in a stream, perhaps some arbitrary amount per second, IE 256 samples/s

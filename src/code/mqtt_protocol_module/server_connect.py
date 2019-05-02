@@ -57,7 +57,9 @@ class Server:
             if (message == "start_real_time_recognition_for_client"):
                 self.real_time_playback_is_active = True
                 initialize_real_time_loop = threading.Thread(target=self.start_real_time_mode_loop, args=[client])
+                start_tensorflow_loop = threading.Thread(target=self.classifier.real_time_prediction_setup, args=[client])
                 initialize_real_time_loop.start()
+                start_tensorflow_loop.start()
             elif (message == "stop_real_time_recognition_for_client"):
                 self.real_time_playback_is_active = False
         elif (msg.topic == "real_time_input_feed"):
@@ -66,11 +68,11 @@ class Server:
             sax_string_decoded = str(sax_string)[2:-1]
             if client not in self.client_input_buffer.keys():
                 self.client_input_buffer[client] = []
-            self.client_input_buffer[client].append(sax_string_decoded)
-
+            self.client_input_buffer[client].insert(0, sax_string_decoded)
         elif(msg.topic == "disconnections"):
             self.logger.info("Server: Client With ID {} Disconnected - Stoping Simulation if active... {}".format(self.client_objects[client], self.is_exercise_simulation_active))
             self.is_exercise_simulation_active = False
+            self.real_time_playback_is_active = False
             self.classifier.discontinue_client_connection()
         elif(msg.topic == "client_connections"):
             client_connection_id = msg.payload.decode('utf-8')
@@ -93,7 +95,7 @@ class Server:
         server.on_subscribe = self.on_subscribe
         
         # Build Classifier all cases will use
-        self.dir_path = "./temp/"
+        self.dir_path = "./temp"
         self.classifier = Classify_Image(test_dir=self.dir_path)
 
         host      = "127.0.0.1"
@@ -148,13 +150,6 @@ class Server:
                     activity_item = self.client_input_buffer[client].pop(0)
                     # 2. Build image from it
                     self.server_bitmap_generator.generate_single_bitmap_real_time(activity_item)
-                    # 3. Return prediction
-                    #self.classifier.predict_single_image(client)
-                else:
-                    # TODO: Might be a problem clearing temp folder here...
-                    self.logger.warning("[2] Waiting for client buffer to append...")
-                    #self.destroy_temp_folder()
-                    time.sleep(3)
         finally:
             # Clear buffer after usage to save memory
             self.logger.warning("clearing client real-time buffer cache")
