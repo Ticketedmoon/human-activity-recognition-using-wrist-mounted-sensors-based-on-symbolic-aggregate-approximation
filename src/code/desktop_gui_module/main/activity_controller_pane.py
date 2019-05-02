@@ -313,6 +313,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
             for connection_widget in self.ppg_connection_widgets:
                 connection_widget.setText("Arduino PPG Not Connected")
 
+    # TODO: Refactor this and above method into 1.
     def is_broker_connected(self):
         if self.display.is_connected_to_broker():
             for connection_icon in self.broker_connection_icons:

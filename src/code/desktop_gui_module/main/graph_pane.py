@@ -20,12 +20,16 @@ class Graph_Pane(QtWidgets.QWidget):
     canvas_frames = []
 
     stop_real_time_graph = False
+    reset_port = False
     is_arduino_connected = False
 
     def __init__(self, layout, logger):
         super(Graph_Pane, self).__init__()
         QtWidgets.QWidget.__init__(self)
         self.logger = logger
+
+        # Default Port
+        self.port = "COM3"
 
     # TODO: Fix
     def layout_widgets(self, layout):   
@@ -63,18 +67,34 @@ class Graph_Pane(QtWidgets.QWidget):
     def check_arduino_connection(self):
         return self.is_arduino_connected
 
+    def update_port(self, port):
+        self.port = port
+        self.reset_port = True
+
+        while(self.graph_thread.is_alive()):
+            time.sleep(1)
+
+        # Clear Graph Data
+        for canvas in self.canvas_frames:
+            canvas.reset_graph_axis()
+
+        self.logger.warning("Arduino Port Thread Dead - Restarting...")
+        # Start process again with new port
+        self.start_graph_listener()
+
     def read_from_ppg(self):
         try:
-            with serial.Serial('COM3', 19200, bytesize=serial.SEVENBITS, timeout=0) as ser, open("voltages.csv", 'w') as text_file:
+            with serial.Serial(self.port, 19200, bytesize=serial.SEVENBITS, timeout=0) as ser, open("voltages.csv", 'w') as text_file:
                 text_file.write("{}, {}\n".format("Samples", "Microvolts(mV)"))
                 data_row_sample = 0
                 self.is_arduino_connected = True
+                self.reset_port = False
                 self.logger.info("Arduino Connection found on port {}".format(ser.port))
 
                 for canvas in self.canvas_frames:
                     canvas.reset_graph_axis()
 
-                while not self.stop_real_time_graph:
+                while not self.stop_real_time_graph and not self.reset_port:
                     voltage_reading = str(ser.readline().decode(encoding='utf-8', errors='strict')).strip("\n").strip("\r\n")
                     if (voltage_reading != "" and voltage_reading.isdigit() and float(voltage_reading) > 1000):
                         data = [str(data_row_sample), voltage_reading]
@@ -88,7 +108,7 @@ class Graph_Pane(QtWidgets.QWidget):
                         for canvas in self.canvas_frames:
                             canvas.plot()
 
-                        plt.pause(0.01)
+                        plt.pause(0.02)
                         data_row_sample += 1
 
                         if(data_row_sample > 25):                            
@@ -102,7 +122,7 @@ class Graph_Pane(QtWidgets.QWidget):
                         ser.flushInput()
                         ser.flushOutput()
         except:
-            if (not self.stop_real_time_graph):
+            if (not self.stop_real_time_graph and not self.reset_port):
                 # Clear Graph Data
                 for canvas in self.canvas_frames:
                     canvas.reset_graph_axis()
