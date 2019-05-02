@@ -422,7 +422,7 @@ This is not what we want, we want to be able to determine what activity is being
 With 32x32, we can try predict what activity is being performed using only 4-seconds of data. If possible, we can also look at 2-seconds of data
 for optimal behaviour, but I doubt we will achieve this. 
 
-# Blog Post #23 | Obtaining the PPG-enabled Arduino   | 11/04/2019
+# Blog Post #23 | Obtaining the Arduino PPG | 11/04/2019
 The arduino kit and PPG device alongside a pre-amp have been obtained. Through interacting and communication with members from DCU's Insight Centre,
 I now have the device in question that can perform heart-rate determination using optical signals. The next steps are to incorporate it into the application
 and have the application recognise when a PPG has been connected. My current thinking is that we will have two states for the application, one where
@@ -430,3 +430,67 @@ the application is in an 'idle' mode where the playback functionality can be acc
 'Real Time Activity Recognition state', where by the connected ppg device's data will be sent to our MQTT broker and subsequently server, and eventually back to
 the client, to determine there activity. When we say 'Real Time activity recognition', we really mean 'Quasi' real time activity recognition, as we will require
 a certain number of seconds to determine their activity | IE 2, 4 or maybe even 8 seconds of data before activity determination.
+
+# Blog Post #24 | Graph Pane Update | 24/04/2019
+Previously, the graph pane of the desktop application UI was just a simple gif animation to provide the 'feel' of an active PPG connection.
+However, with recent modifications and updates to the software, I have built in a real-time graph system that can sense when a ppg is connected
+via an arduino connection. The real-time graph system has been built in using Matplotlib and Seaborn.
+![Desktop Application Version 4.0](images/modern-overview.PNG)
+
+# Blog Post #25 | Update Research tab | 25/04/2019
+The research tab has been changed into documentation rather than a scroll-able text frame as planned previously. This is primarily due to the fact
+that the bulk of the research will be documented online on the website (https://projectactivityrecognition.ml). Additionally, in order to facilitate
+time constraints, the decision to update the research pane to be as such seems like a wise decision.
+![Desktop Application Version 4.0](images/modern-overview.PNG)
+
+# Blog Post #26 | Small Website update | 27/04/2019
+The website got a small update in order to complete the design. Before your opinions come about, be sure to know that a lot 
+of the individual components are unfinished.
+
+The research tab had been split into a grid using `CSS Grids`. Each of the 4 grid tabs describe each technique the project is based around and
+offers hyperlinks to relevant documentation of said techniques.  
+**Note:** Some of the text needs to be modified as it is simply actings as 'Lorem Ipsum' text currently.
+![Desktop Application Version 4.0](images/modern-web-research.PNG)
+
+The blog you are reading now is the one shown in the picture below. However, the blog has been selectively refined for view on the web.
+![Desktop Application Version 4.0](images/modern-web-blog.PNG)
+
+Finally, the discussion tab has not changed bar the colour scheme update which I have decided is a dark theme. The entire website will have this
+dark theme to match accordingly.
+![Desktop Application Version 4.0](images/modern-web-discussion.PNG)
+
+# Blog Post #27 | Button Modifications | 28/04/2019
+Each of the buttons in the controller pane in the overview tab each represent a function. Once selected, it is important to adjust the enable/disable 
+property and/or the colour of these buttons to reflect what pushing the buttons do and also how to stop a function currently active.  
+For example, if you select the 'playback activity recognition' button feature, the button will become grey and be disabled. The button can only
+be re-enabled via either the completion of the function currently carrying out or by selecting the newly highlighted red button to 'stop recognition playback'.
+![Desktop Application Version 4.0](images/modern-overview.PNG)
+
+# Blog Post #28 | Tab View Update for Desktop Application UI | 30/04/2019
+The Desktop application has dramatically improved in terms of UI and flexibility via the newly introduced **'Tab View'**.
+I felt the tab view, with the 4 respective tabs at the top seemed like a good choice to further expand the desktop application,
+and offer different views of different functions. The idea is that the overview tab is a simplified version of the other tabs, basically
+a summary of each. But selecting each individual tab will provide you with a more advanced look at that particular function. With exception to
+the overview tab, I plan to introduce more features for each tab view in the future.
+
+#### Overview Tab
+![Desktop Application Version 4.0](images/modern-overview.PNG)
+#### Activity Recognition Tab
+![Desktop Application Version 4.0](images/modern-activity-pane.PNG)
+#### Graph Tab
+![Desktop Application Version 4.0](images/modern-graph-pane.PNG)
+#### Research Tab
+![Desktop Application Version 4.0](images/modern-research-pane.PNG)
+
+Implementing this functionality into the application caused me a lot of trouble as QT, the desktop framework I'm using to build the application,
+does not directly support widgets being transacted in multiple locations. To overcome my problem, I had to create separate instances of the same object
+and programmatically allocate their view and data based on the overview.
+
+# Blog Post #29 | Real-Time Activity Recognition 80% Done | 01/05/2019
+The most impressive and daunting feature of my application is the `real-time activity recognition playback with an arduino PPG connection`.
+Today, the 01 of May I managed to make a large dent in the progress of the function. It was a difficult process to overcome but for the most
+part I have, with the use of buffers and MQTT pub/sub models, we can send our data from the PPG arduino device across the network, where
+it will arrive at a server to process the data and then  feed it into a trained model (previously discussed), which the result will then be
+permeated back to the client machine, thus updating their UI and offering details about what activity is being performed.
+
+![Desktop Application Version 4.0](images/modern-overview.PNG)
