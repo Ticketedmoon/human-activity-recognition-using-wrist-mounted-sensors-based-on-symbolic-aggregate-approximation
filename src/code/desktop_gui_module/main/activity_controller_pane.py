@@ -22,6 +22,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
     display = None
     real_time_recognition_alive = False
     recording_mode_active = False
+
     image_size = 32 * 32
     recording_file_counter = 0
 
@@ -35,6 +36,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
     ppg_connection_icons = []
     broker_connection_icons = []
     loaders = []
+    progress_bars = []
 
     def __init__(self, logger, graph_control):
         super(Activity_Controller_Pane, self).__init__()
@@ -60,12 +62,16 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.widget_3.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.widget_3.setObjectName("widget_controller")
         layout.addWidget(self.widget_3)
-
         self.build()
 
+    # Controller has access to display
     def set_display(self, display):
-        # Controller has access to display
         self.display = display
+
+    @pyqtSlot(int)
+    def on_progressChanged(self, value):
+        for progressBar in self.progress_bars:
+            progressBar.setValue(value)
 
     # TODO: Refactor
     def build(self):
@@ -74,10 +80,15 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         font.setPointSize(8.5)
 
         self.progressBar = QtWidgets.QProgressBar(self.widget_3)
-        self.progressBar.setGeometry(QtCore.QRect(30, 80, 212.5, 23))
-        self.progressBar.setStyleSheet("background-color: rgb(0, 70, 150); color: white;")
+        self.progressBar.setGeometry(QtCore.QRect(30, 80, 180, 23))
+        self.progressBar.setTextVisible(True)
+        self.progressBar.setAlignment(Qt.AlignCenter)
+        self.progressBar.setStyleSheet("background-color: rgb(0, 70, 150); color: black;")
         self.progressBar.setFont(font)
         self.progressBar.setObjectName("progressBar")
+        self.progressBar.setRange(0, 100)
+        self.progress_bars.append(self.progressBar)
+        self.display.progressChanged.connect(self.on_progressChanged)
 
         # Playback/Simulate Button
         self.simulate_button = QtWidgets.QPushButton(self.widget_3)
@@ -248,12 +259,13 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.update_playback_button_state(self.playback_buttons, True, "background-color: rgb(0, 180, 30); color: white;")
         self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
 
+    # 1. Disable all other buttons
+    # 2. Switch recording mode button to be red + clickable.
+    # 3. Start reading arduino via graph_pane class.
+    # 4. Store PPG recordings in voltages.csv but on specific location on desktop
+    # - Perhaps a path like: C:/Program Files/ActivityRecognitionSoftware/recordings/voltages.csv
+    # TODO: Refactor this + real-time recognition - button turning off/on should be common
     def initialize_recording_mode(self):
-        # 1. Disable all other buttons
-        # 2. Switch recording mode button to be red + clickable.
-        # 3. Start reading arduino via graph_pane class.
-        # 4. Store PPG recordings in voltages.csv but on specific location on desktop
-        # - Perhaps a path like: C:/Program Files/ActivityRecognitionSoftware/recordings/voltages.csv
         self.logger.info("Initializing Recording Mode for client: {}".format(self.display.client))
         if not self.recording_mode_active:
             self.recording_mode_active = True
@@ -299,15 +311,11 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
                 self.engage_real_time_activity_recognition()
 
     # Step #1: Read from active PPG device
-    
     # Step #2: Send each individual microvolt sample over in a stream, perhaps some arbitrary amount per second, IE 256 samples/s
     # - MQTT will require a unique topic for real-time recognition as the processing is different in texture.
-
     # Step #3: Store data in an unbounded buffer server-side (double buffering?)
-
     # step #4: Once buffer contains enough data to build an image (1024 - 3x32), build the image and then predict
     # After each image creation, remove previous image and remove 1 character from the buffer such that we shift along it. (Similar to the window sliding idea)
-
     # Step #5: Return prediction to client, client should automatically update if published to correct topic.
     # Note: Some of the parameters will need to be changed IE The exercise time
     def read_from_ppg_with_double_buffer(self):
@@ -391,8 +399,21 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
                         loading_widget.start()
                     self.update_playback_button_state(self.playback_buttons, False,"background-color: rgb(200, 200, 200); color: black;")
                     self.update_playback_button_state(self.stop_play_back_buttons, True, "background-color: rgb(220, 30, 30); color: white;")
+
         except Exception as error:
-            self.logger.error("Error: " + repr(error))    
+            self.logger.error("Error: " + repr(error))
+
+    # def monitor_progress(self):
+    #     try:
+    #         while self.display.progress < 100 and self.simulation_active:
+    #             value = int(self.display.progress * 100)
+    #             print(value)
+    #             self.progressBar.setValue(value)
+    #             time.sleep(3)
+    #     finally:
+    #         self.logger.warning("Progress Bar Resetting...")
+    #         self.progressBar.setValue(0)
+    #         self.simulation_active = False
 
     def update_playback_button_state(self, buttons, enabled=True, stylesheet="background-color: rgb(0, 180, 30); color: white"):
         for button in buttons:

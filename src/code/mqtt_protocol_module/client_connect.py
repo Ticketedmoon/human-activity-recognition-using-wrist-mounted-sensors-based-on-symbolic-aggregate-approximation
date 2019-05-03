@@ -99,7 +99,6 @@ class Client(Client_Controller):
         # If the control flow reaches this point, we know a disconnection between client-broker has occurred.
         self.connected_flag = False
 
-
     def convert_and_send(self, csv_path):
         symbolic_data = self.symbol_converter.generate(csv_path)
         self.send_activity_string_to_broker(symbolic_data)

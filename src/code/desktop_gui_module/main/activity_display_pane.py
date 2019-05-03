@@ -37,6 +37,7 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
     # Trigger can only signal via strings
     # Slots and Signals
     trigger = pyqtSignal(str)
+    progressChanged = pyqtSignal(int)
 
     def __init__(self, logger):
         super(Activity_Display_Pane, self).__init__()
@@ -93,10 +94,10 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
 
     def send_activity_string_data_to_broker(self, file_path):
         try:
-            self.simulate_thread = threading.Thread(target=self.convert_and_send, args=[file_path])
+            self.simulate_thread = threading.Thread(target=self.convert_and_send, args=[file_path], daemon=True)
             self.simulate_thread.start()
         except RuntimeError: # Occurs if thread is dead
-            self.simulate_thread = threading.Thread(target=self.convert_and_send, args=[file_path])
+            self.simulate_thread = threading.Thread(target=self.convert_and_send, args=[file_path], daemon=True)
             self.simulate_thread.start() # Start thread
 
     def display_activity_animation(self, activity):
@@ -157,12 +158,8 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
         self.display_activity_animation(prediction_message[0])
         prediction_accuracy = (round(float(prediction_message[1]), 4)) * 100
         self.update_display_text(activity_prediction, prediction_accuracy)
-
-        progress = self.activity_shift / self.document_length_for_playback
-        # TODO: Progress Bar updates with playback feature - Should be in controller pane or not - think about this
-        # self.progressBar.setValue(int(progress))
-        # self.progressBar.setFormat('{:.2f}%'.format(float(progress)))
-        self.logger.info("Progress: " + str(progress))
+        progress = round(self.activity_shift / self.document_length_for_playback)
+        self.progressChanged.emit(progress)
 
     def update_display_text(self, activity_prediction, prediction_accuracy):
         for activity_label in self.activities:

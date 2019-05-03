@@ -110,7 +110,7 @@ class Graph_Pane(QtWidgets.QWidget):
                         for canvas in self.canvas_frames:
                             canvas.plot()
 
-                        plt.pause(0.02)
+                        #plt.pause(0.02)
                         data_row_sample += 1
 
                         if(data_row_sample > 25):                            
