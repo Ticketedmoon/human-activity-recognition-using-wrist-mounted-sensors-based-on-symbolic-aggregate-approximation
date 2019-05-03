@@ -488,9 +488,43 @@ and programmatically allocate their view and data based on the overview.
 
 # Blog Post #29 | Real-Time Activity Recognition 80% Done | 01/05/2019
 The most impressive and daunting feature of my application is the `real-time activity recognition playback with an arduino PPG connection`.
-Today, the 01 of May I managed to make a large dent in the progress of the function. It was a difficult process to overcome but for the most
+Today, the 1st of May, I managed to make a large dent in the progress of the function. It was a difficult process to overcome but for the most
 part I have, with the use of buffers and MQTT pub/sub models, we can send our data from the PPG arduino device across the network, where
 it will arrive at a server to process the data and then  feed it into a trained model (previously discussed), which the result will then be
 permeated back to the client machine, thus updating their UI and offering details about what activity is being performed.
 
 ![Desktop Application Version 4.0](images/modern-overview.PNG)
+
+# Blog Post #30 | Recording Mode Implementation | 02/05/2019
+I have recently included a `Recording Mode` feature in the application to allow users to equip a wrist-mounted ppg sensor, and record the  
+data to a csv file to a specific directory. This feature is incredible useful for recording microvolt data from particular users. This data  
+can then be used from the project standpoint to retrain the model with the newly collected data, perhaps converging on a greater accuracy.  
+Additionally, this newly recorded data can be fed into out `Activity Playback Feature` which will be able to tell what activity the person was doing
+at the the time of the recording session.
+
+# Blog Post #30 | Progress Bar Update | 03/05/2019
+The progress bar which has been empty and sitting on the controller pane in the desktop application has finally received an update. Now, when  
+the `Activity Playback Feature` is engaged, the progress bar will update automatically alongside the feature to indicate a sense of progress.  
+This was achieved using `Slots` and `Signals`, which are communication structures between threads. More information on Slots and Signals can be  
+found here: https://wiki.qt.io/Qt_for_Python_Signals_and_Slots.
+
+# Blog Post #31 | Website Deployment | 03/05/2019
+The website has been refined slightly to become more suitable to a production-ready web application. I now will be moving to the deployment step
+of the application where I will be pushing the website online. If you are reading this blog post from GitLab, the website can be found at: 
+https://www.projectactivityrecognition.ml. The website has been deployed using Gunicorn and Nginx (Reverse Proxy Web Server) and is being hosted
+online using a free domain name system hosting service.
+
+# Blog Post #32 | Refining the Machine Learning Model and Achieving the Best Accuracy Possible | 03/05/2019
+With the current iteration of the machine learning model, the accuracy among selecting which class best fits the data for prediction, is quite low.
+With the remaining time I have left with the project, I hope to achieve a much higher accuracy via changing certain parameters, retraining the model,
+and perhaps recording new data with the `Recording Mode Feature` I discussed in blog post #30 above.
+
+# Blog Post #33 | Tests, Tests, and more Tests | 03/05/2019
+Now with the desktop application UI complete, the web application complete and the project  
+download feature in-place, my new goal has become testing the software. I have not left testing to the end of the project however.  
+I have tested continuously throughout the development life-cycle of the application. I used DCU's Computing Gitlab CI/CD functionality
+to run test cases repeatedly after each push to my repository on gitlab. It turned out to be a very smart way to notify me whenever any
+bugs were leaked into the code or if any code functionality broke externally.  
+  
+Now with the remainder of my time I will be studying for my Final Year Exams and will also be writing `Unit and Integration tests` to 
+achieve as high a test-coverage as possible before the project deadline.

@@ -37,8 +37,9 @@ body {
 * List of Comments
 =======================*/
 .comments-container {
-   margin: 60px auto 15px;
-   width: 768px;
+   /* margin: 60px auto 15px; */
+   width: 1080px;
+   margin: 2em auto;
 }
 
 .comments-container h1 {
@@ -121,7 +122,7 @@ body {
 * Caja del Comentario
 ---------------------------*/
 .comments-list .comment-box {
-   width: 680px;
+   width: 980px;
    float: right;
    position: relative;
    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.15);

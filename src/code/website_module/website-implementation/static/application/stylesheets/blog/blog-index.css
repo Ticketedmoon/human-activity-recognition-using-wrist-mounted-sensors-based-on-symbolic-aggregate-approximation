@@ -17,9 +17,10 @@ body {
 }
 
 .blog-body {
-    background-color: #555;
+    /* background-color: #555; */
     color: white;
     padding: 5em;
+    font-size: 0.85em;
 }
 
 .blog-post-title {
