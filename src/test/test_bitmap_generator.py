@@ -33,7 +33,7 @@ class Test_Bitmap_Generation(unittest.TestCase):
         assert generator.generate_bitmaps_for_subject.call_count == 1
 
     @patch.object(SymbolicAggregateApproximation, 'generate_all_activities_as_string_representation')
-    def test_generate_for_subject(self, test_generate_all_activities_as_string_representation):
+    def test_generate_bitmaps_for_subject(self, test_generate_all_activities_as_string_representation):
         generator = BitmapGenerator(logger_path="./code/", testMode=True)
         subject_no = 1
 

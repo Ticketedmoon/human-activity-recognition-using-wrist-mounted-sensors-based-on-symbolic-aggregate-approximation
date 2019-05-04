@@ -28,6 +28,12 @@ class Test_Symbolic_Aggregate_Approximation(unittest.TestCase):
             self.assertTrue(isinstance(test, str))
             self.assertTrue(len(test) > 10000)
 
+    def test_generate_real_time(self):
+        sax_obj = SymbolicAggregateApproximation(False)
+        test_data_store = [1024, 1200, 1400, 1500, 1450, 1700] * 10
+        result = sax_obj.generate_real_time(test_data_store)
+        self.assertTrue(len(result) == 60)
+
     # Generate Walk test, string > 15300 characters
     def test_generate_walk(self):
         sax_obj = SymbolicAggregateApproximation(False)

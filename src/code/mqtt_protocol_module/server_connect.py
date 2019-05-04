@@ -16,28 +16,30 @@ from logger_module.Logger import Logger
 
 sys.path.append("../machine_learning_module")
 from label_image import Classify_Image
+
 from bitmap_generator import BitmapGenerator
 
 class Server:
 
-    # Logger
-    logger = Logger("../", "logs/Server")
+    def __init__(self, logger_path="../"):
+        # Logger
+        self.logger = Logger(logger_path, "logs/Server")
 
-    # Bitmap Generator
-    server_bitmap_generator = BitmapGenerator()
+        # Bitmap Generator
+        self.server_bitmap_generator = BitmapGenerator()
 
-    # Temporary directory for image storage
-    temporary_image_directory = "./temp"
+        # Temporary directory for image storage
+        self.temporary_image_directory = "./temp"
 
-    # Flag for simulation playback
-    is_exercise_simulation_active = False
-    real_time_playback_is_active = False
+        # Flag for simulation playback
+        self.is_exercise_simulation_active = False
+        self.real_time_playback_is_active = False
 
-    # Dictionary / Hashmap of client Objects to Client Names
-    client_objects = {} 
+        # Dictionary / Hashmap of client Objects to Client Names
+        self.client_objects = {} 
 
-    # Client to Image mapping
-    client_input_buffer = {}
+        # Client to Image mapping
+        self.client_input_buffer = {}
 
     def on_publish(self, client, userdata, mid) :
          self.logger.info("Server: Message Published")

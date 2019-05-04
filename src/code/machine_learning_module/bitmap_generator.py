@@ -70,7 +70,6 @@ class BitmapGenerator:
     # Method which applies the necessary logic to generate the bitmap image for a subject for all activities performed.
     def generate_bitmaps_for_subject(self, mode, subject):
         sax_activity_representations = self.sax_obj.generate_all_activities_as_string_representation(subject)
-        print("mode {} - subject {}".format(mode, subject))
         for index, activity_key in enumerate(self.image_map[mode]):
             activity_repr = sax_activity_representations[index]
             self.generate_all(activity_key, activity_repr, subject, mode)
@@ -210,6 +209,12 @@ class BitmapGenerator:
     # Simple reset method for the server image counter.
     def reset_activity_counter(self):
         self.server_image_counter = 0
+
+    # Destroy temp folder
+    def destroy_temp_folder(self):
+        files = glob.glob('../mqtt_protocol_module/temp/*')
+        for f in files:
+            os.remove(f)
 
 if __name__ == "__main__":
     generator = BitmapGenerator()

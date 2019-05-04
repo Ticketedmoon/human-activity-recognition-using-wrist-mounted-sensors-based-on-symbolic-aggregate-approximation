@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock
+
 import unittest
 import sys
 import pandas as pd
@@ -60,5 +62,32 @@ class Test_Time_Series_To_String_Via_Sax(unittest.TestCase):
                     and 'q' in sax_string and 'r' in sax_string and 's' in sax_string)
 
         self.assertTrue(condition)
+
+    def test_generate_string_from_time_series(self):
+        # return self.sax_obj.generate_string_from_time_series(filename, self.letter_size, self.horizontal_window_property)
+        time_series_obj = Time_series_to_string_via_sax()
+        test_path = "./resources/exercise-datasets/Walk-subject-1.csv"
+        test_letter_size = 20
+        test_horizontal_bounding_property = 1
+        result = time_series_obj.generate_string_from_time_series(test_path, test_letter_size, test_horizontal_bounding_property)
+        self.assertTrue(len(result) > 15000)
+        time_series_obj.build_string_from_numpy_data = MagicMock()
+        result = time_series_obj.generate_string_from_time_series(test_path, test_letter_size, test_horizontal_bounding_property)
+        self.assertTrue(len(result) == 0)
+        assert time_series_obj.build_string_from_numpy_data.call_count == 1
+    
+    def test_build_string_from_numpy_data(self):
+        time_series_obj = Time_series_to_string_via_sax()
+        test_path = "./resources/exercise-datasets/Walk-subject-1.csv"
+        data = time_series_obj.generate(test_path)
+        test_letter_size = 20
+        test_horizontal_bounding_property = 1
+        result = time_series_obj.build_string_from_numpy_data(data, test_letter_size, test_horizontal_bounding_property)
+        self.assertTrue(len(result) > 15000)
+        time_series_obj.ts_to_string = MagicMock()
+        time_series_obj.build_string_from_numpy_data(data, test_letter_size, test_horizontal_bounding_property)
+        assert time_series_obj.ts_to_string.call_count == 1
+
+
 if __name__ == "__main__":
     unittest.main()

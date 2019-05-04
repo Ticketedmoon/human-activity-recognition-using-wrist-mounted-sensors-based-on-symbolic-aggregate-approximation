@@ -323,6 +323,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
             image_properties = []
             while(self.real_time_recognition_alive):
                 if len(image_properties) == self.image_size:
+                    # TODO: No need to np.array() here as its done in next function in call-loop
                     data_read_from_ppg = np.array(image_properties)
                     # Convert data to Pandas series object
                     self.display.convert_and_send_real_time(data_read_from_ppg)
