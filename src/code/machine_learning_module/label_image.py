@@ -56,17 +56,20 @@ class Classify_Image:
         self.graph = self.load_graph(self.graph_path)
         # self.graph.finalize()
 
-    def load_graph(self, model_file):
-        graph = tf.Graph()
-        graph_def = tf.GraphDef()
+    def load_graph(self, model_file): 
+        try:
+            graph = tf.Graph()
+            graph_def = tf.GraphDef()
 
-        with open(model_file, "rb") as f:
-          graph_def.ParseFromString(f.read())
+            with open(model_file, "rb") as f:
+              graph_def.ParseFromString(f.read())
 
-        with graph.as_default():
-          tf.import_graph_def(graph_def)
+            with graph.as_default():
+              tf.import_graph_def(graph_def)
 
-        return graph
+            return graph
+        except NameError:
+            pass
 
     def read_tensor_from_image_file(self, file_name,
                                     input_height=299,
