@@ -15,21 +15,23 @@ sys.path.append("../")
 from logger_module.Logger import Logger
 
 sys.path.append("../machine_learning_module")
-from label_image import Classify_Image
-
-from bitmap_generator import BitmapGenerator
+from machine_learning_module.label_image import Classify_Image
+from machine_learning_module.bitmap_generator import BitmapGenerator
 
 class Server:
 
-    def __init__(self, logger_path="../"):
+    def __init__(self, logger_path="../", dir_path="./temp", test_mode=False):
         # Logger
-        self.logger = Logger(logger_path, "logs/Server")
+        self.logger = Logger(logger_path, "logs/Server", test_mode)
+
+        # MQTT server
+        self.server = mqtt.Client("Server")
+        self.server.on_disconnect = self.on_disconnect
+        self.server.on_message = self.on_message
+        self.server.on_subscribe = self.on_subscribe
 
         # Bitmap Generator
-        self.server_bitmap_generator = BitmapGenerator()
-
-        # Temporary directory for image storage
-        self.temporary_image_directory = "./temp"
+        self.server_bitmap_generator = BitmapGenerator(logger_path=logger_path)
 
         # Flag for simulation playback
         self.is_exercise_simulation_active = False
@@ -37,6 +39,10 @@ class Server:
 
         # Dictionary / Hashmap of client Objects to Client Names
         self.client_objects = {} 
+
+        # Build Classifier all cases will use
+        self.dir_path = dir_path
+        self.classifier = Classify_Image(test_dir=self.dir_path, logger_path=logger_path)
 
         # Client to Image mapping
         self.client_input_buffer = {}
@@ -91,38 +97,29 @@ class Server:
         pass
 
     def send(self):
-        server = mqtt.Client("Server")
-        server.on_disconnect = self.on_disconnect
-        server.on_message = self.on_message
-        server.on_subscribe = self.on_subscribe
-        
-        # Build Classifier all cases will use
-        self.dir_path = "./temp"
-        self.classifier = Classify_Image(test_dir=self.dir_path)
-
         host      = "127.0.0.1"
         port      = 1883
         keepalive = 60
 
         self.logger.info("\nServer: Connect to {}, keepalive {}".format(host, keepalive))
-        server.connect(host=host, port=port, keepalive=keepalive)
+        self.server.connect(host=host, port=port, keepalive=keepalive)
         
-        server.subscribe("client_connections")
+        self.server.subscribe("client_connections")
         self.logger.info("Server: Subscribing to topic {client_connections}")
 
-        server.subscribe("disconnections")
+        self.server.subscribe("disconnections")
         self.logger.info("Server: Subscribing to topic {disconnections}")
 
-        server.subscribe("sax_check")
+        self.server.subscribe("sax_check")
         self.logger.info("Server: Subscribing to topic {sax_check}")
 
-        server.subscribe("real_time_check")
+        self.server.subscribe("real_time_check")
         self.logger.info("Server: Subscribing to topic {real_time_check}")
 
-        server.subscribe("real_time_input_feed")
+        self.server.subscribe("real_time_input_feed")
         self.logger.info("Server: Subscribing to topic {real_time_input_feed}")
 
-        server.loop_forever()
+        self.server.loop_forever()
 
     # Playback Mode
     def start_playback_mode_loop(self, client, decoded_sax_string):
@@ -217,7 +214,7 @@ class Server:
         return 0
 
     def destroy_temp_folder(self):
-        files = glob.glob('./temp/*')
+        files = glob.glob(self.dir_path + '/*')
         for f in files:
             os.remove(f)
 

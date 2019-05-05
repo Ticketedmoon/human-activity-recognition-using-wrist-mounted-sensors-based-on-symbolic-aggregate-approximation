@@ -30,14 +30,14 @@ from logger_module.Logger import Logger
 
 class Classify_Image:
 
-    logger = Logger("../", "logs/Classify_Image")
-    real_time_playback_mode = False
-
     def __init__(self, default_image="tensorflow/examples/label_image/data/grace_hopper.jpg",
         graph_path="C:/tmp/output_graph.pb", 
         label_path="C:/tmp/output_labels.txt",
         test_dir="./pixel_bitmaps/test/Walk", input_layer="Placeholder", 
-        output_layer="final_result"):
+        output_layer="final_result", logger_path="../"):
+
+        self.logger = Logger(logger_path, "logs/Classify_Image")
+        self.real_time_playback_mode = False
         
         self.graph_path = graph_path
         self.test_dir = test_dir

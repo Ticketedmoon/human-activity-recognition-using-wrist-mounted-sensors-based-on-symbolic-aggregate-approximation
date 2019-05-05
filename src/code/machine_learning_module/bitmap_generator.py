@@ -1,3 +1,8 @@
+# os module used for removing .bmp files - Google Inception only works with PNG/JPEG
+import os
+# Import sys for pathing related problems
+import sys
+sys.path.append("./code/machine_learning_module")
 # Imports from other project related modules
 from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 from bitmap_module.rgb_letter_to_colour_conversion import rgb_letter_to_colour
@@ -5,10 +10,6 @@ from bitmap_module.greyscale_letter_to_colour_conversion import greyscale_letter
 from bitmap_module.text_to_bmp_class import Bitmap
 # Pil for image compression and resizing
 from PIL import Image
-# os module used for removing .bmp files - Google Inception only works with PNG/JPEG
-import os
-# Import sys for pathing related problems
-import sys
 # Set the path to the module coordinator directory 1 above.
 sys.path.append("../")
 # Logger for logging adequately and saving results
