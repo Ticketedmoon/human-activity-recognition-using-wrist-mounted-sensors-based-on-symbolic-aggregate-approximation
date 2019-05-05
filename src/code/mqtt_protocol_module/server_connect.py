@@ -3,12 +3,10 @@ import socket
 import subprocess
 import sys
 import threading
-
 import base64
 import os
 import paho.mqtt.client as mqtt
 import re
-import tensorflow as tf
 import time
 
 sys.path.append("../")
@@ -17,6 +15,11 @@ from logger_module.Logger import Logger
 sys.path.append("../machine_learning_module")
 from machine_learning_module.label_image import Classify_Image
 from machine_learning_module.bitmap_generator import BitmapGenerator
+
+try:
+    import tensorflow as tf
+except ModuleNotFoundError:
+    pass
 
 class Server:
 
