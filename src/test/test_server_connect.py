@@ -227,6 +227,7 @@ class Test_Server_Connect(unittest.TestCase):
 
         # Step #0: Clear the directory prior to test
         server.destroy_temp_folder()
+        print(os.getcwd())
 
         # Step #1: Create some files, store them in ./temp
         create_file_helper(server.dir_path + "/testA")
