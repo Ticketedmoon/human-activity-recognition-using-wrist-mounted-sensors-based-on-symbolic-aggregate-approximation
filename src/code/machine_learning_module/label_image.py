@@ -20,10 +20,14 @@ from __future__ import print_function
 import argparse
 
 import numpy as np
-import tensorflow as tf
 import time, os, re, base64
 import threading
 import sys
+
+try:
+    import tensorflow as tf
+except ModuleNotFoundError:
+    pass
 
 sys.path.append("../")
 from logger_module.Logger import Logger
