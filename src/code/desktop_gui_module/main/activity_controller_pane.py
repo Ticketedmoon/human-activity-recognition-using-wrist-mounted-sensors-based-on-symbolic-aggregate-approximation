@@ -53,7 +53,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.msg.setIcon(QtWidgets.QMessageBox.Critical)
         self.msg.setWindowIcon(QtGui.QIcon("../assets/desktop-icon.png"))
 
-        self.msg.setText("Arduino PPG has not been connected - An active connection stream is required for real-time activity recognition")
+        self.msg.setText("Arduino PPG has not been connected - An active connection stream is required for recording mode and real-time activity recognition")
         self.msg.setWindowTitle("Arduino PPG Connection Warning")
         self.msg.setStandardButtons(QtWidgets.QMessageBox.Retry | QtWidgets.QMessageBox.Cancel)
         
@@ -268,16 +268,23 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
     def initialize_recording_mode(self):
         self.logger.info("Initializing Recording Mode for client: {}".format(self.display.client))
         if not self.recording_mode_active:
-            self.recording_mode_active = True
-            self.update_playback_button_state(self.playback_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
-            self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
-            self.update_playback_button_state(self.real_time_playback_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
-            self.update_playback_button_state(self.recording_buttons, True, "background-color: rgb(220, 30, 30); color: white;")
-            file_path = str(QFileDialog.getExistingDirectory(self, "Select Directory")) + "/voltages_{}.csv".format(self.recording_file_counter)
-            self.graph_control.stop_graph_temporarily()
+            if self.graph_control.check_arduino_connection():
+                self.recording_mode_active = True
+                self.update_playback_button_state(self.playback_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
+                self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
+                self.update_playback_button_state(self.real_time_playback_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
+                self.update_playback_button_state(self.recording_buttons, True, "background-color: rgb(220, 30, 30); color: white;")
+                file_path = str(QFileDialog.getExistingDirectory(self, "Select Directory")) + "/voltages_{}.csv".format(self.recording_file_counter)
+                self.graph_control.stop_graph_temporarily()
 
-            self.recording_thread = threading.Thread(target=self.graph_control.read_from_ppg, args=[file_path])
-            self.recording_thread.start()
+                self.recording_thread = threading.Thread(target=self.graph_control.read_from_ppg, args=[file_path])
+                self.recording_thread.start()
+            else:
+                # Pop up dialog box that the Arduino PPG is not connected
+                choice = self.msg.exec_()
+                if choice == QtWidgets.QMessageBox.Retry:
+                    # Try to engage real time activity recognition again.
+                    pass
         else:
             self.recording_mode_active = False
             self.graph_control.stop_graph_temporarily()
@@ -403,18 +410,6 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
 
         except Exception as error:
             self.logger.error("Error: " + repr(error))
-
-    # def monitor_progress(self):
-    #     try:
-    #         while self.display.progress < 100 and self.simulation_active:
-    #             value = int(self.display.progress * 100)
-    #             print(value)
-    #             self.progressBar.setValue(value)
-    #             time.sleep(3)
-    #     finally:
-    #         self.logger.warning("Progress Bar Resetting...")
-    #         self.progressBar.setValue(0)
-    #         self.simulation_active = False
 
     def update_playback_button_state(self, buttons, enabled=True, stylesheet="background-color: rgb(0, 180, 30); color: white"):
         for button in buttons:
