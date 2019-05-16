@@ -1,5 +1,9 @@
 from threading import Timer
-from PyQt5 import QtGui, QtCore
+
+try:
+    from PyQt5 import QtGui, QtCore
+except:
+    pass
 
 class Repeated_Timer(object):
     def __init__(self, interval, function, *args, **kwargs):

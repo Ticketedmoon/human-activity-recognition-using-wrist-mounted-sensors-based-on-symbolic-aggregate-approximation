@@ -1,12 +1,16 @@
 import sys
-from PyQt5.Qt import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import *
 
-from PyQt5.Qt import QApplication, QClipboard
-from PyQt5.QtWidgets import QWidget, QPlainTextEdit
-from PyQt5.QtCore import QSize
+try:
+    from PyQt5.Qt import *
+    from PyQt5 import QtCore, QtGui, QtWidgets
+    from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
+    from PyQt5.QtGui import *
+
+    from PyQt5.Qt import QApplication, QClipboard
+    from PyQt5.QtWidgets import QWidget, QPlainTextEdit
+    from PyQt5.QtCore import QSize
+except:
+    pass
 
 class Research_Window(QtWidgets.QWidget):
 

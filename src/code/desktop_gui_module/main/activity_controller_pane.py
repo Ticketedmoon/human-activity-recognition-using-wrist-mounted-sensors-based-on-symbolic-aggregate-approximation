@@ -5,11 +5,14 @@ import time
 import numpy as np
 
 from functools import partial
-from PyQt5.Qt import *
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import *
+try:
+    from PyQt5.Qt import *
+    from PyQt5.QtWidgets import QMessageBox
+    from PyQt5 import QtCore, QtGui, QtWidgets
+    from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
+    from PyQt5.QtGui import *
+except:
+    pass
 
 from repeated_timer import Repeated_Timer
 from tkinter import filedialog

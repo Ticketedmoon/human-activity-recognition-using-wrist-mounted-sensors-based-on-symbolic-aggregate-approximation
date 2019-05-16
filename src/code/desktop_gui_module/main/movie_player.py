@@ -1,6 +1,11 @@
 import sys
-from PyQt5.Qt import *
-from PyQt5 import QtCore, QtGui, QtWidgets
+
+try:
+    from PyQt5.Qt import *
+    from PyQt5 import QtCore, QtGui, QtWidgets
+except:
+    pass
+    
 import functools
 
 class Movie_Player(QtWidgets.QLabel):

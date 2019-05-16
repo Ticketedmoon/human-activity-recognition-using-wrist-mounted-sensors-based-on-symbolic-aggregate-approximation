@@ -1,20 +1,23 @@
 import sys
-
-from PyQt5.Qt import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import *
 from unittest.mock import MagicMock
 
-from PyQt5.QtCore import QSize
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QInputDialog
-from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtWidgets import QTabBar
-from PyQt5.QtWidgets import QTabWidget
-from PyQt5.QtWidgets import QVBoxLayout
-from PyQt5.QtWidgets import QWidget
+try:
+    from PyQt5.Qt import *
+    from PyQt5 import QtCore, QtGui, QtWidgets
+    from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
+    from PyQt5.QtGui import *
+
+    from PyQt5.QtCore import QSize
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtWidgets import QApplication
+    from PyQt5.QtWidgets import QInputDialog
+    from PyQt5.QtWidgets import QPushButton
+    from PyQt5.QtWidgets import QTabBar
+    from PyQt5.QtWidgets import QTabWidget
+    from PyQt5.QtWidgets import QVBoxLayout
+    from PyQt5.QtWidgets import QWidget
+except:
+    pass
 
 from activity_controller_pane import Activity_Controller_Pane
 from activity_display_pane import Activity_Display_Pane

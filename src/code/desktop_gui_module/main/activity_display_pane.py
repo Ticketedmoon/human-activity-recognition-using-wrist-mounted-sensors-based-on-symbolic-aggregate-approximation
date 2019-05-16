@@ -2,10 +2,13 @@ import sys
 import threading
 from concurrent.futures import ProcessPoolExecutor
 
-from PyQt5.Qt import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import *
+try:
+    from PyQt5.Qt import *
+    from PyQt5 import QtCore, QtGui, QtWidgets
+    from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
+    from PyQt5.QtGui import *
+except:
+    pass
 
 from mqtt_protocol_module.client_connect import Client
 from tkinter import filedialog

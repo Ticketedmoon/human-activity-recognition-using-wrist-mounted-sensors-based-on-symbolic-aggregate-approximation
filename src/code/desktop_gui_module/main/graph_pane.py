@@ -7,10 +7,13 @@ import time
 import matplotlib.pyplot as plt
 plt.style.use('seaborn-whitegrid')
 
-from PyQt5.Qt import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import *
+try:
+    from PyQt5.Qt import *
+    from PyQt5 import QtCore, QtGui, QtWidgets
+    from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
+    from PyQt5.QtGui import *
+except:
+    pass
 
 from mock_graph_qt import TestWindow    
 from canvas import Canvas

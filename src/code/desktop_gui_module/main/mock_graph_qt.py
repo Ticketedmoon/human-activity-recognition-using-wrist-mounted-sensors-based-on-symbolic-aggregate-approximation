@@ -1,7 +1,11 @@
 import sys
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+try:
+    from PyQt5.QtGui import *
+    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore import *
+except:
+    pass
+    
 import matplotlib
 
 matplotlib.use('Qt5Agg')

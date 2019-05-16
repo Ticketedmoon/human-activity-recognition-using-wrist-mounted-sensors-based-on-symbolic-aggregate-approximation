@@ -1,11 +1,14 @@
 import sys
 
-from PyQt5.Qt import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QWidget, QInputDialog, QLineEdit
-
+try:
+    from PyQt5.Qt import *
+    from PyQt5 import QtCore, QtGui, QtWidgets
+    from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
+    from PyQt5.QtGui import *
+    from PyQt5.QtWidgets import QWidget, QInputDialog, QLineEdit
+except:
+    pass
+    
 class MenuBar:
 
     """ Font Properties """
