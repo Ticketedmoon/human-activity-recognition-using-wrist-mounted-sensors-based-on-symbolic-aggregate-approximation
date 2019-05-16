@@ -252,10 +252,11 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
             self.loading_widgets[i] = loading_widget
             self.loaders[i].setMovie(loading_widget)
 
+        self.graph_control.reset_data_on_graph()
         self.display.stop_display()
         self.display.reset_display_parameters()
         self.display.connect_to_broker()
-        self.graph_control.reset_data_on_graph()
+        self.on_progressChanged(0)
 
         self.update_playback_button_state(self.playback_buttons, True, "background-color: rgb(0, 180, 30); color: white;")
         self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")

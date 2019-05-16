@@ -165,12 +165,15 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
         self.display_activity_animation(prediction_message[0])
         prediction_accuracy = (round(float(prediction_message[1]), 4)) * 100
         self.update_display_text(activity_prediction, prediction_accuracy)
-        progress = round(self.activity_shift / self.document_length_for_playback)
-        self.progressChanged.emit(progress)
 
-        # Update Graph
-        microvolt_values = self.get_data_vector_properties()[self.exercise_time * 64:256 + self.exercise_time * 64] + 500
-        self.graph_pane.microvolts = microvolt_values
+        if self.graph_pane.playback_graph_active:
+            progress = round(self.activity_shift / self.document_length_for_playback)
+            self.progressChanged.emit(progress)
+
+            # Update Graph
+            microvolt_values = self.get_data_vector_properties()[self.exercise_time * 64:256 + self.exercise_time * 64]
+            self.graph_pane.microvolts = microvolt_values
+
         self.graph_pane.update_graph_event.set()
 
     def update_display_text(self, activity_prediction, prediction_accuracy):

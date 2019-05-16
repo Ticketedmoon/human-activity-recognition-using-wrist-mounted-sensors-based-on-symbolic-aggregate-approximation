@@ -26,7 +26,7 @@ class Graph_Pane(QtWidgets.QWidget):
     is_arduino_connected = False
     playback_graph_active = False
     data_row_sample = 0
-    microvolts = 0
+    microvolts = []
 
     def __init__(self, layout, logger):
         super(Graph_Pane, self).__init__()
@@ -39,10 +39,14 @@ class Graph_Pane(QtWidgets.QWidget):
     def reset_data_on_graph(self):
         self.playback_graph_active = False
         self.data_row_sample = 0
-        for canvas in self.canvas_frames:
-            # Prevent drawing
-            canvas.is_plottable = False
-            canvas.reset_graph_axis()
+        self.microvolts = []
+        try:
+            for canvas in self.canvas_frames:
+                # Prevent drawing
+                canvas.reset_graph_axis()
+        except:
+            # Case where the graph is reset with no data points found.
+            pass
 
     # TODO: Fix
     def layout_widgets(self, layout):   
@@ -101,20 +105,20 @@ class Graph_Pane(QtWidgets.QWidget):
     def start_playback_graph(self):
         self.playback_graph_active = True
         for canvas in self.canvas_frames:
-            canvas.reset_graph_axis(750, 2250)
+            canvas.reset_graph_axis(min_x=0, max_x=1600, min_y=0, max_y=3000)
 
         try:
             while(self.playback_graph_active):
                 self.update_graph_event.wait()
-                for microvolt in self.microvolts:
-                    self.data_row_sample += 1
-                    self.update_graph(self.data_row_sample, microvolt)
+                for microvolt in self.microvolts[::-1]:
+                    if (self.playback_graph_active):
+                        self.data_row_sample += 64
+                        self.update_graph(self.data_row_sample, microvolt)
+                    else:
+                        break
                 self.update_graph_event.clear()
         finally:
-            for canvas in self.canvas_frames:
-                canvas.reset_graph_axis()
-                canvas.is_plottable = True
-                self.data_row_sample = 0
+            self.reset_data_on_graph()
             
 
     # plot.pause() method available if needed.
@@ -126,7 +130,7 @@ class Graph_Pane(QtWidgets.QWidget):
         for canvas in self.canvas_frames:
             canvas.plot()
 
-        if(self.data_row_sample > 25):                            
+        if(self.data_row_sample > self.canvas_frames[0].max_x):                            
             #If you have 25 or more points, delete the first one from the array
             #This allows us to just see the last 50 data points
             for canvas in self.canvas_frames:
@@ -150,6 +154,7 @@ class Graph_Pane(QtWidgets.QWidget):
                     if (voltage_reading != "" and voltage_reading.isdigit() and float(voltage_reading) > 1000):
                         text_file.write("{}, {}\n".format(self.data_row_sample, voltage_reading))
                         text_file.flush()
+                        self.data_row_sample += 1
 
                         sample_x = float(self.data_row_sample)
                         sample_y = float(voltage_reading)

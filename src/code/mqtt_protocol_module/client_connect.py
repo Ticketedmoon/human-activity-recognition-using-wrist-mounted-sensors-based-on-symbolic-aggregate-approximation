@@ -108,7 +108,6 @@ class Client(Client_Controller):
         self.send_activity_string_to_broker(symbolic_data)
 
     def convert_and_send_real_time(self, datastream):
-        self.csv_path = csv_path
         symbolic_data = self.symbol_converter.generate_real_time(datastream)
         self.send_activity_string_to_broker(symbolic_data, "real_time_input_feed")
 
