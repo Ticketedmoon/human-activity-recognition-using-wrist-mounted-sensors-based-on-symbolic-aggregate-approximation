@@ -12,20 +12,23 @@ sys.path.append('code/desktop_gui_module/main/')
 from tab_bar_plus import TabBarPlus
 from application import Application
 
-from PyQt5.Qt import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import *
+try:
+    from PyQt5.Qt import *
+    from PyQt5 import QtCore, QtGui, QtWidgets
+    from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
+    from PyQt5.QtGui import *
 
-from PyQt5.QtCore import QSize
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QInputDialog
-from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtWidgets import QTabBar
-from PyQt5.QtWidgets import QTabWidget
-from PyQt5.QtWidgets import QVBoxLayout
-from PyQt5.QtWidgets import QWidget
+    from PyQt5.QtCore import QSize
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtWidgets import QApplication
+    from PyQt5.QtWidgets import QInputDialog
+    from PyQt5.QtWidgets import QPushButton
+    from PyQt5.QtWidgets import QTabBar
+    from PyQt5.QtWidgets import QTabWidget
+    from PyQt5.QtWidgets import QVBoxLayout
+    from PyQt5.QtWidgets import QWidget
+except:
+    pass
 
 from research_window import Research_Window
 from logger_module.Logger import Logger

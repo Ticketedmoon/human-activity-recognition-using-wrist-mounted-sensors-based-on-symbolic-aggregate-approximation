@@ -6,10 +6,13 @@ import serial
 import numpy
 import time
 
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import *
+try:
+    from PyQt5.QtGui import *
+    from PyQt5.QtWidgets import *
+    from PyQt5 import QtCore, QtGui, QtWidgets
+    from PyQt5.QtCore import *
+except:
+    pass
 
 sys.path.append('code/mqtt_protocol_module/')
 sys.path.append('code/machine_learning_module/')
