@@ -4,6 +4,7 @@ from PyQt5.Qt import *
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import *
+from unittest.mock import MagicMock
 
 from PyQt5.QtCore import QSize
 from PyQt5.QtCore import Qt
@@ -25,29 +26,15 @@ class TabBarPlus(QTabWidget):
     def __init__(self, layout_a, layout_b, layout_c, layout_d, logger):
         super(TabBarPlus, self).__init__()
         self.logger = logger
+        self.layout_a = layout_a
+        self.layout_b = layout_b
+        self.layout_c = layout_c 
+        self.layout_d = layout_d
 
         self.activity_display_pane = Activity_Display_Pane(logger)
-        self.activity_display_pane.layout_widgets(layout_a)
-
-        # Build all pane objects
-        self.graph_pane = Graph_Pane(layout_a, logger)
-        self.graph_pane.layout_widgets(layout_a)
-        self.activity_display_pane.set_graph(self.graph_pane)
-
+        self.graph_pane = Graph_Pane(self.layout_a, logger)
         self.activity_controller_pane = Activity_Controller_Pane(logger, self.graph_pane)
-        self.activity_controller_pane.set_display(self.activity_display_pane)
-        self.activity_controller_pane.layout_widgets(layout_a)
-
         self.research_pane = Research_Window(logger)
-        self.research_pane.build_overview_research_pane(layout_a)
-
-        # Tab B, C, D
-        self.build_activity_display(layout_b)
-        self.build_graph(layout_c)
-        self.build_research_pane(layout_d)
-
-        # Start graph listener
-        self.graph_pane.start_graph_listener()
 
         self.tab1 = QWidget()
         self.tab2 = QWidget()
@@ -63,6 +50,27 @@ class TabBarPlus(QTabWidget):
         self.tab2UI(layout_b)
         self.tab3UI(layout_c)
         self.tab4UI(layout_d)
+
+    def instantiate_all_window_panes(self, logger):
+        self.activity_display_pane.layout_widgets(self.layout_a)
+        self.activity_display_pane.connect_to_broker()
+
+        # Build all pane objects
+        self.graph_pane.layout_widgets(self.layout_a)
+        self.activity_display_pane.set_graph(self.graph_pane)
+
+        self.activity_controller_pane.set_display(self.activity_display_pane)
+        self.activity_controller_pane.layout_widgets(self.layout_a)
+
+        self.research_pane.build_overview_research_pane(self.layout_a)
+
+        # Tab B, C, D
+        self.build_activity_display(self.layout_b)
+        self.build_graph(self.layout_c)
+        self.build_research_pane(self.layout_d)
+
+        # Start graph listener
+        self.graph_pane.start_graph_listener()
 
     # Overview Tab
     def tab1UI(self, layout):

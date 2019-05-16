@@ -41,17 +41,14 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
     progressChanged = pyqtSignal(int)
 
     def __init__(self, logger):
-        super(Activity_Display_Pane, self).__init__()
-        QtWidgets.QWidget.__init__(self)
-        
         # Logger
         self.logger = logger
-    
+
+        super(Activity_Display_Pane, self).__init__(self.logger.logger_path)
+        QtWidgets.QWidget.__init__(self)
+        
         # Join Client topic
         self.client.on_message = self.on_message
-        
-        # Connect to Broker
-        self.connect_to_broker()
 
     def set_graph(self, graph_pane):
         self.graph_pane = graph_pane

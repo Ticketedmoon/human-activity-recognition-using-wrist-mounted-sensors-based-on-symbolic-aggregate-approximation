@@ -31,26 +31,26 @@ from logger_module.Logger import Logger
 
 class Application(QMainWindow):
 
-    logger = Logger("../../", "logs/DesktopGUI")
-
-    def __init__(self, primaryWindow):
+    def __init__(self, primaryWindow, logger_path="../../", testMode=False):
         super(Application, self).__init__()
+
+        self.logger_path = logger_path
+        self.logger = Logger(logger_path, "logs/DesktopGUI", testMode)
 
         # Build default window properties
         self.build_default_window_properties(primaryWindow)
         self.setup_window_framework(primaryWindow)
         self.build_frames(self.centralwidget)
 
+    def start_connection_to_server(self):
         # Build Tab View
         self.view = TabBarPlus(self.layout_a, self.layout_b, self.layout_c, self.layout_d, self.logger)
+        self.view.instantiate_all_window_panes(self.logger)
         self.view.currentChanged.connect(self.onChange) #changed!
         primaryWindow.setCentralWidget(self.view) 
 
         # Set up menu bar
         self.setup_menu_bar(primaryWindow)
-        
-        # Close Event
-        app.aboutToQuit.connect(self.closeEvent)
 
         # Connect slots, default for primary window
         QtCore.QMetaObject.connectSlotsByName(primaryWindow)
@@ -148,5 +148,9 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     primaryWindow = QtWidgets.QMainWindow()
     application = Application(primaryWindow)
+    application.start_connection_to_server()
+
+    # Close Event
+    app.aboutToQuit.connect(application.closeEvent)
     primaryWindow.show()
     sys.exit(app.exec_())

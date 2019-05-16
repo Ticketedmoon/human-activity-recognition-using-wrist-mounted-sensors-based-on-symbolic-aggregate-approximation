@@ -12,6 +12,7 @@ class Logger:
                                 logging.StreamHandler()
                             ])
         self.testMode = testMode
+        self.logger_path = path
 
     def warning(self, message):
         if(not self.testMode):

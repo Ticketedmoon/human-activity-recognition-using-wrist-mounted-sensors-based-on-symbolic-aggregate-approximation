@@ -17,25 +17,29 @@ from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 
 class Client(Client_Controller):
 
-    # Logger
-    logger = Logger("../../", "logs/Client")
-
-    # Document length currently being read
-    document_length_for_playback = 1
-
-    # Client Real-Time Flag
-    client_requesting_real_time_activity_recognition_access = False
-
-    # Client connected flag
-    connected_flag = False
-
-    # Path
-    csv_path = None
-
-    def __init__(self):
+    def __init__(self, logger_path="../../", test_mode=False):
         super(Client, self).__init__()
+
+        # Logger
+        self.logger = Logger(logger_path, "logs/Client", test_mode)
+
+        # Symbolic Aggregate Approximation Object
         self.symbol_converter = SymbolicAggregateApproximation(False)
+        
+        # Boolean for connectivity
         self.has_disconnected = False
+
+        # Document length currently being read
+        self.document_length_for_playback = 1
+
+        # Client Real-Time Flag
+        self.client_requesting_real_time_activity_recognition_access = False
+
+        # Client connected flag
+        self.connected_flag = False
+
+        # Path
+        self.csv_path = None
 
     def on_publish(self, client, userdata, mid) :
         # self.logger.info("Client with ID {} has published message with ID {} Published".format(self.client_id, mid))
@@ -53,7 +57,7 @@ class Client(Client_Controller):
             self.logger.info("Connected Successful")
             self.connected_flag = True
         else:
-            self.logger.info("Bad connection - Returned Code=", rc)
+            self.logger.info("Bad connection - Returned Code=" + str(rc))
             self.connected_flag = False
 
     def on_disconnect(self, client, userdata, flags, rc=0):

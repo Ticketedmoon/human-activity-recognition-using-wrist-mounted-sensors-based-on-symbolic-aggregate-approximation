@@ -38,9 +38,9 @@ class Classify_Image:
         graph_path="C:/tmp/output_graph.pb", 
         label_path="C:/tmp/output_labels.txt",
         test_dir="./pixel_bitmaps/test/Walk", input_layer="Placeholder", 
-        output_layer="final_result", logger_path="../"):
+        output_layer="final_result", logger_path="../", test_mode=False):
 
-        self.logger = Logger(logger_path, "logs/Classify_Image")
+        self.logger = Logger(logger_path, "logs/Classify_Image", test_mode)
         self.real_time_playback_mode = False
         
         self.graph_path = graph_path
