@@ -22,6 +22,8 @@ plt.style.use('seaborn-whitegrid')
 
 class Canvas(QtWidgets.QWidget):
 
+    is_plottable = True
+
     def __init__(self, layout, logger):
         super(Canvas, self).__init__()
         self.logger = logger
@@ -31,20 +33,21 @@ class Canvas(QtWidgets.QWidget):
         self.ax1 = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self.figure)
 
-    def reset_graph_axis(self):
+    def reset_graph_axis(self, min_y=1600, max_y=1900):
         self.ax1.clear()
         self.samples, self.microvolts = [], []
         self.line = Line2D(self.samples, self.microvolts, linestyle="-", color='teal', lw=1.85)
         self.ax1.add_line(self.line)
-        self.ax1.set_ylim(1600, 1900)
+        self.ax1.set_ylim(min_y, max_y)
         self.ax1.set_xlim(0, 25)
-        self.figure.canvas.draw()
+        self.plot()
 
     def plot(self):
-        ''' plot Data '''
-        self.line.set_data(self.samples, self.microvolts)
-        self.ax1.relim()
-        self.ax1.autoscale_view()
+        if (self.is_plottable):
+            ''' plot Data '''
+            self.line.set_data(self.samples, self.microvolts)
+            self.ax1.relim()
+            self.ax1.autoscale_view()
 
-        self.figure.canvas.draw()
-        self.figure.canvas.flush_events()
+            self.figure.canvas.draw()
+            self.figure.canvas.flush_events()

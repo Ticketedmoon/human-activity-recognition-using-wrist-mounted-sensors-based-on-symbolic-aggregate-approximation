@@ -255,6 +255,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.display.stop_display()
         self.display.reset_display_parameters()
         self.display.connect_to_broker()
+        self.graph_control.reset_data_on_graph()
 
         self.update_playback_button_state(self.playback_buttons, True, "background-color: rgb(0, 180, 30); color: white;")
         self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
@@ -284,7 +285,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
                 choice = self.msg.exec_()
                 if choice == QtWidgets.QMessageBox.Retry:
                     # Try to engage real time activity recognition again.
-                    pass
+                    self.initialize_recording_mode()
         else:
             self.recording_mode_active = False
             self.graph_control.stop_graph_temporarily()

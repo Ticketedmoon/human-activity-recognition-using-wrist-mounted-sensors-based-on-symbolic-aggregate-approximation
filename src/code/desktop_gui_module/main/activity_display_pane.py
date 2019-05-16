@@ -24,6 +24,7 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
 
     # Animations
     movie_screen = None
+    graph_pane = None
 
     # Widgets
     widgets = []
@@ -48,9 +49,12 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
     
         # Join Client topic
         self.client.on_message = self.on_message
-
+        
         # Connect to Broker
         self.connect_to_broker()
+
+    def set_graph(self, graph_pane):
+        self.graph_pane = graph_pane
 
     def layout_widgets(self, layout):
         # Widget Adds
@@ -82,6 +86,7 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
         self.client.publish("disconnections", str(self.client_id))
         self.disconnect()
         self.prevent_publish_mechanism()
+        self.graph_pane.playback_graph_active = False
 
     def connect_to_broker(self):
         try:
@@ -96,6 +101,8 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
         try:
             self.simulate_thread = threading.Thread(target=self.convert_and_send, args=[file_path], daemon=True)
             self.simulate_thread.start()
+            self.playback_graph_monitor = threading.Thread(target=self.graph_pane.start_playback_graph)
+            self.playback_graph_monitor.start()
         except RuntimeError: # Occurs if thread is dead
             self.simulate_thread = threading.Thread(target=self.convert_and_send, args=[file_path], daemon=True)
             self.simulate_thread.start() # Start thread
@@ -160,6 +167,11 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
         self.update_display_text(activity_prediction, prediction_accuracy)
         progress = round(self.activity_shift / self.document_length_for_playback)
         self.progressChanged.emit(progress)
+
+        # Update Graph
+        microvolt_values = self.get_data_vector_properties()[self.exercise_time * 64:256 + self.exercise_time * 64] + 500
+        self.graph_pane.microvolts = microvolt_values
+        self.graph_pane.update_graph_event.set()
 
     def update_display_text(self, activity_prediction, prediction_accuracy):
         for activity_label in self.activities:

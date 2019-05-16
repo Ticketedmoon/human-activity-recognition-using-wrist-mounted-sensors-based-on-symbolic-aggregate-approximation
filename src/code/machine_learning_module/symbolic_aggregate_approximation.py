@@ -28,6 +28,9 @@ class SymbolicAggregateApproximation:
     def generate(self, filename):
         return self.sax_obj.generate_string_from_time_series(filename, self.letter_size, self.horizontal_window_property)
 
+    def get_data_vector_properties(self, csv_path):
+        return self.sax_obj.get_data_vector_properties(csv_path)
+
     def generate_real_time(self, data_store):
         data = np.array(data_store) 
         series = pd.Series(data)

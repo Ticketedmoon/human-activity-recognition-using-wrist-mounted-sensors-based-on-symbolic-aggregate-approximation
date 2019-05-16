@@ -50,6 +50,9 @@ class Time_series_to_string_via_sax:
         else:
             raise ValueError('A wrong idx value supplied.')
 
+    def get_data_vector_properties(self, file_path_to_ts):
+        return self.generate(file_path_to_ts)
+
     def generate_string_from_time_series(self, file_path_to_ts, letter_boundary_size, horizontal_window_size):
         data = self.generate(file_path_to_ts)
         return self.build_string_from_numpy_data(data, letter_boundary_size, horizontal_window_size)

@@ -29,6 +29,9 @@ class Client(Client_Controller):
     # Client connected flag
     connected_flag = False
 
+    # Path
+    csv_path = None
+
     def __init__(self):
         super(Client, self).__init__()
         self.symbol_converter = SymbolicAggregateApproximation(False)
@@ -100,10 +103,12 @@ class Client(Client_Controller):
         self.connected_flag = False
 
     def convert_and_send(self, csv_path):
+        self.csv_path = csv_path
         symbolic_data = self.symbol_converter.generate(csv_path)
         self.send_activity_string_to_broker(symbolic_data)
 
     def convert_and_send_real_time(self, datastream):
+        self.csv_path = csv_path
         symbolic_data = self.symbol_converter.generate_real_time(datastream)
         self.send_activity_string_to_broker(symbolic_data, "real_time_input_feed")
 
@@ -111,6 +116,9 @@ class Client(Client_Controller):
             self.client_requesting_real_time_activity_recognition_access = True
             self.logger.info("starting Real Time Activity Recognition...")
             self.client.publish("real_time_check", "start_real_time_recognition_for_client")
+
+    def get_data_vector_properties(self):
+        return self.symbol_converter.get_data_vector_properties(self.csv_path)
 
     def send_activity_string_to_broker(self, data, topic="sax_check"):
         if data is not None:

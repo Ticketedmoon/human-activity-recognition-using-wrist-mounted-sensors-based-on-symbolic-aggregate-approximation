@@ -26,12 +26,13 @@ class TabBarPlus(QTabWidget):
         super(TabBarPlus, self).__init__()
         self.logger = logger
 
-        # Build all pane objects
         self.activity_display_pane = Activity_Display_Pane(logger)
         self.activity_display_pane.layout_widgets(layout_a)
-        
+
+        # Build all pane objects
         self.graph_pane = Graph_Pane(layout_a, logger)
         self.graph_pane.layout_widgets(layout_a)
+        self.activity_display_pane.set_graph(self.graph_pane)
 
         self.activity_controller_pane = Activity_Controller_Pane(logger, self.graph_pane)
         self.activity_controller_pane.set_display(self.activity_display_pane)
