@@ -179,7 +179,6 @@ class Server:
             self.simulate_activity_recognition(client, tensorRange)
 
     def simulate_activity_recognition(self, client, tensorRange):
-        total_files = len(os.listdir(self.dir_path))
         try:
             self.logger.info("Starting Model Prediction with Images in {}".format(self.dir_path))
             self.model_predict(client, tensorRange)

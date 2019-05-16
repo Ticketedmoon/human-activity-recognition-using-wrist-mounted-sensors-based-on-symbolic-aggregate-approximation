@@ -220,6 +220,7 @@ class Test_Server_Connect(unittest.TestCase):
         server.model_predict(test_client_obj, 20)
         assert server.classifier.initialize_prediction_process.call_count == 1
 
+    @unittest.skip("Gitlab CI automatic testing via hooks does not contain directory structure below - Therefore test must be skipped")
     def test_destroy_temp_folder(self):
         server = Server(logger_path="./code/", dir_path="./code/mqtt_protocol_module/temp", test_mode=True)
         test_client_name = "test_client"
