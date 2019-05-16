@@ -12,7 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import *
 
-from test_graph_qt import FenetrePrincipale
+from mock_graph_qt import TestWindow    
 from canvas import Canvas
 
 class Graph_Pane(QtWidgets.QWidget):
@@ -130,12 +130,13 @@ class Graph_Pane(QtWidgets.QWidget):
         for canvas in self.canvas_frames:
             canvas.plot()
 
-        if(self.data_row_sample > self.canvas_frames[0].max_x):                            
+        if(self.data_row_sample > self.canvas_frames[0].max_x):
             #If you have 25 or more points, delete the first one from the array
             #This allows us to just see the last 50 data points
             for canvas in self.canvas_frames:
                 canvas.samples.pop(0)                       
                 canvas.microvolts.pop(0)
+                print(canvas.samples)
                 canvas.ax1.set_xlim(min(canvas.samples), max(canvas.samples))
 
     def read_from_ppg(self, save_path="voltages.csv"):

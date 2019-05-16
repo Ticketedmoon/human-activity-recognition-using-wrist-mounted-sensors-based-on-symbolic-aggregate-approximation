@@ -9,7 +9,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-class FenetrePrincipale(QWidget):
+class TestWindow(QWidget):
     def __init__(self, Qwidget, parent=None):
         super(FenetrePrincipale, self).__init__(parent)
         self.qwidget = Qwidget

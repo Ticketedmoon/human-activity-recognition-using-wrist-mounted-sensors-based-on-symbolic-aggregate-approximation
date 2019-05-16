@@ -21,7 +21,7 @@ import base64
 import time
 import threading
 
-class Test_Classify_Image(unittest.TestCase):
+class Test_Label_Image(unittest.TestCase):
 
     def test_load_graph(self):
 
