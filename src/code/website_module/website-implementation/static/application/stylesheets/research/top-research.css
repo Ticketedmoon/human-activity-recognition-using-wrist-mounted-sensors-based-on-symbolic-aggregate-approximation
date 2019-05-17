@@ -29,6 +29,12 @@ a {
     color: lightseagreen;
 }
 
+img {
+    object-fit: contain;
+    width: 200px;
+    height: 200px;
+}
+
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -64,6 +70,6 @@ a {
 .grid-item-content {
     text-align: justify;
     font-size: 0.75em;
-    padding: 3em;
+    padding: 1em 3em 3em 3em;
     font-weight: lighter;
 }

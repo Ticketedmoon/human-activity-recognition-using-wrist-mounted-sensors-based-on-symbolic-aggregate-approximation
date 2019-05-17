@@ -50,15 +50,16 @@
                 </div>
             </div>
             <div class="grid-item top-right-container"> 
-                <span> Time-Series Bitmap Generation </span> 
+                <span> Activity String Bitmap Generation </span> 
                 <div class="grid-item-content">
                     <p> 
-                        SAX is the first symbolic representation for time series that allows for dimensionality reduction and
-                        indexing with a lower-bounding distance measure. In classic data mining tasks such as clustering, 
-                        classification, index, etc., SAX is as good as well-known representations such as Discrete Wavelet Transform (DWT)
-                        and Discrete Fourier Transform (DFT), while requiring less storage space. In addition, the representation allows
-                        researchers to avail of the wealth of data structures and algorithms in bioinformatics or text mining, and also
-                        provides solutions to many challenges associated with current data mining tasks.          
+                        Symbolic Aggregate Approximation gives us the ability to generate a string representation of the time-series data. 
+                        With this in hand, we can apply a form of bitmap generation on the string to achieve an image representation, which 
+                        can then be subsequently fed into a convolutional neural network (CNN) for testing or training. This bitmap requires
+                        a series of parameters to adequately ensure that we can acquire a semi-decent accuracy with the model. For example:
+                        a Grey-Scale image vs an RGB one, the size of these images, what is the frequency range between the colour spectrums?
+                        Varying these parameters in addition to the parameters that SAX provides enables us to refine a model in different ways, 
+                        in the hope of achieving a better accuracy.
                         <a href="https://automatetheboringstuff.com/chapter17/"> https://automatetheboringstuff.com/chapter17/</a>
                     </p>
                 </div>
@@ -67,12 +68,15 @@
                 <span> Convolutional Neural Networks & Transfer Learning </span> 
                 <div class="grid-item-content">
                     <p> 
-                        SAX is the first symbolic representation for time series that allows for dimensionality reduction and
-                        indexing with a lower-bounding distance measure. In classic data mining tasks such as clustering, 
-                        classification, index, etc., SAX is as good as well-known representations such as Discrete Wavelet Transform (DWT)
-                        and Discrete Fourier Transform (DFT), while requiring less storage space. In addition, the representation allows
-                        researchers to avail of the wealth of data structures and algorithms in bioinformatics or text mining, and also
-                        provides solutions to many challenges associated with current data mining tasks.
+                        In deep learning, a convolutional neural network is a class of deep neural networks, most commonly applied to analyzing visual imagery. 
+                        CNNs are regularized versions of multilayer perceptrons. Why are they useful for this project? A CNN convolves learned features with
+                        input data and uses 2D convolutional layers. This means that this type of network is ideal for processing 2D images. Compared to other
+                        image classification algorithms, CNNs actually use very little preprocessing. So, we can filter out previous generated bitmaps into our
+                        CNN model to train it and learn the necessary motion artefacts that might be present. Once trained, we can then feed new image data into
+                        the model for prediction.Transfer learning is a machine learning method where a model developed for a task is reused as the starting point 
+                        for a model on a second task. Specifically, Google have a pre-trained model labeled: Inception V3.0, which has been trained on thousands of
+                        images from the ImageNet database. We can use Googles model and then apply our data to only train the penultimate layer of the model. This technique
+                        is relatively new in terms of machine learning but it is incredibly powerful, and most like has boosted our accuracy of prediction.
                         <a href="https://cloud.google.com/tpu/docs/tutorials/inception"> https://cloud.google.com/tpu/docs/tutorials/inception </a>
                     </p>
                 </div>
@@ -81,12 +85,14 @@
                 <span>  Message Queueing Telemetry Transport Protocol (MQTT)   </span> 
                 <div class="grid-item-content">
                     <p> 
-                        SAX is the first symbolic representation for time series that allows for dimensionality reduction and
-                        indexing with a lower-bounding distance measure. In classic data mining tasks such as clustering, 
-                        classification, index, etc., SAX is as good as well-known representations such as Discrete Wavelet Transform (DWT)
-                        and Discrete Fourier Transform (DFT), while requiring less storage space. In addition, the representation allows
-                        researchers to avail of the wealth of data structures and algorithms in bioinformatics or text mining, and also
-                        provides solutions to many challenges associated with current data mining tasks.          
+                        MQTT is an ISO standard publish-subscribe-based messaging protocol. It works on top of the TCP/IP protocol. It is designed for connections
+                        with remote locations where a "small code footprint" is required or the network bandwidth is limited. The publish-subscribe messaging pattern
+                        requires a message broker. MQTT is an M2M (machine-to-machine), Internet of Things connectivity protocol. In relation to this particular project,
+                        there is a client and server interaction using the MQTT protocol, with a mutual 'shared' broker machine, that facilitates communication. The server
+                        does the majority of the processing while the client only does minimal, thus we can say it is a thin-client distributed architecture. The client will
+                        often be required to convert their time-series into the activity string using SAX (described above) but that is all they are required to do. They then 
+                        send just data to the server over the MQTT publish-subscribe architecture and the server is capable of receiving this, performing bitmap generation, feeding
+                        the images generated into the previously trained model, and returning the prediction.     
                         <a href="http://mqtt.org/"> http://mqtt.org/ </a>
                     </p>
                 </div>
