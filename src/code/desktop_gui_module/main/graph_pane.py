@@ -139,7 +139,6 @@ class Graph_Pane(QtWidgets.QWidget):
             for canvas in self.canvas_frames:
                 canvas.samples.pop(0)                       
                 canvas.microvolts.pop(0)
-                print(canvas.samples)
                 canvas.ax1.set_xlim(min(canvas.samples), max(canvas.samples))
 
     def read_from_ppg(self, save_path="voltages.csv"):

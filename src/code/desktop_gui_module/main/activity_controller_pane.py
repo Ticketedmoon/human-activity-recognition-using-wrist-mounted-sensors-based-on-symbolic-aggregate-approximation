@@ -29,6 +29,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
     image_size = 32 * 32
     recording_file_counter = 0
 
+    # TODO: Refactor
     loading_widgets = []
     playback_buttons = []
     stop_play_back_buttons = []
