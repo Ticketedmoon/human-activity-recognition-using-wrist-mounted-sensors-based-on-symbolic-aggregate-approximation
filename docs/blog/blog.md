@@ -528,3 +528,21 @@ bugs were leaked into the code or if any code functionality broke externally.
   
 Now with the remainder of my time I will be studying for my Final Year Exams and will also be writing `Unit and Integration tests` to 
 achieve as high a test-coverage as possible before the project deadline.
+
+# Blog Post #34 | Project Completion | 18/05/2019
+Since I've finished my exams on may 14th, my entire focus has been centered around the project.  
+There was many things I had to tidy up and complete as well as engage in a thorough testing and evaluation stage.  
+Additionally, I had to write my documentation to describe the entire software process I engaged in.  
+All of this combined has been very heavy on me personally to meet the deadline but I have just made it.  
+All I can say is that this project was been a journey through thick and thin.  
+
+The project was required to be worked on throughout the entirety of final year with all the tough 7.5 modules  
+cracking down as well as the end of semester examinations. Additionally, I was exploring, researching and implementing  
+a project that I had no previous experience in. This project was all about data science, machine learning and human activity  
+recognition. I wanted to challenge myself with all of this, this is just the sort of person I am. All of this combined gave  
+the year a looming stressful feeling but now that the close is near, the end is in sight and the light at the end of the tunnel 
+beginning to show,  I can feel the weight lifting off my shoulders.
+
+The final stages are submission of the project tomorrow (19th of may) at midnight. Outside of that, there still is the project
+demo which I will strive to do well in and there is the **project expo** where I can show off my project to employers from around the
+country. This most likely will be my final blog post, so I want to thank you for reading my work and following my progress.
