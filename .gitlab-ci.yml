@@ -9,4 +9,4 @@ py36_nose:
     image: python:3.6
     script:
         - pip install -r src/requirements.txt
-        - nosetests --verbosity=3 --nocapture -w src/
+        # - nosetests --verbosity=3 --nocapture -w src/
