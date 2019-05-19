@@ -53,10 +53,13 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
         # Join Client topic
         self.client.on_message = self.on_message
 
+    # Setter method - important to set and not pass in via constructor to ensure window panes align
+    # how we want.
     def set_graph(self, graph_pane):
         self.graph_pane = graph_pane
 
     def layout_widgets(self, layout):
+
         # Widget Adds
         self.widget_2 = QtWidgets.QWidget()
         self.widget_2.setStyleSheet("background-color: rgb(0, 140, 180);")
@@ -82,12 +85,14 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
         self.widgets.append(self.widget_2)
         layout.addWidget(self.widget_2)
 
+    # Resolve connection entirely when this method is called.
     def stop_display(self):
         self.client.publish("disconnections", str(self.client_id))
         self.disconnect()
         self.prevent_publish_mechanism()
         self.graph_pane.playback_graph_active = False
 
+    # Try connect to the broker, this class extends Client therefore, it contains the send method.
     def connect_to_broker(self):
         try:
             self.reset_publish_mechanism()
@@ -97,6 +102,7 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
             self.broker_connection_thread = threading.Thread(target=self.send) # Create new instance if thread is dead
             self.broker_connection_thread.start() # Start thread
 
+    # Spin up threads for sending the data and for initializing the graph.
     def send_activity_string_data_to_broker(self, file_path):
         try:
             self.simulate_thread = threading.Thread(target=self.convert_and_send, args=[file_path], daemon=True)
@@ -107,6 +113,7 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
             self.simulate_thread = threading.Thread(target=self.convert_and_send, args=[file_path], daemon=True)
             self.simulate_thread.start() # Start thread
 
+    # emit to the controller pane what activity is being displayed.
     def display_activity_animation(self, activity):
         self.logger.info("Activity Detected {} - sending to animation player...".format(activity))
 
@@ -133,6 +140,7 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
             self.logger.info("Received Clock Reset Notification...")
             self.reset_display_parameters()
 
+    # Reset details in display window
     def reset_display_parameters(self):
         self.exercise_time = 0
         self.label_pane_2.setText("Exercise Time: {}s".format(self.exercise_time))
@@ -176,6 +184,7 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
 
         self.graph_pane.update_graph_event.set()
 
+    # Update display text with new details.
     def update_display_text(self, activity_prediction, prediction_accuracy):
         for activity_label in self.activities:
             activity_label.setText("Activity: {}".format(activity_prediction))
@@ -186,6 +195,7 @@ class Activity_Display_Pane(Client, QtWidgets.QWidget):
         for accuracy_label in self.prediction_accuracies:
             accuracy_label.setText("Accuracy: {:.2f}%".format(prediction_accuracy))
 
+    # Method called to instantiate the text in the display pane.
     def draw_activity_text(self):
         self.label_pane_1.setGeometry(QtCore.QRect(15, 10, 125, 15))
         self.label_pane_2.setGeometry(QtCore.QRect(15, 35, 125, 15))

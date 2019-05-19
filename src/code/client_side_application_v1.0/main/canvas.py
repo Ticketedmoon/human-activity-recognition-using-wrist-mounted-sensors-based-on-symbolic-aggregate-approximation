@@ -27,6 +27,7 @@ class Canvas(QtWidgets.QWidget):
 
     max_x = 25
 
+    # Canvas object - contains a figure, with a series of data points.
     def __init__(self, layout, logger):
         super(Canvas, self).__init__()
         self.logger = logger
@@ -36,6 +37,7 @@ class Canvas(QtWidgets.QWidget):
         self.ax1 = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self.figure)
 
+    # Reset these data points if method called.
     def reset_graph_axis(self, min_x=0, max_x=25, min_y=1600, max_y=1900):
         self.max_x = max_x
         self.ax1.clear()
@@ -46,6 +48,7 @@ class Canvas(QtWidgets.QWidget):
         self.ax1.set_xlim(min_x, max_x)
         self.plot()
 
+    # Plot data on graph.
     def plot(self):
         try:
             ''' plot Data '''
@@ -55,5 +58,5 @@ class Canvas(QtWidgets.QWidget):
 
             self.figure.canvas.draw()
             self.figure.canvas.flush_events()
-        except:
+        except Exception as e:
             pass

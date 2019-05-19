@@ -8,6 +8,9 @@ except:
     
 import functools
 
+"""
+Movie_Player class - controls the avatar display.
+"""
 class Movie_Player(QtWidgets.QLabel):
 
     currentActivity = None

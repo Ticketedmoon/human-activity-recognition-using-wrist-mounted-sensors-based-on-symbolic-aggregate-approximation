@@ -13,6 +13,10 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+"""
+NOTE: This class has only been used for testing purposes, it is not involved in the production application.
+"""
+
 class TestWindow(QWidget):
     def __init__(self, Qwidget, parent=None):
         super(FenetrePrincipale, self).__init__(parent)
