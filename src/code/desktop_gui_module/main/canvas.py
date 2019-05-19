@@ -55,5 +55,5 @@ class Canvas(QtWidgets.QWidget):
 
             self.figure.canvas.draw()
             self.figure.canvas.flush_events()
-        except:
+        except Exception as e:
             pass

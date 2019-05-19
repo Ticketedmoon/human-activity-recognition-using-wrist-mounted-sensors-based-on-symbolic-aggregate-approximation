@@ -42,6 +42,8 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
     loaders = []
     progress_bars = []
 
+    graph_trigger = pyqtSignal()
+
     def __init__(self, logger, graph_control):
         super(Activity_Controller_Pane, self).__init__()
         QtWidgets.QWidget.__init__(self)
@@ -51,6 +53,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
 
         # Controller has access to graph
         self.graph_control = graph_control
+        self.graph_trigger.connect(graph_control.reset_data_on_graph)
 
         # Warning Message box
         self.msg = QtWidgets.QMessageBox()
@@ -256,7 +259,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
             self.loading_widgets[i] = loading_widget
             self.loaders[i].setMovie(loading_widget)
 
-        self.graph_control.reset_data_on_graph()
+        self.graph_trigger.emit()
         self.display.stop_display()
         self.display.reset_display_parameters()
         self.display.connect_to_broker()
@@ -294,6 +297,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         else:
             self.recording_mode_active = False
             self.graph_control.stop_graph_temporarily()
+            self.graph_trigger.emit()
             self.update_playback_button_state(self.playback_buttons, True, "background-color: rgb(0, 180, 30); color: white;")
             self.update_playback_button_state(self.stop_play_back_buttons, False, "background-color: rgb(200, 200, 200); color: black;")
             self.update_playback_button_state(self.real_time_playback_buttons, True, "background-color: rgb(0, 128, 128); color: white;")

@@ -211,7 +211,7 @@ class Classify_Image:
 
 def main():
     classifier = Classify_Image()
-    classifier.initialize_prediction_process()
+    classifier.initialize_prediction_process(20)
 
 if __name__ == "__main__":
   main()

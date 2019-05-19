@@ -39,6 +39,7 @@ class Graph_Pane(QtWidgets.QWidget):
         # Default Port
         self.port = "COM3"
 
+    @pyqtSlot()
     def reset_data_on_graph(self):
         self.playback_graph_active = False
         self.data_row_sample = 0
@@ -172,6 +173,8 @@ class Graph_Pane(QtWidgets.QWidget):
                     canvas.reset_graph_axis()
                 # Ensure boolean flag is not set
                 self.is_arduino_connected = False
+                self.stop_real_time_graph = False
+                self.data_row_sample = 0
                 # log to file/console
                 self.logger.info("Scanning for active Arduino Connection... {5 Second Delay}")
                 # Sleep for X seconds checking for reconnection of Arduino
