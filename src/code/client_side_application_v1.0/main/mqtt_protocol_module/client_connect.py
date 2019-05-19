@@ -4,13 +4,9 @@ import sys
 import base64
 import paho.mqtt.client as mqtt
 
-sys.path.append("../")
 from logger_module.Logger import Logger
-
-sys.path.append("../../mqtt_protocol_module")
+sys.path.append("./mqtt_protocol_module")
 from client_controller import Client_Controller
-
-sys.path.append("../../machine_learning_module")
 from symbolic_aggregate_approximation import SymbolicAggregateApproximation
 
 """

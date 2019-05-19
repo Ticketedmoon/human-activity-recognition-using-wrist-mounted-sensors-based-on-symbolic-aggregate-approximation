@@ -34,7 +34,7 @@ from logger_module.Logger import Logger
 
 class Application(QMainWindow):
 
-    def __init__(self, primaryWindow, logger_path="../../", testMode=False):
+    def __init__(self, primaryWindow, logger_path="./", testMode=False):
         super(Application, self).__init__()
 
         self.logger_path = logger_path
