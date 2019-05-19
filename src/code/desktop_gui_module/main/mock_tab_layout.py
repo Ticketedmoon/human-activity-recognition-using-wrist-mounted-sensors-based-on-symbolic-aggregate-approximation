@@ -18,6 +18,10 @@ try:
 except:
    pass
 
+"""
+NOTE: This class has only been used for testing purposes, it is not involved in the production application.
+"""
+
 class tabdemo(QTabWidget):
    def __init__(self, parent = None):
       super(tabdemo, self).__init__(parent)

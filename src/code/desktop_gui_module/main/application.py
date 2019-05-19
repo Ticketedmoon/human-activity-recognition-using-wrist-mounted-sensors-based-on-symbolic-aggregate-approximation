@@ -73,7 +73,6 @@ class Application(QMainWindow):
         self.layout_b.setRowStretch(0, 1)
 
         self.layout_c = QtWidgets.QHBoxLayout(self.tab_frame_c)
-
         self.layout_d = QtWidgets.QHBoxLayout(self.tab_frame_d)
 
         self.layout_a.setObjectName("layout_a")
@@ -111,6 +110,7 @@ class Application(QMainWindow):
         self.view.shut_down()
         sys.exit(0)
 
+    # Provide window sizing, title, icon etc...
     def setup_window_framework(self, PrimaryWindow):
         PrimaryWindow.setObjectName("PrimaryWindow")
         PrimaryWindow.setWindowTitle("Arduino Software - Human Activity Recognition via PPG sensor")
@@ -118,10 +118,11 @@ class Application(QMainWindow):
         PrimaryWindow.resize(1000, 600)
         PrimaryWindow.setStyleSheet("background-color: rgb(235, 235, 235);")
 
+    # Menu Bar
     def setup_menu_bar(self, PrimaryWindow):
-        # Menu Bar
         self.menu = MenuBar(PrimaryWindow, self)
 
+    # Open settings when menu bar item clicked.
     def open_settings(self):
         items = ("COM1","COM2","COM3", "COM4", "COM5")
         self.setWindowIcon(QtGui.QIcon('/path/to/icon.png'))
@@ -131,6 +132,7 @@ class Application(QMainWindow):
             if port != self.view.graph_pane.port:
                 self.view.graph_pane.update_port(port)            
 
+    # Open about when menu bar item clicked.
     def open_about(self):
         d = QDialog()
         d.setWindowTitle("About the Application")
@@ -139,6 +141,7 @@ class Application(QMainWindow):
         self.menu.setup_about_label(d)
         d.exec_()
 
+    # Open guide when menu bar item clicked.
     def open_help_guide(self):
         d = QDialog()
         d.setWindowTitle("Application Guide")

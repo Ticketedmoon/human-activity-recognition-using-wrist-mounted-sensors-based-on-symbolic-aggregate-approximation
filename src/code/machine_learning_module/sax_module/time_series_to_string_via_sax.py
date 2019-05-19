@@ -6,12 +6,14 @@ from sax_module.interval_sax_letter_conversion import int_letter_conversion
 
 class Time_series_to_string_via_sax:
 
+    # Step #1: Generate Vector Representation from time-series data
     def generate(self, file_path):
         data = pd.read_csv(file_path, index_col=0, parse_dates=True, skiprows=[0])
         stats = pd.Series(data.values.squeeze())
         numeric_data = pd.to_numeric(stats, errors='coerce')
         return numeric_data
 
+    # Step #2: Apply horizontal window bounding property as suggested by the SAX specification.
     def apply_letter_window(self, ts_data, window_size):
         average_window_values = []
         for i in range(0, len(ts_data), window_size):
@@ -20,6 +22,7 @@ class Time_series_to_string_via_sax:
             average_window_values.append(avg_win_val)
         return pd.Series(average_window_values)
 
+    # Step #3 (Optional): Normalise the data using standard deviation.
     def normalise_data(self, data, threshold=0.01):
         sd = np.std(data)
         if (sd < threshold):
@@ -27,6 +30,7 @@ class Time_series_to_string_via_sax:
         mean = np.mean(data)
         return (data - mean) / sd
 
+    # Step #4: Convert the normalized data into a string of characters encoding the data.
     def ts_to_string(self, series, cuts):
         a_size = len(cuts)
         sax = list()

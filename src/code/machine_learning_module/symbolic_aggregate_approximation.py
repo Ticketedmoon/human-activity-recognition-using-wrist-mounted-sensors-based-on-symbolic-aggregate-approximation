@@ -5,12 +5,14 @@ import pandas as pd
 # Train Mode
 sys.path.append("../")
 
-# Test Mode
-# sys.path.append("../../")
 from logger_module.Logger import Logger
 
 from sax_module.time_series_to_string_via_sax import Time_series_to_string_via_sax
 
+"""
+Symbolic Aggregate Approximation method structure. 
+There is a specific tailored method for each activity class.
+"""
 class SymbolicAggregateApproximation:
 
     training_exercise_path = "../../resources/exercise-datasets"

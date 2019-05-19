@@ -21,9 +21,16 @@ try:
 except ModuleNotFoundError:
     pass
 
+"""
+This class represents the corresponding server class to the client.
+This class is connected to the same broker as the client and can interact
+over the publish/subscribe model.
+"""
 class Server:
 
+    # Constructor
     def __init__(self, logger_path="../", dir_path="./temp", test_mode=False):
+
         # Logger
         self.logger = Logger(logger_path, "logs/Server", test_mode)
 
@@ -50,11 +57,14 @@ class Server:
         # Client to Image mapping
         self.client_input_buffer = {}
 
+    # Debugging purposes only
     def on_publish(self, client, userdata, mid) :
          self.logger.info("Server: Message Published")
 
     # The callback for when a PUBLISH message is received from the server.
     def on_message(self, client, userdata, msg):
+
+        # For the activity playback function
         if (msg.topic == "sax_check"):
             self.logger.info("Server: Human Activity Simulation by CSV received...")
             self.is_exercise_simulation_active = True
@@ -62,6 +72,9 @@ class Server:
             sax_string_decoded = str(sax_string)[2:-1]
             initialize_simulation_loop = threading.Thread(target=self.start_playback_mode_loop, args=[client, sax_string_decoded])
             initialize_simulation_loop.start()
+
+        # For the real-time recognition function
+        # Starts listener threads when this message is received.
         elif (msg.topic == "real_time_check"):
             # Start the thread that will loop and take from the buffer
             message = msg.payload.decode('utf-8')
@@ -73,6 +86,8 @@ class Server:
                 start_tensorflow_loop.start()
             elif (message == "stop_real_time_recognition_for_client"):
                 self.real_time_playback_is_active = False
+        
+        # This topic will act as the primary source of real-time data from the client.
         elif (msg.topic == "real_time_input_feed"):
             # Simply add the message data/payload to the buffer
             sax_string = base64.decodestring(msg.payload)
@@ -80,15 +95,24 @@ class Server:
             if client not in self.client_input_buffer.keys():
                 self.client_input_buffer[client] = []
             self.client_input_buffer[client].insert(0, sax_string_decoded)
+
+        # Publish to this topic when a client has disconnected.
+        # We have a client hashmap/dictionary of all clients that are connected.
+        # Once a client disconnects, we can simply lookup their client ID and remove them.
         elif(msg.topic == "disconnections"):
             self.logger.info("Server: Client With ID {} Disconnected - Stoping Simulation if active... {}".format(self.client_objects[client], self.is_exercise_simulation_active))
             self.is_exercise_simulation_active = False
             self.real_time_playback_is_active = False
             self.classifier.discontinue_client_connection()
+
+        # Whenever a client joins/connects, the server makes a note and stores their connection id and object
+        # in a dictionary/hashmap
         elif(msg.topic == "client_connections"):
             client_connection_id = msg.payload.decode('utf-8')
             self.client_objects[client] = client_connection_id
             self.logger.info("Server: Client with ID {} Connected...".format(client_connection_id))
+
+        # Otherwise, log to the terminal about ambiguous message
         else:
             self.logger.warning("Non-specific topic published to...")
 
@@ -99,6 +123,9 @@ class Server:
         # Do nothing
         pass
 
+    # Send method for server.
+    # Server connects to broker and subscribes to all important processing topics.
+    # Ensure loop_forever is active.
     def send(self):
         host      = "127.0.0.1"
         port      = 1883
@@ -215,6 +242,8 @@ class Server:
                 i+=1
         return 0
 
+    # Remove all images inside the temp/ folder.
+    # This is called after any activity recognition process.
     def destroy_temp_folder(self):
         files = glob.glob(self.dir_path + '/*')
         for f in files:

@@ -20,10 +20,12 @@ from canvas import Canvas
 
 class Graph_Pane(QtWidgets.QWidget):
 
+    # Event for concurrency control - wait/set
     update_graph_event = threading.Event()
 
     canvas_frames = []
 
+    # boolean flags
     stop_real_time_graph = False
     reset_port = False
     is_arduino_connected = False
@@ -52,7 +54,6 @@ class Graph_Pane(QtWidgets.QWidget):
             # Case where the graph is reset with no data points found.
             pass
 
-    # TODO: Fix
     def layout_widgets(self, layout):   
         self.graph_frame = Canvas(layout, self.logger) # Widget is added from Canvas
         self.canvas_frames.append(self.graph_frame)  
@@ -66,9 +67,11 @@ class Graph_Pane(QtWidgets.QWidget):
             movie.start()
             self.trend.setLayout(QtWidgets.QHBoxLayout())
 
+    # Getter
     def get_samples(self):
         return self.graph_frame.samples
 
+    # Getter
     def get_microvolts(self):
         return self.graph_frame.microvolts
 
@@ -125,7 +128,8 @@ class Graph_Pane(QtWidgets.QWidget):
             self.reset_data_on_graph()
             
 
-    # plot.pause() method available if needed.
+    # Method called for each single update that a graph is required to make.
+    # NOTE: plot.pause() method available if needed.
     def update_graph(self, sample_x, sample_y):
         for canvas in self.canvas_frames: 
             canvas.samples.append(sample_x)
@@ -142,6 +146,12 @@ class Graph_Pane(QtWidgets.QWidget):
                 canvas.microvolts.pop(0)
                 canvas.ax1.set_xlim(min(canvas.samples), max(canvas.samples))
 
+    # Method is extremely important.
+    # Method tries to interact and scan for an active arduino connection based on a port value.
+    # This port value can be modified in the settings of the application if needed.
+    # It is important this method runs in a separate thread to the primary thread and
+    # feeds back the results to the primary thread. 
+    # This method uses the serial library to check for a arduino connection.
     def read_from_ppg(self, save_path="voltages.csv"):
         try:
             with serial.Serial(self.port, 19200, bytesize=serial.SEVENBITS, timeout=0) as ser, open(save_path, 'w') as text_file:
@@ -168,16 +178,21 @@ class Graph_Pane(QtWidgets.QWidget):
                         ser.flushOutput()
         except:
             if (not self.stop_real_time_graph and not self.reset_port and not self.playback_graph_active):
+
                 # Clear Graph Data
                 for canvas in self.canvas_frames:
                     canvas.reset_graph_axis()
+
                 # Ensure boolean flag is not set
                 self.is_arduino_connected = False
                 self.stop_real_time_graph = False
                 self.data_row_sample = 0
+
                 # log to file/console
                 self.logger.info("Scanning for active Arduino Connection... {5 Second Delay}")
+
                 # Sleep for X seconds checking for reconnection of Arduino
                 time.sleep(5)
+
                 # Try to read again
                 self.read_from_ppg()

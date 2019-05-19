@@ -2,6 +2,7 @@ from struct import pack
 import math
 
 class Bitmap():
+
   def __init__(s, width, height):
     s._bfType = 19778 # Bitmap signature
     s._bfReserved1 = 0
@@ -15,10 +16,8 @@ class Bitmap():
     s._bfSize = 26+s._bcWidth*3*s._bcHeight
     s.clear()
 
-
   def clear(s):
     s._graphics = [(0,0,0)]*s._bcWidth*s._bcHeight
-
 
   def setPixel(s, x, y, color):
     if isinstance(color, tuple):

@@ -6,6 +6,13 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
+"""
+This class was used to compare and contrast each of the different classes that I would be 
+training a machine learning model on. I wanted to understand the intricacies of the data
+and understand how each class was different to each other class. This class can produce
+a graph from each time-series and also can produce a graph containing all 4 classes simultaneously.
+"""
+
 # Load in data from PPG datasets (../../resources/exercise-datasets)
 # Contains 15000+ rows, 2 columns.
 walk_set = pd.read_csv("../../resources/exercise-datasets/Walk01.csv", skiprows=[1])

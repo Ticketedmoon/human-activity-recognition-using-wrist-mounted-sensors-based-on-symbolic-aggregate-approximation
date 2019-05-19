@@ -9,7 +9,13 @@ import matplotlib.animation as animation
 import struct
 import pandas as pd
  
- 
+"""
+NOTE: This class is primarily used for testing purposes.
+      Testing out the arduino functionally with Python.
+      Many of my findsings from these classes in terms of design and implementation
+      have found there way from these series of testing classes into the overall
+      project design and codebase.
+"""
 class serialPlot:
     def __init__(self, serialPort = 'com3', serialBaud = 19200, plotLength = 100, dataNumBytes = 2):
         self.port = serialPort
@@ -65,7 +71,7 @@ class serialPlot:
         self.serialConnection.close()
         print('Disconnected...')
         # df = pd.DataFrame(self.csvData)
-        # df.to_csv('/home/rikisenia/Desktop/data.csv')
+        # df.to_csv('/home/shane/Desktop/data.csv')
  
  
 def main():

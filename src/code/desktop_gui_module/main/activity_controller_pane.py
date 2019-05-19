@@ -22,14 +22,18 @@ sys.path.append('../../')
 
 class Activity_Controller_Pane(QtWidgets.QWidget):
 
+    # Boolean flags
     display = None
     real_time_recognition_alive = False
     recording_mode_active = False
 
+    # Global imperatives
     image_size = 32 * 32
     recording_file_counter = 0
 
-    # TODO: Refactor
+    # PyQt5 offers no way to utilise the same widget across multiple
+    # different window panes. Therefore, I am required to store multiple
+    # identical widgets in order to get the congruency that I need for my design philosophy.
     loading_widgets = []
     playback_buttons = []
     stop_play_back_buttons = []
@@ -42,6 +46,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
     loaders = []
     progress_bars = []
 
+    # PyQt5 signal object between other classes.
     graph_trigger = pyqtSignal()
 
     def __init__(self, logger, graph_control):
@@ -64,6 +69,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         self.msg.setWindowTitle("Arduino PPG Connection Warning")
         self.msg.setStandardButtons(QtWidgets.QMessageBox.Retry | QtWidgets.QMessageBox.Cancel)
         
+    # Build widgets on screen for particular layout.
     def layout_widgets(self, layout):
         self.widget_3 = QtWidgets.QWidget()
         self.widget_3.setStyleSheet("background-color: rgb(255, 255, 255);")
@@ -247,6 +253,8 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         # Call initially for instantaneous UI clarity
         self.is_broker_connected()
 
+    # Once cancel button is clicked, ensure activity playback comes to a stop.
+    # We need to stop the graph sequence as well as the display pane avatar and activity details.
     def cancel_button_sequence_start(self):
         if (self.loading != None):
             for loading_widget in self.loading_widgets:
@@ -259,7 +267,11 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
             self.loading_widgets[i] = loading_widget
             self.loaders[i].setMovie(loading_widget)
 
+        # emit to graph to stop
         self.graph_trigger.emit()
+
+        # Stop display, reset parameters, and reconnect to broker.
+        # Also set progress bar back to zero.
         self.display.stop_display()
         self.display.reset_display_parameters()
         self.display.connect_to_broker()
@@ -367,6 +379,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
             self.arduino_connection_timer.stop()
         self.real_time_recognition_alive = False
 
+    # Update indicator widgets based on broker and arduino connection
     def is_arduino_connected(self):
         if self.graph_control.check_arduino_connection():
             for connection_icon in self.ppg_connection_icons:
@@ -385,7 +398,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
             for connection_widget in self.ppg_connection_widgets:
                 connection_widget.setText("Arduino PPG Not Connected")
 
-    # TODO: Refactor this and above method into 1.
+    # Update indicator widgets based on broker and arduino connection
     def is_broker_connected(self):
         if self.display.is_connected_to_broker():
             for connection_icon in self.broker_connection_icons:
@@ -404,6 +417,9 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
             for connection_widget in self.broker_connection_widgets:
                 connection_widget.setText("Broker Connection Inactive")
 
+    # IMPORTANT: This method is called in a thread whenever the activity playback function is pressed.
+    # If a successful csv file is submitted, we can send perform SAX on the time series then subsequently
+    # encode the data with Base64 and send the activity string across the MQTT network to our processing server.
     def submit_ppg_files(self):
         try:
             root = Tk().withdraw()
@@ -421,6 +437,7 @@ class Activity_Controller_Pane(QtWidgets.QWidget):
         except Exception as error:
             self.logger.error("Error: " + repr(error))
 
+    # Set all buttons state, relative to the current state they're in.
     def update_playback_button_state(self, buttons, enabled=True, stylesheet="background-color: rgb(0, 180, 30); color: white"):
         for button in buttons:
             button.setEnabled(enabled) 

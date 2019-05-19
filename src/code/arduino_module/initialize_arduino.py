@@ -3,6 +3,13 @@ import numpy  # Import numpy
 import matplotlib.pyplot as plt #import matplotlib library
 from drawnow import *
 
+"""
+NOTE: This class is primarily used for testing purposes.
+      Testing out the arduino functionally with Python.
+      Many of my findsings from these classes in terms of design and implementation
+      have found there way from these series of testing classes into the overall
+      project design and codebase.
+"""
 class Arduino:
 
     plt.ion() #Tell matplotlib you want interactive mode to plot live data
@@ -26,11 +33,11 @@ class Arduino:
                     self.samples.append(float(data_row_sample))
                     self.microvolts.append(float(voltage_reading))
                     drawnow(self.makeFig)
-                    # plt.pause(.000001)                     #Pause Briefly. Important to keep drawnow from crashing
+                    # plt.pause(.000001)                     # Pause Briefly. Important to keep drawnow from crashing
                     data_row_sample += 1
 
-                    if(data_row_sample > 25):                            #If you have 50 or more points, delete the first one from the array
-                        self.samples.pop(0)                       #This allows us to just see the last 50 data points
+                    if(data_row_sample > 25):                     # If you have 25 or more points, delete the first one from the array
+                        self.samples.pop(0)                       # This allows us to just see the last 50 data points
                         self.microvolts.pop(0)
 
                     ser.flushInput()
