@@ -12,7 +12,7 @@ codecov==2.0.15
 colorama==0.4.1
 coverage==4.5.2
 cycler==0.10.0
-Django==2.1.15
+Django==2.2.13
 drawnow==0.72.0
 future==0.17.1
 gast==0.2.2
