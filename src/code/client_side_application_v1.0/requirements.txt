@@ -63,7 +63,7 @@ python-dotenv==0.10.1
 pytz==2018.9
 # pywin32==224
 # pywin32-ctypes==0.2.0
-PyYAML==3.13
+PyYAML==5.4
 requests==2.21.0
 scipy==1.2.0
 sip==4.19.8
