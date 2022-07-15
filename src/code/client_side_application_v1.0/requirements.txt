@@ -8,7 +8,7 @@ bleach==1.5.0
 certifi==2018.11.29
 chardet==3.0.4
 Click==7.0
-codecov==2.0.15
+codecov==2.0.16
 colorama==0.4.1
 coverage==4.5.2
 cycler==0.10.0
